@@ -146,10 +146,11 @@
           .collection("eventos_flyers")
           .where("estadoPublicacion", "==", "publicado")
           .orderBy("fechaEvento", "asc")
+          .limit(16)
           .get();
       },
       function () {
-        return db.collection("eventos_flyers").where("estadoPublicacion", "==", "publicado").get();
+        return db.collection("eventos_flyers").where("estadoPublicacion", "==", "publicado").limit(16).get();
       }
     );
 
@@ -160,28 +161,7 @@
     return filterEventosActivos(flyers);
   }
 
-  async function loadPublicPortalData() {
-    if (!isConfigured()) {
-      return {
-        source: "demo",
-        areas: window.MUNI_DATA.areas,
-        noticias: window.MUNI_DATA.noticias,
-        eventosFlyers: filterEventosActivos((window.MUNI_DATA && window.MUNI_DATA.eventosFlyers) || []),
-      };
-    }
-
-    var db = window.MuniFirebase.db();
-    if (!db) {
-      return {
-        source: "demo",
-        areas: window.MUNI_DATA.areas,
-        noticias: window.MUNI_DATA.noticias,
-        eventosFlyers: filterEventosActivos((window.MUNI_DATA && window.MUNI_DATA.eventosFlyers) || []),
-      };
-    }
-
-    window.MuniFirebase.init();
-
+  async function loadAreasPublic(db) {
     var areas = [];
     try {
       var areasSnap = await queryWithIndexFallback(
@@ -207,24 +187,56 @@
       areas = areas.map(function (row) {
         return row.mapped;
       });
-      areas = mergeAreasWithSeed(areas);
+      return mergeAreasWithSeed(areas);
     } catch (err) {
       console.warn("No se pudieron cargar áreas desde Firebase; usando seed local.", err);
-      areas = mergeAreasWithSeed([]);
+      return mergeAreasWithSeed([]);
+    }
+  }
+
+  async function loadPublicPortalData() {
+    if (!isConfigured()) {
+      return {
+        source: "demo",
+        areas: window.MUNI_DATA.areas,
+        noticias: window.MUNI_DATA.noticias,
+        eventosFlyers: filterEventosActivos((window.MUNI_DATA && window.MUNI_DATA.eventosFlyers) || []),
+      };
     }
 
+    var db = window.MuniFirebase.db();
+    if (!db) {
+      return {
+        source: "demo",
+        areas: window.MUNI_DATA.areas,
+        noticias: window.MUNI_DATA.noticias,
+        eventosFlyers: filterEventosActivos((window.MUNI_DATA && window.MUNI_DATA.eventosFlyers) || []),
+      };
+    }
+
+    window.MuniFirebase.init();
+
+    var areas = [];
     var noticias = [];
-    try {
-      noticias = await loadTrabajosPublic();
-    } catch (err) {
-      console.warn("No se pudieron cargar novedades publicadas.", err);
-    }
-
     var eventosFlyers = [];
+
     try {
-      eventosFlyers = await loadEventosFlyersPublic(db);
+      var results = await Promise.all([
+        loadAreasPublic(db),
+        loadTrabajosPublic().catch(function (err) {
+          console.warn("No se pudieron cargar novedades publicadas.", err);
+          return [];
+        }),
+        loadEventosFlyersPublic(db).catch(function (err) {
+          console.warn("No se pudieron cargar flyers de eventos; el resto del portal sigue disponible.", err);
+          return [];
+        }),
+      ]);
+      areas = results[0];
+      noticias = results[1];
+      eventosFlyers = results[2];
     } catch (err) {
-      console.warn("No se pudieron cargar flyers de eventos; el resto del portal sigue disponible.", err);
+      console.warn("Error al cargar datos del portal.", err);
     }
 
     return { source: "firebase", areas: areas, noticias: noticias, eventosFlyers: eventosFlyers };
@@ -244,10 +256,11 @@
           .collection("trabajos")
           .where("estadoPublicacion", "==", "publicado")
           .orderBy("fechaPublicacion", "desc")
+          .limit(30)
           .get();
       },
       function () {
-        return db.collection("trabajos").where("estadoPublicacion", "==", "publicado").get();
+        return db.collection("trabajos").where("estadoPublicacion", "==", "publicado").limit(30).get();
       }
     );
 

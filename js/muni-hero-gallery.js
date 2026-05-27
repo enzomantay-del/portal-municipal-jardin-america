@@ -1,46 +1,17 @@
 (function () {
   "use strict";
 
+  /* Galería reducida: las más livianas y representativas (~650 KB total vs ~2,5 MB). */
   var GALLERY = [
-    {
-      src: "assets/jardin-cascada-selva.png",
-      alt: "Saltos del Tabay, Jardín América",
-      caption: "Saltos del Tabay",
-    },
     {
       src: "assets/jardin-tucan.png",
       alt: "Tucán en la naturaleza de Misiones",
       caption: "Fauna misionera",
     },
     {
-      src: "assets/jardin-yerbales.png",
-      alt: "Plantaciones de té en Jardín América",
-      caption: "Plantaciones de té",
-    },
-    {
-      src: "assets/jardin-casa-cultura.png",
-      alt: "Casa de la Cultura de Jardín América",
-      caption: "Casa de la Cultura",
-    },
-    {
-      src: "assets/jardin-cicloturismo.png",
-      alt: "Cicloturismo en Jardín América",
-      caption: "Cicloturismo",
-    },
-    {
       src: "assets/jardin-saltos-tabay.png",
       alt: "Saltos del Tabay, Jardín América",
       caption: "Saltos del Tabay",
-    },
-    {
-      src: "assets/jardin-cartel-entrada.png",
-      alt: "Cartel de bienvenida a Jardín América",
-      caption: "Bienvenida a Jardín América",
-    },
-    {
-      src: "assets/jardin-plaza-azaleas.png",
-      alt: "Plaza central de Jardín América al atardecer",
-      caption: "Plaza central",
     },
     {
       src: "assets/jardin-cascada.png",
@@ -52,9 +23,15 @@
       alt: "Letrero Jardín América con flores",
       caption: "Una ciudad que florece",
     },
+    {
+      src: "assets/jardin-casa-cultura.png",
+      alt: "Casa de la Cultura de Jardín América",
+      caption: "Casa de la Cultura",
+    },
   ];
 
   var AUTO_MS = 5500;
+  var loaded = {};
 
   function initHeroGallery() {
     var root = document.getElementById("muni-hero-showcase");
@@ -75,6 +52,23 @@
     var timer = null;
     var cards = [];
 
+    function ensureLoaded(index) {
+      if (loaded[index]) return;
+      var card = cards[index];
+      if (!card) return;
+      var img = card.querySelector("img");
+      if (!img || img.getAttribute("src")) return;
+      img.src = img.getAttribute("data-src") || GALLERY[index].src;
+      loaded[index] = true;
+    }
+
+    function ensureLoadedAround(index) {
+      var total = GALLERY.length;
+      ensureLoaded(index);
+      ensureLoaded((index + 1) % total);
+      ensureLoaded((index - 1 + total) % total);
+    }
+
     GALLERY.forEach(function (item, index) {
       var btn = document.createElement("button");
       btn.type = "button";
@@ -82,9 +76,14 @@
       btn.setAttribute("data-index", String(index));
       btn.setAttribute("aria-label", "Ver " + item.caption + " en grande");
       btn.innerHTML =
-        '<img src="' + item.src + '" alt="' + item.alt.replace(/"/g, "&quot;") + '" loading="' +
-        (index === 0 ? "eager" : "lazy") + '" width="480" height="600">' +
-        '<span class="muni-hero-stack-caption">' + item.caption + "</span>" +
+        '<img data-src="' +
+        item.src +
+        '" alt="' +
+        item.alt.replace(/"/g, "&quot;") +
+        '" decoding="async" width="480" height="600">' +
+        '<span class="muni-hero-stack-caption">' +
+        item.caption +
+        "</span>" +
         '<span class="muni-hero-stack-zoom" aria-hidden="true">Ampliar</span>';
       btn.addEventListener("click", function () {
         if (Number(btn.getAttribute("data-pos")) === 0) {
@@ -121,6 +120,7 @@
         dot.classList.toggle("is-active", i === active);
         dot.setAttribute("aria-current", i === active ? "true" : "false");
       });
+      ensureLoadedAround(active);
     }
 
     function goTo(index) {
@@ -141,6 +141,7 @@
       if (!lightbox || !lightboxImg) return;
       active = index;
       layout();
+      ensureLoaded(index);
       lightboxImg.src = GALLERY[index].src;
       lightboxImg.alt = GALLERY[index].alt;
       if (lightboxCaption) lightboxCaption.textContent = GALLERY[index].caption;

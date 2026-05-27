@@ -177,7 +177,25 @@
     if (mapaLink && cfg.barriosMapaUrl) {
       mapaLink.href = cfg.barriosMapaUrl;
     }
-    loadBarrios();
     bindAvisosForm();
+    scheduleBarriosLoad();
   });
+
+  function scheduleBarriosLoad() {
+    var section = document.getElementById("recibir-avisos");
+    if (!section || !("IntersectionObserver" in window)) {
+      loadBarrios();
+      return;
+    }
+    var observer = new IntersectionObserver(
+      function (entries) {
+        if (entries.some(function (entry) { return entry.isIntersecting; })) {
+          observer.disconnect();
+          loadBarrios();
+        }
+      },
+      { rootMargin: "240px 0px" }
+    );
+    observer.observe(section);
+  }
 })();

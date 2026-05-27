@@ -69,7 +69,7 @@
         '<p class="muni-article-lead">' + M.escapeHtml(noticia.bajada) + "</p>" +
         M.renderMeta(noticia, area) +
         "</header>" +
-        '<figure class="muni-article-cover"><img src="' + M.escapeHtml(img) + '" alt="' + M.escapeHtml(noticia.titulo) + '"></figure>' +
+        '<figure class="muni-article-cover"><img src="' + M.escapeHtml(img) + '" alt="' + M.escapeHtml(noticia.titulo) + '" fetchpriority="high" decoding="async"></figure>' +
         '<dl class="muni-article-info">' +
         "<div><dt>Ubicación</dt><dd>" + M.escapeHtml(noticia.ubicacion) + "</dd></div>" +
         "<div><dt>Barrio</dt><dd>" + M.escapeHtml(noticia.barrio) + "</dd></div>" +

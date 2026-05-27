@@ -156,7 +156,7 @@
     return (
       '<article class="muni-card">' +
       '<a href="' + noticiaUrl(noticia) + '" class="muni-card-media" tabindex="-1" aria-hidden="true">' +
-      '<img src="' + escapeHtml(img) + '" alt="" loading="lazy" width="480" height="300">' +
+      '<img src="' + escapeHtml(img) + '" alt="" loading="lazy" decoding="async" width="480" height="300">' +
       "</a>" +
       (area
         ? '<a class="muni-card-tag ' + areaTagClass(area.slug) + '" href="' + areaUrl(area) + '">' +
@@ -181,7 +181,7 @@
       "</div>" +
       '<div class="muni-hero">' +
       '<div class="muni-hero-media">' +
-      '<img src="' + escapeHtml(img) + '" alt="' + escapeHtml(noticia.titulo) + '" width="900" height="560">' +
+      '<img src="' + escapeHtml(img) + '" alt="' + escapeHtml(noticia.titulo) + '" fetchpriority="high" decoding="async" width="900" height="560">' +
       "</div>" +
       '<div class="muni-hero-body">' +
       (area
@@ -458,7 +458,7 @@
           '<span class="muni-evento-area ' + tagClass + '">' + escapeHtml(areaName) + "</span>" +
           '<button type="button" class="muni-evento-flyer-btn" data-evento-index="' + index + '" aria-label="' +
           escapeHtml("Ampliar flyer: " + alt) + '">' +
-          '<img src="' + escapeHtml(ev.imagenUrl) + '" alt="' + escapeHtml(alt) + '" loading="lazy" width="270" height="480">' +
+          '<img src="' + escapeHtml(ev.imagenUrl) + '" alt="' + escapeHtml(alt) + '" loading="lazy" decoding="async" width="270" height="480">' +
           '<span class="muni-evento-zoom" aria-hidden="true">Ampliar</span>' +
           "</button>" +
           '<time class="muni-evento-date" datetime="' + escapeHtml(ev.fechaEvento) + '">' +

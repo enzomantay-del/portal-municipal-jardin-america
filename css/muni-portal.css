@@ -469,6 +469,7 @@ a:hover {
   object-fit: cover;
   display: block;
   pointer-events: none;
+  background: var(--muni-surface-soft);
 }
 
 .muni-hero-stack-caption {

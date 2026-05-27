@@ -81,7 +81,15 @@
     }
 
     if (window.MuniEventos) {
-      window.MuniEventos.mountEventos(M.DATA.eventosFlyers || []);
+      var eventos = M.DATA.eventosFlyers || [];
+      var mountEventos = function () {
+        window.MuniEventos.mountEventos(eventos);
+      };
+      if ("requestIdleCallback" in window) {
+        requestIdleCallback(mountEventos, { timeout: 1500 });
+      } else {
+        setTimeout(mountEventos, 0);
+      }
     }
   });
 })();
