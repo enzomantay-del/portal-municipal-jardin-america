@@ -4,19 +4,14 @@
   /* Galería reducida: las más livianas y representativas (~650 KB total vs ~2,5 MB). */
   var GALLERY = [
     {
+      src: "assets/jardin-saltos-tabay-portal.png",
+      alt: "Saltos del Tabay, Jardín América",
+      caption: "Saltos del Tabay",
+    },
+    {
       src: "assets/jardin-tucan.png",
       alt: "Tucán en la naturaleza de Misiones",
       caption: "Fauna misionera",
-    },
-    {
-      src: "assets/jardin-saltos-tabay.png",
-      alt: "Saltos del Tabay, Jardín América",
-      caption: "Saltos del Tabay",
-    },
-    {
-      src: "assets/jardin-cascada.png",
-      alt: "Saltos del Tabay, Jardín América",
-      caption: "Saltos del Tabay",
     },
     {
       src: "assets/jardin-cartel-flores.png",
@@ -75,12 +70,20 @@
       btn.className = "muni-hero-stack-card";
       btn.setAttribute("data-index", String(index));
       btn.setAttribute("aria-label", "Ver " + item.caption + " en grande");
+      var imgHtml =
+        index === 0
+          ? '<img src="' +
+            item.src +
+            '" alt="' +
+            item.alt.replace(/"/g, "&quot;") +
+            '" fetchpriority="high" loading="eager" decoding="async" width="480" height="600">'
+          : '<img data-src="' +
+            item.src +
+            '" alt="' +
+            item.alt.replace(/"/g, "&quot;") +
+            '" decoding="async" width="480" height="600">';
       btn.innerHTML =
-        '<img data-src="' +
-        item.src +
-        '" alt="' +
-        item.alt.replace(/"/g, "&quot;") +
-        '" decoding="async" width="480" height="600">' +
+        imgHtml +
         '<span class="muni-hero-stack-caption">' +
         item.caption +
         "</span>" +
@@ -94,6 +97,7 @@
       });
       stack.appendChild(btn);
       cards.push(btn);
+      if (index === 0) loaded[0] = true;
 
       var dot = document.createElement("button");
       dot.type = "button";
