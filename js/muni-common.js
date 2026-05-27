@@ -368,6 +368,13 @@
   function initNav(activePage, activeAreaSlug) {
     var toggle = document.getElementById("muni-nav-toggle");
     var nav = document.getElementById("muni-nav");
+
+    function closeMobileNav() {
+      if (!nav) return;
+      nav.classList.remove("is-open");
+      if (toggle) toggle.setAttribute("aria-expanded", "false");
+    }
+
     if (toggle && nav && !toggle.dataset.bound) {
       toggle.dataset.bound = "1";
       toggle.addEventListener("click", function () {
@@ -376,14 +383,29 @@
       });
     }
 
+    if (nav && !nav.dataset.boundClose) {
+      nav.dataset.boundClose = "1";
+      nav.addEventListener("click", function (e) {
+        if (e.target.closest("a")) closeMobileNav();
+      });
+    }
+
+    if (!window._muniNavResizeBound) {
+      window._muniNavResizeBound = true;
+      window.addEventListener("resize", function () {
+        if (window.matchMedia("(min-width: 993px)").matches) closeMobileNav();
+      });
+    }
+
     var dateEl = document.getElementById("muni-fecha-hoy");
     if (dateEl) {
-      dateEl.textContent = new Date().toLocaleDateString("es-AR", {
-        weekday: "long",
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-      });
+      var compactDate = window.matchMedia("(max-width: 480px)").matches;
+      dateEl.textContent = new Date().toLocaleDateString(
+        "es-AR",
+        compactDate
+          ? { weekday: "short", day: "numeric", month: "short", year: "numeric" }
+          : { weekday: "long", day: "numeric", month: "long", year: "numeric" }
+      );
     }
 
     var list = document.getElementById("muni-nav-list");
