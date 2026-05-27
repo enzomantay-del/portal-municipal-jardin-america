@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Panel privado para encargados de área — cargar novedades de gestión municipal.">
+  <title>Panel encargado | Portal Municipal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/muni-portal.css">
+</head>
+<body class="muni-panel-page">
+  <a class="muni-skip" href="#contenido-panel">Saltar al contenido</a>
+
+  <header class="muni-header">
+    <div class="muni-header-inner">
+      <a class="muni-brand" href="index.html">
+        <img src="assets/logo-municipalidad.png" alt="Municipalidad de Jardín América">
+      </a>
+      <nav class="muni-nav" id="muni-nav" aria-label="Accesos">
+        <ul class="muni-nav-list">
+          <li><a href="index.html">Sitio público</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="muni-panel-wrap" id="contenido-panel">
+    <div class="muni-panel-header">
+      <div>
+        <h1>Panel del encargado de área</h1>
+        <p>Cargá novedades de tu secretaría. Quedan pendientes hasta que el administrador las apruebe.</p>
+      </div>
+      <a class="muni-btn muni-btn--ghost" href="index.html">← Portal público</a>
+    </div>
+
+    <div id="encargado-alert" class="muni-panel-alert" hidden role="alert"></div>
+
+    <section class="muni-panel-card" id="encargado-auth">
+      <h2>Iniciar sesión</h2>
+      <p class="muni-panel-session">Las cuentas las crea el administrador municipal. No hay registro público.</p>
+      <form id="encargado-login-form" class="muni-form-grid">
+        <div class="muni-field">
+          <label for="enc-email">Email</label>
+          <input id="enc-email" type="email" name="email" required autocomplete="username">
+        </div>
+        <div class="muni-field">
+          <label for="enc-pass">Contraseña</label>
+          <input id="enc-pass" type="password" name="password" required autocomplete="current-password">
+        </div>
+        <div class="muni-form-actions muni-field--full">
+          <button type="submit" class="muni-btn muni-btn--primary">Ingresar</button>
+        </div>
+      </form>
+    </section>
+
+    <div id="encargado-workspace" hidden>
+      <section class="muni-panel-card">
+        <p class="muni-panel-session">
+          Sesión: <strong id="encargado-email"></strong> · Área: <strong id="encargado-area-name"></strong>
+          <button type="button" class="muni-btn muni-btn--ghost" id="encargado-logout" style="margin-left:0.75rem">Cerrar sesión</button>
+        </p>
+      </section>
+
+      <section class="muni-panel-card">
+        <h2 id="trabajo-form-title">Nueva novedad</h2>
+        <form id="trabajo-form" class="muni-form-grid">
+          <div class="muni-field muni-field--full">
+            <label for="titulo">Título</label>
+            <input id="titulo" name="titulo" required minlength="4" maxlength="200" placeholder="Ej: Avance de pavimentación en Av. Libertad">
+          </div>
+          <div class="muni-field muni-field--full">
+            <label for="bajada">Bajada (resumen corto)</label>
+            <input id="bajada" name="bajada" required minlength="10" maxlength="300">
+          </div>
+          <div class="muni-field muni-field--full">
+            <label for="cuerpo">Texto completo (podés usar párrafos separados por línea en blanco)</label>
+            <textarea id="cuerpo" name="cuerpo" required minlength="20" rows="6"></textarea>
+          </div>
+          <div class="muni-field">
+            <label for="ubicacion">Ubicación</label>
+            <input id="ubicacion" name="ubicacion" placeholder="Ej: Av. Libertad 500">
+          </div>
+          <div class="muni-field">
+            <label for="barrio">Barrio</label>
+            <input id="barrio" name="barrio" placeholder="Ej: Centro">
+          </div>
+          <div class="muni-field">
+            <label for="estado_obra">Estado del trabajo</label>
+            <select id="estado_obra" name="estado_obra" required>
+              <option value="planificado">Planificado</option>
+              <option value="en_curso" selected>En curso</option>
+              <option value="finalizado">Finalizado</option>
+            </select>
+          </div>
+          <div class="muni-field">
+            <label for="fecha_publicacion">Fecha</label>
+            <input id="fecha_publicacion" type="date" name="fecha_publicacion" required>
+          </div>
+          <div class="muni-field muni-field--full">
+            <label for="imagen_url">URL de imagen (opcional)</label>
+            <input id="imagen_url" name="imagen_url" type="url" placeholder="https://...">
+          </div>
+          <div class="muni-field muni-field--full">
+            <label for="imagen_archivo">O subir imagen</label>
+            <input id="imagen_archivo" name="imagen_archivo" type="file" accept="image/*">
+          </div>
+          <div class="muni-form-actions muni-field--full">
+            <button type="submit" class="muni-btn muni-btn--primary">Enviar a revisión</button>
+            <button type="button" class="muni-btn muni-btn--ghost" id="trabajo-cancel-edit" hidden>Cancelar edición</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="muni-panel-card">
+        <h2>Flyers de eventos</h2>
+        <p class="muni-panel-session">Subí el flyer vertical (historia de Instagram / estado de WhatsApp). Indicá la fecha del evento: ese día se ocultará solo del portal.</p>
+        <form id="flyer-form" class="muni-form-grid">
+          <div class="muni-field muni-field--full">
+            <label for="flyer-titulo">Título del evento (opcional, para accesibilidad)</label>
+            <input id="flyer-titulo" name="titulo" maxlength="120" placeholder="Ej: Festival de la Primavera">
+          </div>
+          <div class="muni-field">
+            <label for="flyer-fecha-evento">Fecha del evento</label>
+            <input id="flyer-fecha-evento" name="fecha_evento" type="date" required>
+          </div>
+          <div class="muni-field muni-field--full">
+            <label for="flyer-archivo">Flyer (imagen vertical)</label>
+            <input id="flyer-archivo" name="flyer_archivo" type="file" accept="image/*" required>
+          </div>
+          <div class="muni-form-actions muni-field--full">
+            <button type="submit" class="muni-btn muni-btn--primary">Enviar flyer a revisión</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="muni-panel-card">
+        <h2>Mis flyers de eventos</h2>
+        <p id="encargado-flyers-empty" class="muni-empty">Todavía no cargaste flyers.</p>
+        <div id="encargado-flyers-list"></div>
+      </section>
+
+      <section class="muni-panel-card">
+        <h2>Mis novedades</h2>
+        <p id="encargado-trabajos-empty" class="muni-empty">Todavía no cargaste novedades.</p>
+        <div id="encargado-trabajos"></div>
+      </section>
+    </div>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/firebase-init.js"></script>
+  <script src="js/muni-data.js"></script>
+  <script src="js/muni-common.js"></script>
+  <script src="js/muni-api.js"></script>
+  <script src="js/encargado-flyers.js"></script>
+  <script src="js/encargado.js"></script>
+</body>
+</html>

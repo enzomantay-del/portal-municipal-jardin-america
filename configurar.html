@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Configurar Firebase | Portal Municipal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/muni-portal.css">
+  <style>
+    .setup-steps { counter-reset: step; list-style: none; padding: 0; margin: 0 0 1.5rem; }
+    .setup-steps li {
+      counter-increment: step;
+      padding: 0.85rem 0 0.85rem 2.75rem;
+      position: relative;
+      border-bottom: 1px solid var(--muni-border);
+      font-size: 0.9375rem;
+      line-height: 1.55;
+    }
+    .setup-steps li::before {
+      content: counter(step);
+      position: absolute;
+      left: 0;
+      top: 0.75rem;
+      width: 1.75rem;
+      height: 1.75rem;
+      background: var(--muni-dark);
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8125rem;
+      font-weight: 700;
+    }
+    .setup-steps a { color: var(--muni-blue-dark); font-weight: 600; }
+    .setup-code {
+      background: #1e1e1e;
+      color: #e8e8e8;
+      padding: 1rem;
+      border-radius: var(--muni-radius);
+      font-family: Consolas, monospace;
+      font-size: 0.8125rem;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    .setup-status-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.65rem;
+      padding: 0.65rem 0;
+      border-bottom: 1px solid var(--muni-border);
+      font-size: 0.9375rem;
+    }
+  </style>
+</head>
+<body class="muni-panel-page">
+  <main class="muni-panel-wrap">
+    <div class="muni-panel-header">
+      <div>
+        <h1>Configuración de Firebase</h1>
+        <p>Asistente para conectar el portal municipal con Firebase (plan Spark gratuito).</p>
+      </div>
+      <a class="muni-btn muni-btn--ghost" href="index.html">← Portal</a>
+    </div>
+
+    <section class="muni-panel-card">
+      <h2>Paso 1 — Crear proyecto Firebase</h2>
+      <ol class="setup-steps">
+        <li>Entrá a <a href="https://console.firebase.google.com/" target="_blank" rel="noopener">console.firebase.google.com</a>.</li>
+        <li><strong>Agregar proyecto</strong> → nombre: <code>portal-municipal-jardin-america</code>.</li>
+        <li>Desactivá Google Analytics si no lo necesitás (opcional).</li>
+        <li>En el proyecto: <strong>Build → Authentication → Get started → Email/Password</strong> → activar.</li>
+        <li><strong>Build → Firestore Database → Create database</strong> → modo producción → región <code>southamerica-east1</code> (São Paulo).</li>
+        <li><strong>Build → Storage → Get started</strong> → misma región.</li>
+      </ol>
+    </section>
+
+    <section class="muni-panel-card">
+      <h2>Paso 2 — Reglas de seguridad</h2>
+      <p>En Firestore → <strong>Rules</strong>, pegá el contenido de <code>firebase/firestore.rules</code> y publicá.</p>
+      <p>
+        En Storage → <strong>Rules</strong>, pegá <code>firebase/storage.rules</code> y publicá.
+        <strong>Importante:</strong> si ves un selector de bucket arriba, elegí
+        <code>portal-municipal-jardin.firebasestorage.app</code> (debe coincidir con
+        <code>storageBucket</code> en <code>js/firebase-config.js</code>).
+      </p>
+      <p>
+        <a href="https://console.firebase.google.com/project/portal-municipal-jardin/storage/portal-municipal-jardin.firebasestorage.app/rules" target="_blank" rel="noopener">
+          Abrir reglas de Storage del proyecto →
+        </a>
+      </p>
+    </section>
+
+    <section class="muni-panel-card">
+      <h2>Paso 3 — Credenciales web</h2>
+      <p>⚙ Project settings → <strong>Your apps → Web</strong> (icono &lt;/&gt;) → registrar app → copiar el objeto <code>firebaseConfig</code>.</p>
+
+      <div id="setup-alert" class="muni-panel-alert" hidden role="alert"></div>
+
+      <form id="setup-test-form" class="muni-form-grid">
+        <div class="muni-field muni-field--full">
+          <label for="setup-apiKey">apiKey</label>
+          <input id="setup-apiKey" name="apiKey" required>
+        </div>
+        <div class="muni-field">
+          <label for="setup-authDomain">authDomain</label>
+          <input id="setup-authDomain" name="authDomain" required>
+        </div>
+        <div class="muni-field">
+          <label for="setup-projectId">projectId</label>
+          <input id="setup-projectId" name="projectId" required>
+        </div>
+        <div class="muni-field">
+          <label for="setup-storageBucket">storageBucket</label>
+          <input id="setup-storageBucket" name="storageBucket" required>
+        </div>
+        <div class="muni-field">
+          <label for="setup-messagingSenderId">messagingSenderId</label>
+          <input id="setup-messagingSenderId" name="messagingSenderId" required>
+        </div>
+        <div class="muni-field">
+          <label for="setup-appId">appId</label>
+          <input id="setup-appId" name="appId" required>
+        </div>
+        <div class="muni-form-actions muni-field--full">
+          <button type="submit" class="muni-btn muni-btn--primary">Probar conexión</button>
+        </div>
+      </form>
+      <div id="setup-status" hidden style="margin-top:1rem"></div>
+    </section>
+
+    <section class="muni-panel-card" id="setup-config-block" hidden>
+      <h2>Paso 4 — Guardar configuración</h2>
+      <p>Copiá en <code>js/firebase-config.js</code>:</p>
+      <pre class="setup-code" id="setup-config-output"></pre>
+    </section>
+
+    <section class="muni-panel-card">
+      <h2>Paso 5 — Primer administrador</h2>
+      <ol class="setup-steps">
+        <li>Authentication → <strong>Add user</strong> con email y contraseña.</li>
+        <li>Copiá el <strong>UID</strong> del usuario.</li>
+        <li>Firestore → <strong>Start collection</strong> → ID: <code>users</code> → Doc ID: el UID → campos:<br>
+          <code>role</code> (string): <code>admin</code><br>
+          <code>email</code> (string): tu email<br>
+          <code>areaSlug</code> (null)</li>
+        <li>Ingresá en <a href="admin.html">admin.html</a> → <strong>Importar áreas municipales</strong>.</li>
+        <li>Asigná encargados desde el mismo panel admin.</li>
+      </ol>
+    </section>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="js/configurar.js"></script>
+</body>
+</html>

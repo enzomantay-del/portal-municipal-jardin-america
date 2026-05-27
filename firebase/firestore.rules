@@ -1,0 +1,101 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function userDocPath() {
+      return /databases/$(database)/documents/users/$(request.auth.uid);
+    }
+
+    function userDocExists() {
+      return isSignedIn() && exists(userDocPath());
+    }
+
+    function userDoc() {
+      return get(userDocPath());
+    }
+
+    function isAdmin() {
+      return userDocExists() && userDoc().data.role == 'admin';
+    }
+
+    function isEncargado() {
+      return userDocExists() && userDoc().data.role == 'encargado';
+    }
+
+    function encargadoAreaSlug() {
+      return userDoc().data.areaSlug;
+    }
+
+    match /users/{userId} {
+      // Login: cada usuario puede leer su propio documento (sin depender de isAdmin).
+      allow read: if isSignedIn() && request.auth.uid == userId;
+      allow read, write: if isAdmin();
+    }
+
+    match /areas/{areaSlug} {
+      allow read: if resource.data.activa == true
+        || isAdmin()
+        || (isEncargado() && areaSlug == encargadoAreaSlug());
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /trabajos/{trabajoId} {
+      allow read: if resource.data.estadoPublicacion == 'publicado'
+        || isAdmin()
+        || (isEncargado() && resource.data.areaSlug == encargadoAreaSlug());
+
+      allow create: if isAdmin();
+
+      allow create: if isEncargado()
+        && request.resource.data.areaSlug == encargadoAreaSlug()
+        && request.resource.data.createdBy == request.auth.uid
+        && request.resource.data.estadoPublicacion in ['borrador', 'pendiente'];
+
+      allow update: if isAdmin();
+
+      allow update: if isEncargado()
+        && resource.data.areaSlug == encargadoAreaSlug()
+        && request.resource.data.areaSlug == encargadoAreaSlug()
+        && request.resource.data.createdBy == resource.data.createdBy;
+
+      allow delete: if isAdmin();
+    }
+
+    match /eventos_flyers/{flyerId} {
+      allow read: if resource.data.estadoPublicacion == 'publicado'
+        || isAdmin()
+        || (isEncargado() && resource.data.areaSlug == encargadoAreaSlug());
+
+      allow create: if isAdmin();
+
+      allow create: if isEncargado()
+        && request.resource.data.areaSlug == encargadoAreaSlug()
+        && request.resource.data.createdBy == request.auth.uid
+        && request.resource.data.estadoPublicacion == 'pendiente';
+
+      allow update: if isAdmin();
+
+      allow update: if isEncargado()
+        && resource.data.areaSlug == encargadoAreaSlug()
+        && request.resource.data.areaSlug == encargadoAreaSlug()
+        && request.resource.data.createdBy == resource.data.createdBy;
+
+      allow delete: if isAdmin();
+    }
+
+    match /suscriptores_avisos/{suscriptorId} {
+      allow create: if request.resource.data.nombre is string
+        && request.resource.data.nombre.size() >= 2
+        && request.resource.data.telefono is string
+        && request.resource.data.telefono.size() >= 10
+        && request.resource.data.canal == 'whatsapp';
+
+      allow read, update, delete: if isAdmin();
+    }
+  }
+}

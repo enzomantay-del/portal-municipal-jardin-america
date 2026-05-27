@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Panel de administración — moderar novedades del portal municipal.">
+  <title>Administración | Portal Municipal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/muni-portal.css">
+</head>
+<body class="muni-panel-page">
+  <a class="muni-skip" href="#contenido-panel">Saltar al contenido</a>
+
+  <header class="muni-header">
+    <div class="muni-header-inner">
+      <a class="muni-brand" href="index.html">
+        <img src="assets/logo-municipalidad.png" alt="Municipalidad de Jardín América">
+      </a>
+      <nav class="muni-nav" aria-label="Accesos">
+        <ul class="muni-nav-list">
+          <li><a href="index.html">Sitio público</a></li>
+          <li><a href="encargado.html">Panel encargado</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="muni-panel-wrap" id="contenido-panel">
+    <div class="muni-panel-header">
+      <div>
+        <h1>Administración del portal</h1>
+        <p>Aprobá, editá o cargá novedades de cualquier área municipal.</p>
+      </div>
+      <a class="muni-btn muni-btn--ghost" href="index.html">← Portal público</a>
+    </div>
+
+    <div id="admin-alert" class="muni-panel-alert" hidden role="alert"></div>
+
+    <section class="muni-panel-card" id="admin-auth">
+      <h2>Acceso administrador</h2>
+      <form id="admin-login-form" class="muni-form-grid">
+        <div class="muni-field">
+          <label for="adm-email">Email</label>
+          <input id="adm-email" type="email" name="email" required autocomplete="username">
+        </div>
+        <div class="muni-field">
+          <label for="adm-pass">Contraseña</label>
+          <input id="adm-pass" type="password" name="password" required autocomplete="current-password">
+        </div>
+        <div class="muni-form-actions muni-field--full">
+          <button type="submit" class="muni-btn muni-btn--primary">Ingresar</button>
+        </div>
+      </form>
+      <p class="muni-panel-links">
+        <a href="configurar.html">Asistente de configuración Firebase</a>
+      </p>
+    </section>
+
+    <div id="admin-workspace" hidden>
+      <section class="muni-panel-card">
+        <p class="muni-panel-session">
+          Admin: <strong id="admin-email"></strong>
+          <button type="button" class="muni-btn muni-btn--ghost" id="admin-logout" style="margin-left:0.75rem">Cerrar sesión</button>
+        </p>
+      </section>
+
+      <section class="muni-panel-card" id="admin-novedades-section">
+        <h2>Novedades</h2>
+        <p class="muni-panel-session">Cargá, editá o moderá las novedades del portal municipal.</p>
+        <div class="muni-form-grid" style="margin-bottom:1rem">
+          <div class="muni-field">
+            <label for="admin-estado-filter">Estado</label>
+            <select id="admin-estado-filter">
+              <option value="pendiente" selected>Pendiente</option>
+              <option value="publicado">Publicado</option>
+              <option value="rechazado">Rechazado</option>
+              <option value="borrador">Borrador</option>
+            </select>
+          </div>
+          <div class="muni-form-actions" style="align-items:flex-end; gap:0.5rem; flex-wrap:wrap">
+            <button type="button" class="muni-btn muni-btn--primary" id="admin-new-trabajo">+ Nueva novedad</button>
+            <button type="button" class="muni-btn muni-btn--ghost" id="admin-refresh">Actualizar listado</button>
+          </div>
+        </div>
+
+        <section class="muni-panel-card muni-panel-card--nested" id="admin-edit-card" hidden>
+          <h3 id="admin-edit-title">Nueva novedad</h3>
+          <p id="admin-edit-help" class="muni-panel-session">Cargá una novedad en nombre de cualquier área. Podés publicarla directo o dejarla pendiente.</p>
+          <form id="admin-trabajo-form" class="muni-form-grid">
+            <div class="muni-field muni-field--full">
+              <label for="admin-titulo">Título</label>
+              <input id="admin-titulo" name="titulo" required minlength="4" maxlength="200">
+            </div>
+            <div class="muni-field muni-field--full">
+              <label for="admin-bajada">Bajada (resumen corto)</label>
+              <input id="admin-bajada" name="bajada" required minlength="10" maxlength="300">
+            </div>
+            <div class="muni-field muni-field--full">
+              <label for="admin-cuerpo">Texto completo</label>
+              <textarea id="admin-cuerpo" name="cuerpo" required minlength="20" rows="6"></textarea>
+            </div>
+            <div class="muni-field">
+              <label for="admin-area-slug">Área</label>
+              <select id="admin-area-slug" name="areaSlug" required></select>
+            </div>
+            <div class="muni-field" id="admin-estado-pub-wrap">
+              <label for="admin-estado-publicacion">Estado de publicación</label>
+              <select id="admin-estado-publicacion" name="estado_publicacion">
+                <option value="pendiente" selected>Dejar pendiente</option>
+                <option value="publicado">Publicar en el portal</option>
+              </select>
+            </div>
+            <div class="muni-field">
+              <label for="admin-estado-obra">Estado del trabajo</label>
+              <select id="admin-estado-obra" name="estado_obra" required>
+                <option value="planificado">Planificado</option>
+                <option value="en_curso">En curso</option>
+                <option value="finalizado">Finalizado</option>
+              </select>
+            </div>
+            <div class="muni-field">
+              <label for="admin-ubicacion">Ubicación</label>
+              <input id="admin-ubicacion" name="ubicacion">
+            </div>
+            <div class="muni-field">
+              <label for="admin-barrio">Barrio</label>
+              <input id="admin-barrio" name="barrio">
+            </div>
+            <div class="muni-field">
+              <label for="admin-fecha-publicacion">Fecha</label>
+              <input id="admin-fecha-publicacion" type="date" name="fecha_publicacion" required>
+            </div>
+            <div class="muni-field muni-field--full">
+              <label for="admin-imagen-url">URL de imagen (opcional)</label>
+              <input id="admin-imagen-url" name="imagen_url" type="url" placeholder="https://...">
+            </div>
+            <div class="muni-field muni-field--full">
+              <label for="admin-imagen-archivo">O subir imagen nueva</label>
+              <input id="admin-imagen-archivo" name="imagen_archivo" type="file" accept="image/*">
+            </div>
+            <div class="muni-form-actions muni-field--full">
+              <button type="submit" class="muni-btn muni-btn--primary" id="admin-trabajo-submit">Guardar novedad</button>
+              <button type="button" class="muni-btn muni-btn--ghost" id="admin-cancel-edit">Cancelar</button>
+            </div>
+          </form>
+        </section>
+
+        <p id="admin-trabajos-empty" class="muni-empty">No hay novedades en este estado.</p>
+        <div id="admin-trabajos-list"></div>
+      </section>
+
+      <section class="muni-panel-card">
+        <h2>Configuración inicial</h2>
+        <p class="muni-panel-session">Importá las áreas municipales (incluye Intendencia, Cultura y Concejo). Volvé a importar si agregamos áreas nuevas.</p>
+        <button type="button" class="muni-btn muni-btn--primary" id="admin-seed-areas">Importar áreas municipales</button>
+      </section>
+
+      <section class="muni-panel-card">
+        <h2>Asignar rol a usuario</h2>
+        <p class="muni-panel-session">Creá el usuario en Firebase Authentication y pegá acá su UID.</p>
+        <form id="admin-user-form" class="muni-form-grid">
+          <div class="muni-field muni-field--full">
+            <label for="user-uid">UID del usuario</label>
+            <input id="user-uid" name="uid" required placeholder="Ej: xYz123AbC...">
+          </div>
+          <div class="muni-field">
+            <label for="user-email">Email (referencia)</label>
+            <input id="user-email" name="email" type="email" placeholder="encargado@ejemplo.com">
+          </div>
+          <div class="muni-field">
+            <label for="user-role">Rol</label>
+            <select id="user-role" name="role" required>
+              <option value="encargado">Encargado de área</option>
+              <option value="admin">Administrador</option>
+            </select>
+          </div>
+          <div class="muni-field muni-field--full">
+            <label for="user-area">Área (solo encargados)</label>
+            <select id="user-area" name="areaSlug">
+              <option value="">—</option>
+            </select>
+          </div>
+          <div class="muni-form-actions muni-field--full">
+            <button type="submit" class="muni-btn muni-btn--primary">Guardar perfil</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="muni-panel-card">
+        <h2>Flyers de eventos</h2>
+        <p class="muni-panel-session">Gestioná los flyers verticales del portal. Se ocultan automáticamente después de la fecha del evento.</p>
+        <form id="admin-flyer-form" class="muni-form-grid" novalidate>
+          <div class="muni-field muni-field--full">
+            <label for="admin-flyer-titulo">Título (opcional)</label>
+            <input id="admin-flyer-titulo" name="titulo" maxlength="120" placeholder="Ej: Expo feria artesanal">
+          </div>
+          <div class="muni-field">
+            <label for="admin-flyer-area">Área</label>
+            <select id="admin-flyer-area" name="areaSlug" required></select>
+          </div>
+          <div class="muni-field">
+            <label for="admin-flyer-fecha">Fecha del evento</label>
+            <input id="admin-flyer-fecha" name="fecha_evento" type="date" required>
+          </div>
+          <div class="muni-field">
+            <label for="admin-flyer-estado">Estado</label>
+            <select id="admin-flyer-estado" name="estado_publicacion">
+              <option value="publicado" selected>Publicar en el portal</option>
+              <option value="pendiente">Dejar pendiente</option>
+            </select>
+          </div>
+          <div class="muni-field muni-field--full">
+            <label for="admin-flyer-archivo">Flyer (imagen vertical)</label>
+            <input id="admin-flyer-archivo" name="flyer_archivo" type="file" accept="image/*" required>
+          </div>
+          <div class="muni-form-actions muni-field--full">
+            <button type="submit" class="muni-btn muni-btn--primary">Guardar flyer</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="muni-panel-card">
+        <h2>Flyers cargados</h2>
+        <div class="muni-form-grid" style="margin-bottom:1rem">
+          <div class="muni-field">
+            <label for="admin-flyers-filter">Estado</label>
+            <select id="admin-flyers-filter">
+              <option value="pendiente" selected>Pendiente</option>
+              <option value="publicado">Publicado</option>
+              <option value="rechazado">Rechazado</option>
+            </select>
+          </div>
+          <div class="muni-form-actions" style="align-items:flex-end">
+            <button type="button" class="muni-btn muni-btn--ghost" id="admin-flyers-refresh">Actualizar</button>
+          </div>
+        </div>
+        <p id="admin-flyers-empty" class="muni-empty">No hay flyers en este estado.</p>
+        <div id="admin-flyers-list"></div>
+      </section>
+    </div>
+  </main>
+
+  <div id="admin-preview" class="muni-preview-modal" hidden aria-hidden="true">
+    <div class="muni-preview-backdrop" id="admin-preview-backdrop"></div>
+    <div class="muni-preview-dialog" role="dialog" aria-modal="true" aria-labelledby="admin-preview-title">
+      <div class="muni-preview-toolbar">
+        <h2 id="admin-preview-title" class="muni-preview-toolbar-title">Vista previa</h2>
+        <button type="button" class="muni-btn muni-btn--ghost" id="admin-preview-close">Cerrar</button>
+      </div>
+      <div id="admin-preview-content" class="muni-preview-content"></div>
+      <div id="admin-preview-actions" class="muni-preview-actions"></div>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/firebase-init.js"></script>
+  <script src="js/firebase-seed-areas.js"></script>
+  <script src="js/muni-data.js"></script>
+  <script src="js/muni-common.js"></script>
+  <script src="js/muni-api.js"></script>
+  <script src="js/admin-flyers.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

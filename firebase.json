@@ -1,0 +1,15 @@
+{
+  "firestore": {
+    "rules": "firebase/firestore.rules"
+  },
+  "storage": [
+    {
+      "bucket": "portal-municipal-jardin.firebasestorage.app",
+      "rules": "firebase/storage.rules"
+    },
+    {
+      "bucket": "portal-municipal-jardin.appspot.com",
+      "rules": "firebase/storage.rules"
+    }
+  ]
+}

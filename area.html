@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Perfil y novedades de un área de la Municipalidad de Jardín América.">
+  <title>Área municipal | Jardín América</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/muni-portal.css">
+</head>
+<body class="muni-body">
+  <a class="muni-skip" href="#contenido-principal">Saltar al contenido</a>
+
+  <div class="muni-topbar">
+    <div class="muni-topbar-inner">
+      <span class="muni-topbar-tagline">Una ciudad que florece</span>
+      <span id="muni-fecha-hoy" aria-live="polite"></span>
+      <ul class="muni-topbar-links">
+        <li><a href="index.html">Portal</a></li>
+        <li><a href="index.html#ultimas-novedades">Novedades</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <header class="muni-header">
+    <div class="muni-header-inner">
+      <a class="muni-brand" href="index.html" aria-label="Municipalidad de Jardín América — Inicio">
+        <img src="assets/logo-municipalidad.png" alt="Municipalidad de Jardín América">
+      </a>
+      <button type="button" class="muni-nav-toggle" id="muni-nav-toggle" aria-expanded="false" aria-controls="muni-nav">
+        Menú
+      </button>
+      <nav class="muni-nav" id="muni-nav" aria-label="Navegación principal">
+        <ul class="muni-nav-list" id="muni-nav-list"></ul>
+      </nav>
+    </div>
+  </header>
+
+  <div class="muni-area-hero" id="muni-area-hero"></div>
+
+  <main class="muni-main" id="contenido-principal">
+    <div id="muni-area-content"></div>
+  </main>
+
+  <footer class="muni-footer">
+    <div class="muni-container muni-footer-inner">
+      <div>
+        <div class="muni-footer-brand">
+          <img src="assets/logo-municipalidad.png" alt="Municipalidad de Jardín América">
+        </div>
+        <p class="muni-footer-tagline">Una ciudad que florece</p>
+        <p class="muni-footer-copy">Portal de gestión municipal · Jardín América, Misiones</p>
+      </div>
+      <ul class="muni-footer-nav">
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="index.html#ultimas-novedades">Novedades</a></li>
+      </ul>
+    </div>
+    <p class="muni-footer-bottom">© Municipalidad de Jardín América</p>
+  </footer>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/firebase-init.js"></script>
+  <script src="js/firebase-seed-areas.js"></script>
+  <script src="js/muni-data.js"></script>
+  <script src="js/muni-api.js"></script>
+  <script src="js/muni-icons.js"></script>
+  <script src="js/muni-common.js"></script>
+  <script src="js/muni-area.js"></script>
+</body>
+</html>

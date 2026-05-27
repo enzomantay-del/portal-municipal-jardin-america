@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Portal oficial de la Municipalidad de Jardín América. Novedades de gestión, obras y acciones de cada área municipal.">
+  <title>Portal Municipal | Jardín América</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/muni-portal.css">
+</head>
+<body class="muni-body">
+  <a class="muni-skip" href="#contenido-principal">Saltar al contenido</a>
+
+  <p class="muni-demo-banner" id="muni-data-banner" hidden role="status"></p>
+
+  <div class="muni-topbar">
+    <div class="muni-topbar-inner">
+      <span class="muni-topbar-tagline">Una ciudad que florece</span>
+      <span id="muni-fecha-hoy" aria-live="polite"></span>
+      <ul class="muni-topbar-links">
+        <li><a href="#proximos-eventos">Eventos</a></li>
+        <li><a href="#ultimas-novedades">Novedades</a></li>
+        <li><a href="#recibir-avisos">Recibir avisos</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <header class="muni-header">
+    <div class="muni-header-inner">
+      <a class="muni-brand" href="index.html" aria-label="Municipalidad de Jardín América — Inicio">
+        <img src="assets/logo-municipalidad.png" alt="Municipalidad de Jardín América">
+      </a>
+      <button type="button" class="muni-nav-toggle" id="muni-nav-toggle" aria-expanded="false" aria-controls="muni-nav">
+        Menú
+      </button>
+      <nav class="muni-nav" id="muni-nav" aria-label="Navegación principal">
+        <ul class="muni-nav-list" id="muni-nav-list"></ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="muni-main" id="contenido-principal">
+    <section class="muni-portal-hero" aria-label="Bienvenida al portal municipal">
+      <div class="muni-container muni-portal-hero-grid">
+        <div class="muni-portal-hero-brand">
+          <img class="muni-portal-hero-logo" src="assets/logo-municipalidad.png" alt="Municipalidad de Jardín América">
+          <p class="muni-portal-hero-lead">Portal oficial de gestión municipal. Novedades, obras y acciones de cada área de la ciudad.</p>
+          <div class="muni-portal-hero-actions">
+            <a class="muni-btn muni-btn--turismo" href="https://enzomantay-del.github.io/jardin-america-turismo/" target="_blank" rel="noopener noreferrer">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.4 8 12 8 12s8-6.6 8-12a8 8 0 0 0-8-8z"/></svg>
+              Información turística
+            </a>
+            <a class="muni-btn muni-btn--primary" href="#ultimas-novedades">Ver novedades</a>
+            <a class="muni-btn muni-btn--secondary" href="#areas-municipales">Áreas municipales</a>
+          </div>
+        </div>
+
+        <div class="muni-hero-showcase" id="muni-hero-showcase" aria-label="Galería fotográfica de Jardín América">
+          <div class="muni-hero-stack" aria-live="polite"></div>
+          <div class="muni-hero-showcase-controls">
+            <button type="button" class="muni-hero-nav" data-gallery-prev aria-label="Imagen anterior">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <div class="muni-hero-dots" role="tablist" aria-label="Seleccionar imagen"></div>
+            <button type="button" class="muni-hero-nav" data-gallery-next aria-label="Imagen siguiente">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+          </div>
+          <p class="muni-hero-showcase-hint">Hacé clic en la foto para ampliarla</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="muni-lightbox" id="muni-lightbox" role="dialog" aria-modal="true" aria-label="Imagen ampliada" hidden>
+      <button type="button" class="muni-lightbox-close" data-lightbox-close aria-label="Cerrar">×</button>
+      <button type="button" class="muni-lightbox-nav muni-lightbox-nav--prev" data-lightbox-prev aria-label="Imagen anterior">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <figure class="muni-lightbox-figure">
+        <img class="muni-lightbox-img" src="" alt="">
+        <figcaption class="muni-lightbox-caption"></figcaption>
+      </figure>
+      <button type="button" class="muni-lightbox-nav muni-lightbox-nav--next" data-lightbox-next aria-label="Imagen siguiente">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+    </div>
+
+    <div id="muni-eventos-root"></div>
+
+    <div class="muni-flyer-lightbox" id="muni-flyer-lightbox" role="dialog" aria-modal="true" aria-label="Flyer ampliado" hidden>
+      <button type="button" class="muni-lightbox-close" data-flyer-lightbox-close aria-label="Cerrar">×</button>
+      <button type="button" class="muni-lightbox-nav muni-lightbox-nav--prev" data-flyer-lightbox-prev aria-label="Flyer anterior">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <figure class="muni-flyer-lightbox-figure">
+        <span class="muni-flyer-lightbox-area muni-evento-area"></span>
+        <img class="muni-flyer-lightbox-img" src="" alt="">
+        <figcaption class="muni-flyer-lightbox-caption"></figcaption>
+      </figure>
+      <button type="button" class="muni-lightbox-nav muni-lightbox-nav--next" data-flyer-lightbox-next aria-label="Flyer siguiente">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+    </div>
+
+    <div class="muni-content-band">
+      <div class="muni-container">
+      <div id="muni-hero" aria-live="polite"></div>
+
+      <div class="muni-layout" id="ultimas-novedades">
+        <section aria-labelledby="titulo-novedades">
+          <div class="muni-section-label">
+            <h2 id="titulo-novedades">Últimas novedades de gestión</h2>
+          </div>
+          <div class="muni-news-grid" id="muni-news-grid"></div>
+        </section>
+
+        <aside class="muni-sidebar" aria-label="Complementos">
+          <div class="muni-sidebar-block">
+            <h3>Recientes</h3>
+            <div id="muni-sidebar-recientes"></div>
+          </div>
+          <div class="muni-sidebar-block">
+            <h3>Áreas municipales</h3>
+            <div id="muni-sidebar-areas"></div>
+          </div>
+        </aside>
+      </div>
+      </div>
+    </div>
+
+    <section class="muni-areas-strip" id="areas-municipales" aria-labelledby="titulo-areas">
+      <div class="muni-container">
+        <h2 id="titulo-areas">Conocé cada área de la municipalidad</h2>
+        <p>Cada secretaría publica sus trabajos, obras y acciones. Entrá al perfil del área para ver todo lo que se viene haciendo.</p>
+        <div id="muni-areas-strip-grid"></div>
+      </div>
+    </section>
+
+    <section class="muni-info-band" aria-label="Contacto y avisos">
+      <div class="muni-container muni-info-grid">
+        <div class="muni-info-card" id="contacto">
+          <h2>Contacto</h2>
+          <p>Datos de la Municipalidad de Jardín América para consultas institucionales.</p>
+          <ul class="muni-contact-list">
+            <li>
+              <strong>Dirección</strong>
+              Av. San Martín y Av. Libertad · Jardín América, Misiones
+            </li>
+            <li>
+              <strong>Teléfono</strong>
+              <a href="tel:+543754000000">(03754) 000-000</a>
+            </li>
+            <li>
+              <strong>Email</strong>
+              <a href="mailto:contacto@municipalidadjardin.gov.ar">contacto@municipalidadjardin.gov.ar</a>
+            </li>
+            <li>
+              <strong>Horario</strong>
+              Lunes a viernes · 7:00 a 13:00 hs
+            </li>
+          </ul>
+        </div>
+
+        <div class="muni-info-card" id="recibir-avisos">
+          <h2>Recibir avisos</h2>
+          <p>Dejá tu contacto para sumarte a nuestra base de comunicación municipal por WhatsApp. Te vamos a informar sobre acciones, novedades y avisos importantes de la gestión.</p>
+          <form id="muni-avisos-form" class="muni-avisos-form" novalidate>
+            <div class="muni-avisos-form-row">
+              <div class="muni-field">
+                <label for="avisos-nombre">Nombre</label>
+                <input id="avisos-nombre" name="nombre" type="text" required minlength="2" maxlength="80" autocomplete="given-name">
+              </div>
+              <div class="muni-field">
+                <label for="avisos-apellido">Apellido</label>
+                <input id="avisos-apellido" name="apellido" type="text" required minlength="2" maxlength="80" autocomplete="family-name">
+              </div>
+            </div>
+            <div class="muni-field">
+              <label for="avisos-telefono">WhatsApp (con código de área)</label>
+              <input id="avisos-telefono" name="telefono" type="tel" required inputmode="tel" placeholder="Ej: 3754 123456" autocomplete="tel">
+            </div>
+            <div class="muni-field">
+              <label for="avisos-barrio">Barrio</label>
+              <select id="avisos-barrio" name="barrioId" required disabled>
+                <option value="">Cargando barrios…</option>
+              </select>
+              <p class="muni-avisos-barrio-help">
+                Si no sabés a qué barrio pertenecés,
+                <a id="avisos-barrio-mapa" href="https://umap.openstreetmap.fr/es/map/barrios-de-jardin-america_674771#14/-27.038257/-55.234451" target="_blank" rel="noopener noreferrer">consultá el mapa de barrios de Jardín América</a>.
+              </p>
+            </div>
+            <label class="muni-avisos-consent">
+              <input type="checkbox" name="consent" value="1" required>
+              <span>Autorizo recibir mensajes informativos del municipio por WhatsApp.</span>
+            </label>
+            <button type="submit" class="muni-btn muni-btn--primary">Quiero recibir avisos</button>
+            <p id="muni-avisos-alert" class="muni-avisos-alert" hidden role="status"></p>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="muni-footer">
+    <div class="muni-container muni-footer-inner">
+      <div>
+        <div class="muni-footer-brand">
+          <img src="assets/logo-municipalidad.png" alt="Municipalidad de Jardín América">
+        </div>
+        <p class="muni-footer-tagline">Una ciudad que florece</p>
+        <p class="muni-footer-copy">Portal de gestión municipal · Jardín América, Misiones</p>
+      </div>
+      <ul class="muni-footer-nav">
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="index.html#proximos-eventos">Eventos</a></li>
+        <li><a href="index.html#ultimas-novedades">Novedades</a></li>
+        <li><a href="area.html?area=intendencia">Intendencia</a></li>
+        <li><a href="index.html#contacto">Contacto</a></li>
+        <li><a href="index.html#recibir-avisos">Recibir avisos</a></li>
+      </ul>
+    </div>
+    <p class="muni-footer-bottom">© Municipalidad de Jardín América</p>
+  </footer>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/firebase-init.js"></script>
+  <script src="js/firebase-seed-areas.js"></script>
+  <script src="js/muni-data.js"></script>
+  <script src="js/muni-api.js"></script>
+  <script src="js/muni-icons.js"></script>
+  <script src="js/muni-common.js"></script>
+  <script src="js/muni-eventos.js"></script>
+  <script src="js/muni-hero-gallery.js"></script>
+  <script src="js/campana-config.js"></script>
+  <script src="js/muni-avisos.js"></script>
+  <script src="js/muni-home.js"></script>
+</body>
+</html>

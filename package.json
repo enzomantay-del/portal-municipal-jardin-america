@@ -1,0 +1,13 @@
+{
+  "name": "portal-municipal-jardin-america",
+  "private": true,
+  "description": "Portal de gestión municipal — Jardín América, Misiones",
+  "scripts": {
+    "serve": "npx serve . -p 3456",
+    "setup:config": "node scripts/copy-config-if-missing.js",
+    "deploy:rules": "firebase deploy --only firestore:rules,storage"
+  },
+  "devDependencies": {
+    "serve": "^14.2.4"
+  }
+}
