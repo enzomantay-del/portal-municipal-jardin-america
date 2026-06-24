@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0d7aa8">
+  <meta name="description" content="Folleto turístico oficial de Jardín América, Misiones. Información útil, atractivos locales y circuitos regionales.">
+  <title>Folleto turístico | Jardín América</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Plus+Jakarta+Sans:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/muni-portal.css?v=20260609">
+</head>
+<body class="muni-body">
+  <a class="muni-skip" href="#contenido-principal">Saltar al contenido</a>
+
+  <div class="muni-topbar">
+    <div class="muni-topbar-inner">
+      <span class="muni-topbar-tagline">Una ciudad que florece</span>
+      <span id="muni-fecha-hoy" aria-live="polite"></span>
+      <ul class="muni-topbar-links">
+        <li><a href="index.html">Portal</a></li>
+        <li><a href="area.html?area=turismo">Turismo</a></li>
+        <li><a href="https://enzomantay-del.github.io/jardin-america-turismo/" target="_blank" rel="noopener noreferrer">Web turística</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <header class="muni-header">
+    <div class="muni-header-inner">
+      <a class="muni-brand" href="index.html" aria-label="Municipalidad de Jardín América — Inicio">
+        <img src="assets/logo-municipalidad.png" alt="Municipalidad de Jardín América">
+      </a>
+      <button type="button" class="muni-nav-toggle" id="muni-nav-toggle" aria-expanded="false" aria-controls="muni-nav">
+        Menú
+      </button>
+      <nav class="muni-nav" id="muni-nav" aria-label="Navegación principal">
+        <ul class="muni-nav-list" id="muni-nav-list"></ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="muni-main" id="contenido-principal">
+    <div class="muni-content-band muni-folleto-page">
+      <div class="muni-container">
+        <p class="muni-back-link"><a href="area.html?area=turismo">← Volver a Turismo</a></p>
+        <div class="muni-section-label">
+          <h1 style="font-family: var(--muni-font-display); font-size: clamp(1.75rem, 4vw, 2.25rem); margin: 0;">Folleto turístico</h1>
+        </div>
+        <p class="muni-folleto-intro">
+          Material oficial de la Dirección de Turismo de Jardín América. Podés ampliar cada panel para leerlo con más detalle o descargarlo desde el navegador.
+        </p>
+        <div class="muni-folleto-panels">
+          <figure class="muni-folleto-panel">
+            <img src="assets/folleto/turismo-panel-exterior.png" alt="Folleto turístico de Jardín América — carátula y Saltos del Tabay" width="1200" height="800" loading="eager" decoding="async">
+            <figcaption>Carátula · Saltos del Tabay · Cooperativa Flor de Jardín</figcaption>
+          </figure>
+          <figure class="muni-folleto-panel">
+            <img src="assets/folleto/turismo-panel-interior.png" alt="Folleto turístico de Jardín América — información útil y atractivos" width="1200" height="800" loading="lazy" decoding="async">
+            <figcaption>Información útil · Atractivos locales · Qué visitar desde Jardín América</figcaption>
+          </figure>
+        </div>
+        <div class="muni-area-actions" style="margin-top: 1.75rem;">
+          <a class="muni-btn muni-btn--turismo" href="https://enzomantay-del.github.io/jardin-america-turismo/" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.4 8 12 8 12s8-6.6 8-12a8 8 0 0 0-8-8z"/></svg>
+            Ir a la web turística
+          </a>
+          <a class="muni-btn muni-btn--secondary" href="area.html?area=turismo">Volver al área Turismo</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="muni-footer">
+    <div class="muni-container muni-footer-inner">
+      <div>
+        <div class="muni-footer-brand">
+          <img src="assets/logo-municipalidad.png" alt="Municipalidad de Jardín América">
+        </div>
+        <p class="muni-footer-tagline">Una ciudad que florece</p>
+        <p class="muni-footer-copy">Portal de gestión municipal · Jardín América, Misiones</p>
+      </div>
+      <ul class="muni-footer-nav">
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="area.html?area=turismo">Turismo</a></li>
+      </ul>
+    </div>
+    <p class="muni-footer-bottom">© Municipalidad de Jardín América</p>
+  </footer>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+  <script src="js/firebase-config.js?v=20260524"></script>
+  <script src="js/firebase-init.js?v=20260524"></script>
+  <script src="js/firebase-seed-areas.js?v=20260609"></script>
+  <script src="js/muni-data.js?v=20260524"></script>
+  <script src="js/muni-api.js?v=20260609"></script>
+  <script src="js/muni-icons.js?v=20260620"></script>
+  <script src="js/muni-common.js?v=20260607"></script>
+  <script src="js/muni-radio-config.js?v=20260521"></script>
+  <script src="js/muni-radio.js?v=20260521"></script>
+  <script src="js/muni-whatsapp.js?v=20260608"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", async function () {
+      var M = window.MuniPortal;
+      if (!M) return;
+      var payload = await M.bootstrapPublicData();
+      M.setData(payload);
+      M.initNav(null, "turismo");
+    });
+  </script>
+</body>
+</html>

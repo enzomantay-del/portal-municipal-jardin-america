@@ -1,0 +1,199 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function userDocPath() {
+      return /databases/$(database)/documents/users/$(request.auth.uid);
+    }
+
+    function userDocExists() {
+      return isSignedIn() && exists(userDocPath());
+    }
+
+    function userDoc() {
+      return get(userDocPath());
+    }
+
+    function isAdmin() {
+      return userDocExists() && userDoc().data.role == 'admin';
+    }
+
+    function isEncargado() {
+      return userDocExists() && userDoc().data.role == 'encargado';
+    }
+
+    function encargadoAreaSlug() {
+      return userDoc().data.areaSlug;
+    }
+
+    function isMapaEncargado() {
+      return isEncargado()
+        && (encargadoAreaSlug() == 'obras-publicas' || encargadoAreaSlug() == 'obras-privadas');
+    }
+
+    function isStaff() {
+      return isAdmin() || isEncargado();
+    }
+
+    match /users/{userId} {
+      // Login: cada usuario puede leer su propio documento (sin depender de isAdmin).
+      allow read: if isSignedIn() && request.auth.uid == userId;
+      // Staff interno: encargados pueden leer otros usuarios del staff (avisos en panel y agenda).
+      allow read: if isStaff() && resource.data.role in ['encargado', 'admin'];
+      allow read, write: if isAdmin();
+    }
+
+    match /users/{userId}/fcm_tokens/{tokenId} {
+      allow read, write: if isSignedIn() && request.auth.uid == userId;
+    }
+
+    match /staff_notificaciones/{notifId} {
+      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
+
+      allow create: if isStaff()
+        && request.resource.data.userId is string
+        && request.resource.data.userId.size() > 0
+        && request.resource.data.titulo is string
+        && request.resource.data.titulo.size() >= 1
+        && request.resource.data.titulo.size() <= 200
+        && request.resource.data.mensaje is string
+        && request.resource.data.mensaje.size() >= 1
+        && request.resource.data.mensaje.size() <= 2000
+        && request.resource.data.leida == false
+        && request.resource.data.tipo in ['agenda_evento', 'novedad', 'general'];
+
+      allow update: if isSignedIn()
+        && resource.data.userId == request.auth.uid
+        && request.resource.data.userId == resource.data.userId
+        && request.resource.data.leida == true
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['leida']);
+
+      allow delete: if isAdmin();
+    }
+
+    match /areas/{areaSlug} {
+      allow read: if resource.data.activa != false
+        || isAdmin()
+        || (isEncargado() && areaSlug == encargadoAreaSlug());
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /portal_config/{docId} {
+      allow read: if isAdmin()
+        || (docId == 'anuncio_entrada' && resource.data.activo == true);
+      allow write: if isAdmin();
+    }
+
+    match /trabajos/{trabajoId} {
+      allow read: if resource.data.estadoPublicacion == 'publicado'
+        || isAdmin();
+
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /trabajo_engagement/{trabajoId} {
+      allow read: if true;
+
+      allow create: if request.resource.data.keys().hasOnly(['likesCount', 'viewsCount'])
+        && request.resource.data.likesCount is int
+        && request.resource.data.viewsCount is int
+        && request.resource.data.likesCount >= 0
+        && request.resource.data.viewsCount >= 0
+        && request.resource.data.likesCount + request.resource.data.viewsCount == 1;
+
+      allow update: if request.resource.data.keys().hasOnly(['likesCount', 'viewsCount'])
+        && request.resource.data.likesCount is int
+        && request.resource.data.viewsCount is int
+        && (
+          (request.resource.data.likesCount == resource.data.get('likesCount', 0) + 1
+            && request.resource.data.viewsCount == resource.data.get('viewsCount', 0))
+          ||
+          (request.resource.data.viewsCount == resource.data.get('viewsCount', 0) + 1
+            && request.resource.data.likesCount == resource.data.get('likesCount', 0))
+        );
+
+      allow delete: if false;
+    }
+
+    match /eventos_flyers/{flyerId} {
+      allow read: if resource.data.estadoPublicacion == 'publicado'
+        || isAdmin()
+        || (isEncargado() && resource.data.areaSlug == encargadoAreaSlug());
+
+      allow create: if isAdmin();
+
+      allow create: if isEncargado()
+        && request.resource.data.areaSlug == encargadoAreaSlug()
+        && request.resource.data.createdBy == request.auth.uid
+        && request.resource.data.estadoPublicacion == 'pendiente';
+
+      allow update: if isAdmin();
+
+      allow update: if isEncargado()
+        && resource.data.areaSlug == encargadoAreaSlug()
+        && request.resource.data.areaSlug == encargadoAreaSlug()
+        && request.resource.data.createdBy == resource.data.createdBy;
+
+      allow delete: if isAdmin();
+    }
+
+    match /suscriptores_avisos/{suscriptorId} {
+      allow create: if request.resource.data.nombre is string
+        && request.resource.data.nombre.size() >= 2
+        && request.resource.data.telefono is string
+        && request.resource.data.telefono.size() >= 10
+        && request.resource.data.canal == 'whatsapp';
+
+      allow read, update, delete: if isAdmin();
+    }
+
+    match /agenda_eventos/{eventoId} {
+      allow read: if resource.data.estadoPublicacion == 'publicado'
+        || isAdmin()
+        || isEncargado();
+
+      allow create: if isAdmin()
+        || (isEncargado()
+          && request.resource.data.areaSlug == encargadoAreaSlug()
+          && request.resource.data.createdBy == request.auth.uid);
+
+      allow update: if isAdmin()
+        || (isEncargado()
+          && resource.data.createdBy == request.auth.uid
+          && request.resource.data.areaSlug == resource.data.areaSlug
+          && request.resource.data.createdBy == resource.data.createdBy);
+
+      allow delete: if isAdmin()
+        || (isEncargado() && resource.data.createdBy == request.auth.uid);
+    }
+
+    match /engagement_fingerprints/{fpId} {
+      allow create: if request.resource.data.tipo in ['like', 'view']
+        && request.resource.data.trabajoId is string
+        && request.resource.data.trabajoId.size() > 0
+        && request.resource.data.trabajoId.size() <= 128;
+      allow read: if true;
+      allow update, delete: if false;
+    }
+
+    match /mapa_puntos/{puntoId} {
+      allow read: if resource.data.estadoPublicacion == 'publicado';
+      allow read: if isAdmin();
+      allow read: if isMapaEncargado()
+        && resource.data.areaSlug == encargadoAreaSlug()
+        && resource.data.createdBy == request.auth.uid;
+
+      allow create, update, delete: if isAdmin();
+
+      allow create: if isMapaEncargado()
+        && request.resource.data.areaSlug == encargadoAreaSlug()
+        && request.resource.data.createdBy == request.auth.uid
+        && request.resource.data.estadoPublicacion == 'pendiente';
+    }
+  }
+}

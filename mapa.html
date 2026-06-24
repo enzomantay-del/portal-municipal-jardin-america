@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0d7aa8">
+  <meta name="description" content="Mapa de obras, contenedores y actividades en Jardín América.">
+  <title>Mapa de obras y más | Jardín América</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
+  <link rel="stylesheet" href="css/muni-portal.css?v=20260629">
+</head>
+<body class="muni-body muni-mapa-page">
+  <a class="muni-skip" href="#mapa-public-canvas">Saltar al mapa</a>
+
+  <header class="muni-header">
+    <div class="muni-header-inner">
+      <a class="muni-brand" href="index.html">
+        <img src="assets/logo-municipalidad.png" alt="Municipalidad de Jardín América">
+      </a>
+      <nav class="muni-nav" aria-label="Navegación">
+        <ul class="muni-nav-list">
+          <li><a href="index.html">Inicio</a></li>
+          <li><a href="eventos.html">Eventos</a></li>
+          <li><a href="index.html#ultimas-novedades">Novedades</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="muni-mapa-main">
+    <div class="muni-mapa-intro muni-container">
+      <h1>Mapa de obras y más</h1>
+      <p>Obras en curso, contenedores y actividades en la ciudad. Las actividades se muestran solo en sus fechas programadas.</p>
+      <p id="mapa-public-banner" class="muni-mapa-banner" hidden role="status"></p>
+      <div class="muni-mapa-toolbar">
+        <div id="mapa-public-filters" class="muni-mapa-filters" aria-label="Filtrar por tipo"></div>
+        <div class="muni-mapa-toolbar-row">
+          <label class="muni-mapa-barrio-label" for="mapa-public-barrio">Barrio</label>
+          <select id="mapa-public-barrio" class="muni-mapa-barrio-select" aria-label="Filtrar por barrio">
+            <option value="">Todos los barrios</option>
+          </select>
+          <button type="button" class="muni-mapa-filter muni-mapa-filter--preset" id="mapa-public-obras-curso" aria-pressed="false">🏗️ Obras en curso</button>
+        </div>
+        <div class="muni-mapa-toolbar-actions">
+          <span id="mapa-public-count" class="muni-mapa-count" aria-live="polite"></span>
+          <button type="button" class="muni-btn muni-btn--ghost muni-btn--sm" id="mapa-public-nearme">Cerca de mí</button>
+          <button type="button" class="muni-btn muni-btn--ghost muni-btn--sm" id="mapa-public-refresh">Actualizar</button>
+          <button type="button" class="muni-btn muni-btn--ghost muni-btn--sm" id="mapa-public-locate">Centrar ciudad</button>
+        </div>
+      </div>
+    </div>
+    <div id="mapa-public-canvas" class="muni-mapa-canvas" role="application" aria-label="Mapa interactivo municipal"></div>
+    <div class="muni-mapa-legend muni-container">
+      <p><strong>Puntos en el mapa:</strong> 🏗️ Obras · ♻️ Contenedores · 📣 Actividades. Tocá un marcador para ver detalle.</p>
+    </div>
+  </main>
+
+  <script src="vendor/leaflet/leaflet.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/firebase-init.js"></script>
+  <script src="js/muni-mapa-core.js?v=20260627"></script>
+  <script src="js/muni-api.js?v=20260626"></script>
+  <script src="js/muni-mapa-public.js?v=20260629"></script>
+  <script src="js/muni-radio-config.js?v=20260521"></script>
+  <script src="js/muni-radio.js?v=20260521"></script>
+  <script src="js/muni-whatsapp.js?v=20260608"></script>
+</body>
+</html>

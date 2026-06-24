@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#0d7aa8">
+  <meta name="description" content="Agenda interna de eventos — uso exclusivo del personal municipal.">
+  <title>Agenda interna | Portal Municipal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/muni-portal.css?v=20260521b">
+</head>
+<body class="muni-panel-page muni-agenda-page">
+  <a class="muni-skip" href="#contenido-panel">Saltar al contenido</a>
+
+  <header class="muni-header">
+    <div class="muni-header-inner">
+      <a class="muni-brand" href="index.html">
+        <img src="assets/logo-municipalidad.png" alt="Municipalidad de Jardín América">
+      </a>
+      <nav class="muni-nav" aria-label="Accesos">
+        <ul class="muni-nav-list">
+          <li><a href="encargado.html">Panel encargado</a></li>
+          <li><a href="admin.html">Administración</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="muni-panel-wrap muni-agenda-wrap" id="contenido-panel">
+    <div class="muni-agenda-hero">
+      <div>
+        <p class="muni-agenda-hero-kicker">Uso interno · No público</p>
+        <h1>Agenda de eventos</h1>
+        <p class="muni-agenda-hero-lead">Planificá actividades del equipo municipal, visualizá plazos y recibí avisos con una semana de anticipación.</p>
+      </div>
+    </div>
+
+    <div id="agenda-alert" class="muni-panel-alert" hidden role="alert"></div>
+
+    <section class="muni-panel-card" id="agenda-auth">
+      <h2>Iniciar sesión</h2>
+      <p class="muni-panel-session">Solo encargados de área y administradores.</p>
+      <form id="agenda-login-form" class="muni-form-grid">
+        <div class="muni-field">
+          <label for="agenda-email">Email</label>
+          <input id="agenda-email" type="email" name="email" required autocomplete="username">
+        </div>
+        <div class="muni-field">
+          <label for="agenda-pass">Contraseña</label>
+          <input id="agenda-pass" type="password" name="password" required autocomplete="current-password">
+        </div>
+        <div class="muni-form-actions muni-field--full">
+          <button type="submit" class="muni-btn muni-btn--primary">Ingresar</button>
+        </div>
+      </form>
+    </section>
+
+    <div id="agenda-workspace" hidden>
+      <section class="muni-panel-card muni-agenda-session-bar">
+        <div class="muni-agenda-session-row">
+          <p class="muni-panel-session">
+            <strong id="agenda-user-email"></strong>
+            <span id="agenda-user-role"></span>
+          </p>
+          <button type="button" class="muni-btn muni-btn--ghost" id="agenda-logout">Cerrar sesión</button>
+        </div>
+      </section>
+
+      <div id="agenda-stats" class="muni-agenda-stats" hidden aria-live="polite"></div>
+      <div id="agenda-reminders" class="muni-agenda-reminders" hidden aria-label="Recordatorios"></div>
+
+      <section class="muni-panel-card muni-agenda-list-section">
+        <div class="muni-agenda-list-head">
+          <div>
+            <h2>Calendario de actividades</h2>
+            <p class="muni-agenda-list-sub">Los eventos con badge naranja arrancan en los próximos 7 días. El badge “Falta 1 semana” avisa con 7 días de anticipación.</p>
+          </div>
+          <div class="muni-agenda-list-actions">
+            <button type="button" class="muni-btn muni-btn--primary" id="agenda-toggle-form" aria-expanded="false" aria-controls="agenda-form-panel">
+              + Nuevo evento
+            </button>
+            <button type="button" class="muni-btn muni-btn--ghost" id="agenda-refresh">Actualizar</button>
+          </div>
+        </div>
+        <div class="muni-agenda-view-toolbar">
+          <div class="muni-agenda-view-switch" role="tablist" aria-label="Forma de ver la agenda">
+            <button type="button" class="muni-agenda-view-btn is-active" data-agenda-view="timeline" role="tab" aria-selected="true">Lista</button>
+            <button type="button" class="muni-agenda-view-btn" data-agenda-view="grid" role="tab" aria-selected="false">Tarjetas</button>
+            <button type="button" class="muni-agenda-view-btn" data-agenda-view="calendar" role="tab" aria-selected="false">Calendario</button>
+          </div>
+        </div>
+        <p id="agenda-empty" class="muni-empty muni-agenda-empty" hidden>No hay eventos próximos. Usá “Nuevo evento” para cargar la primera actividad.</p>
+        <div id="agenda-list" class="muni-agenda-timeline"></div>
+      </section>
+
+      <section class="muni-panel-card muni-agenda-form-panel" id="agenda-form-panel" hidden>
+        <h2 id="agenda-form-title">Nuevo evento</h2>
+        <p class="muni-field-hint">Al guardar, el resto de los encargados recibe aviso por WhatsApp (si tienen teléfono cargado en el admin).</p>
+        <form id="agenda-form" class="muni-form-grid muni-agenda-form">
+          <div class="muni-field muni-field--full">
+            <label for="agenda-titulo">Título / actividad</label>
+            <input id="agenda-titulo" name="titulo" required minlength="4" maxlength="200" placeholder="Ej: Reunión con vecinos del barrio San Antonio">
+          </div>
+          <div class="muni-field">
+            <label for="agenda-tipo">Tipo de evento</label>
+            <select id="agenda-tipo" name="tipoEvento" required>
+              <option value="reunion">Reunión</option>
+              <option value="actividad">Actividad</option>
+              <option value="obra">Obra / operativo</option>
+              <option value="feria">Feria / evento cultural</option>
+              <option value="capacitacion">Capacitación</option>
+              <option value="otro">Otro</option>
+            </select>
+          </div>
+          <div class="muni-field" id="agenda-area-field" hidden>
+            <label for="agenda-area">Área</label>
+            <select id="agenda-area" name="areaSlug"></select>
+          </div>
+          <div class="muni-field">
+            <label for="agenda-fecha-inicio">Fecha de inicio</label>
+            <input id="agenda-fecha-inicio" name="fechaInicio" type="date" required>
+          </div>
+          <div class="muni-field">
+            <label for="agenda-fecha-fin">Fecha de finalización</label>
+            <input id="agenda-fecha-fin" name="fechaFin" type="date" aria-describedby="agenda-fecha-fin-hint">
+            <p class="muni-field-hint" id="agenda-fecha-fin-hint">Si es un solo día, dejala igual al inicio o vacía.</p>
+          </div>
+          <div class="muni-field">
+            <label for="agenda-hora">Hora de inicio (opcional)</label>
+            <input id="agenda-hora" name="hora" type="time">
+          </div>
+          <div class="muni-field muni-field--full">
+            <label for="agenda-lugar">Lugar</label>
+            <input id="agenda-lugar" name="lugar" required minlength="3" maxlength="200" placeholder="Ej: Plazoleta San Antonio">
+          </div>
+          <div class="muni-field muni-field--full">
+            <label for="agenda-descripcion">Detalle (opcional)</label>
+            <textarea id="agenda-descripcion" name="descripcion" rows="3" maxlength="500" placeholder="Información adicional para el equipo"></textarea>
+          </div>
+          <div class="muni-field muni-field--full">
+            <label class="muni-check-row">
+              <input type="checkbox" id="agenda-visible-publico" name="visiblePublico" value="1">
+              Visible en agenda pública del portal
+            </label>
+            <p class="muni-field-hint" id="agenda-publico-hint">Si marcás esta opción, el evento queda pendiente hasta que el administrador lo apruebe.</p>
+          </div>
+          <div class="muni-field muni-field--full">
+            <label for="agenda-imagen">Imagen / flyer (opcional)</label>
+            <input id="agenda-imagen" name="imagen" type="file" accept="image/*">
+            <div id="agenda-imagen-preview" class="muni-agenda-imagen-preview" hidden></div>
+          </div>
+          <div class="muni-form-actions muni-field--full">
+            <button type="submit" class="muni-btn muni-btn--primary" id="agenda-submit">Guardar y avisar</button>
+            <button type="button" class="muni-btn muni-btn--ghost" id="agenda-cancel-edit" hidden>Cancelar edición</button>
+            <button type="button" class="muni-btn muni-btn--ghost" id="agenda-close-form">Cerrar formulario</button>
+          </div>
+        </form>
+      </section>
+    </div>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/firebase-init.js"></script>
+  <script src="js/firebase-seed-areas.js"></script>
+  <script src="js/campana-config.js?v=20260529" onerror="window.CAMPANA_CONFIG=window.CAMPANA_CONFIG||{}"></script>
+  <script src="js/muni-data.js"></script>
+  <script src="js/muni-api.js"></script>
+  <script src="js/agenda-interna.js?v=20260625"></script>
+</body>
+</html>

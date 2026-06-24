@@ -1,0 +1,45 @@
+[build]
+  publish = "."
+
+[functions]
+  directory = "netlify/functions"
+
+[build.environment]
+  # La API key de Firebase Web es pública (se restringe en Firebase Console, no es un secreto de servidor).
+  # Debe existir en js/firebase-config.js y también como FIREBASE_API_KEY para la edge function OG.
+  SECRETS_SCAN_SMART_DETECTION_ENABLED = "false"
+  SECRETS_SCAN_OMIT_KEYS = "FIREBASE_API_KEY"
+
+[[edge_functions]]
+  path = "/noticia.html"
+  function = "inject-noticia-og"
+
+[[edge_functions]]
+  path = "/og-image"
+  function = "og-image"
+
+[[headers]]
+  for = "/og-image"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+    Access-Control-Allow-Origin = "*"
+
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"
+
+[[headers]]
+  for = "/css/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/js/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"

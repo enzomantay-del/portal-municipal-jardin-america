@@ -1,0 +1,11 @@
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+/js/firebase-seed-areas.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/js/muni-api.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/js/muni-common.js
+  Cache-Control: public, max-age=0, must-revalidate

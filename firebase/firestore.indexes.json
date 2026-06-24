@@ -1,0 +1,46 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "trabajos",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "estadoPublicacion", "order": "ASCENDING" },
+        { "fieldPath": "publishedAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "agenda_eventos",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "estadoPublicacion", "order": "ASCENDING" },
+        { "fieldPath": "fechaFin", "order": "ASCENDING" },
+        { "fieldPath": "fechaInicio", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "eventos_flyers",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "estadoPublicacion", "order": "ASCENDING" },
+        { "fieldPath": "fechaEvento", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "areas",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "activa", "order": "ASCENDING" },
+        { "fieldPath": "orden", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "mapa_puntos",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "areaSlug", "order": "ASCENDING" },
+        { "fieldPath": "createdBy", "order": "ASCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

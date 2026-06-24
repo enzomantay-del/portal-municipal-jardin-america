@@ -1,0 +1,19 @@
+Mapas municipales descargables (Obras Privadas)
+================================================
+
+Los archivos PNG de esta carpeta se muestran en mapas-municipales.html.
+Para agregar o reemplazar un mapa:
+
+1. Copiá la imagen con el nombre indicado en js/muni-mapas-catalog.js
+2. Actualizá título, versión y descripción en ese mismo archivo si corresponde
+3. Volvé a subir el portal completo a Netlify
+
+Archivos actuales:
+- mapa-socioambiental.png
+- mapa-equipamiento-patrimonio.png
+- mapa-movilidad-transporte.png
+- mapa-ambiente-espacios-verdes.png
+- mapa-recoleccion-gajos-2026.png
+- mapa-red-agua.png
+- mapa-zona-urbana-expansion.png
+- mapa-habitat-viviendas.png
