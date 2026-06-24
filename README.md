@@ -28,7 +28,13 @@ Portal web oficial de la **Municipalidad de Jardín América**, Misiones, Argent
 - Leaflet (mapas)
 - Netlify / GitHub Pages (deploy)
 
-## Configuración
+## Demo en vivo
+
+**[enzomantay-del.github.io/portal-municipal-jardin-america](https://enzomantay-del.github.io/portal-municipal-jardin-america/)**
+
+Portal público municipal (novedades, eventos, mapas). Los paneles admin requieren credenciales.
+
+## Configuración local
 
 1. Copiá `js/firebase-config.example.js` → `js/firebase-config.js`
 2. Completá con las credenciales de tu proyecto Firebase
