@@ -205,9 +205,15 @@ a:hover {
 
 .muni-topbar-tagline {
   font-family: var(--muni-font-tagline);
-  font-size: 1rem;
-  color: rgba(255, 255, 255, 0.9);
-  letter-spacing: 0.02em;
+  font-size: clamp(1.05rem, 2.4vw, 1.25rem);
+  font-weight: 600;
+  font-style: normal;
+  line-height: 1.1;
+  color: rgba(255, 255, 255, 0.95);
+  letter-spacing: 0.01em;
+  transform: rotate(-2deg);
+  transform-origin: left center;
+  display: inline-block;
 }
 
 .muni-topbar-links {
@@ -1868,9 +1874,15 @@ body.muni-lightbox-open {
 
 .muni-footer-tagline {
   font-family: var(--muni-font-tagline);
-  font-size: 1.15rem;
-  color: rgba(255, 255, 255, 0.9);
+  font-size: clamp(1.15rem, 2.5vw, 1.35rem);
+  font-weight: 600;
+  line-height: 1.15;
+  color: rgba(255, 255, 255, 0.92);
   margin: 0 0 0.5rem;
+  letter-spacing: 0.01em;
+  transform: rotate(-2deg);
+  transform-origin: left center;
+  display: inline-block;
 }
 
 .muni-footer-copy {
