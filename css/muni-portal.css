@@ -1403,6 +1403,65 @@ body.muni-lightbox-open {
   color: var(--muni-text);
 }
 
+.muni-area-emergencia {
+  margin: 1rem 0 0;
+  padding: 1rem 1.1rem;
+  max-width: 520px;
+  border-radius: var(--muni-radius);
+  border: 1px solid #ef9a9a;
+  background: linear-gradient(180deg, #fff5f5 0%, #ffebee 100%);
+}
+
+.muni-area-emergencia-kicker {
+  margin: 0 0 0.25rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #b71c1c;
+}
+
+.muni-area-emergencia > p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: #5f2120;
+}
+
+.muni-area-emergencia-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin-top: 0.85rem;
+}
+
+.muni-btn--emergencia {
+  background: #c62828;
+  border-color: #b71c1c;
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 6px 16px rgba(198, 40, 40, 0.28);
+}
+
+.muni-btn--emergencia:hover {
+  background: #b71c1c;
+  border-color: #a31515;
+  color: #fff;
+}
+
+.muni-btn--emergencia-wa {
+  background: #fff;
+  border-color: #a5d6a7;
+  color: #1b5e20;
+}
+
+.muni-btn--emergencia-wa:hover {
+  background: #e8f5e9;
+  border-color: #66bb6a;
+  color: #1b5e20;
+}
+
+
 .muni-area-actions {
   display: flex;
   flex-wrap: wrap;

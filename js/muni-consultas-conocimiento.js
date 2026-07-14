@@ -51,6 +51,39 @@
       enlaces: [{ titulo: "Ir al área Medio Ambiente", url: "area.html?area=ambiente" }],
     },
     {
+      id: "defensa-civil-emergencia",
+      categoria: "area",
+      areaSlug: "defensa-civil",
+      titulo: "Defensa Civil — emergencia",
+      keywords: [
+        "defensa civil",
+        "emergencia",
+        "emergencias",
+        "alerta",
+        "evacuacion",
+        "inundacion",
+        "incendio",
+        "tormenta",
+        "aguiar",
+        "alfredo",
+      ],
+      resumen: "Encargado Alfredo Aguiar. Ante una emergencia, llamá al 3743-614457.",
+      detalleHtml:
+        "<p><strong>Encargado:</strong> Alfredo Aguiar</p>" +
+        "<p><strong>Teléfono de emergencia:</strong> 3743-614457</p>" +
+        "<p>Si hay riesgo inmediato, lo más rápido es <strong>llamar</strong>. También podés escribir por WhatsApp.</p>" +
+        '<p><a class="muni-btn muni-btn--emergencia" href="tel:+543743614457">Llamar 3743-614457</a></p>',
+      enlaces: [
+        { titulo: "Llamar ahora", url: "tel:+543743614457" },
+        {
+          titulo: "WhatsApp Defensa Civil",
+          url: "https://wa.me/543743614457?text=" + encodeURIComponent("Hola, necesito contactar a Defensa Civil por una emergencia."),
+          externo: true,
+        },
+        { titulo: "Ir al área Defensa Civil", url: "area.html?area=defensa-civil" },
+      ],
+    },
+    {
       id: "turismo-como-llegar",
       categoria: "turismo",
       areaSlug: "turismo",

@@ -3,6 +3,20 @@
 
   var ACCESOS = [
     {
+      icon: "💬",
+      titulo: "Preguntale a AmiBot",
+      desc: "Tu asistente para trámites, documentos y turismo del sitio",
+      href: "#",
+      openConsultas: true,
+    },
+    {
+      icon: "📊",
+      titulo: "Encuesta de gestión",
+      desc: "Contanos tu opinión sobre la gestión municipal (anónima)",
+      href: "encuesta.html",
+      activa: false,
+    },
+    {
       icon: "📣",
       titulo: "Reportar un problema",
       desc: "Basureros a cielo abierto, alcantarillas tapadas, árboles caídos, etc.",
@@ -47,7 +61,7 @@
     {
       icon: "🛡️",
       titulo: "Emergencias",
-      desc: "Defensa Civil y alertas",
+      desc: "Defensa Civil · 3743-614457",
       href: "area.html?area=defensa-civil",
     },
     {
@@ -77,10 +91,16 @@
   }
 
   function renderAccesosSection() {
-    var cards = ACCESOS.map(function (item) {
+    var cards = ACCESOS.filter(function (item) {
+      return item.activa !== false;
+    }).map(function (item) {
       var href = resolveHref(item);
       var externo = item.externo || item.tipo === "whatsapp";
       var attrs = externo ? ' target="_blank" rel="noopener noreferrer"' : "";
+      if (item.openConsultas) {
+        attrs += ' data-open-consultas role="button"';
+        href = "#";
+      }
       return (
         '<a class="muni-acceso-card" href="' +
         escapeHtml(href) +
