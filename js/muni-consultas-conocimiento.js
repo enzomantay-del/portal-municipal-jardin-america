@@ -86,38 +86,48 @@
       ],
       resumen: "Salidas lunes a viernes desde Jardín América hacia Posadas (orientativo).",
       detalleHtml:
-        "<p>Terminal frente al Cristo de la Hermandad. Los horarios son <strong>orientativos</strong> y pueden variar: confirmá en terminal o con la empresa.</p>" +
-        '<div class="muni-consultas-table-wrap"><table class="muni-consultas-table"><thead><tr><th>Empresa</th><th>Horario</th></tr></thead><tbody>' +
+        "<p>Salidas desde la terminal (frente al Cristo de la Hermandad). Horarios <strong>orientativos</strong>: confirmá en terminal o con la empresa.</p>" +
+        '<div class="muni-consultas-table-wrap"><table class="muni-consultas-table"><thead><tr><th>Destino</th><th>Empresa</th><th>Horario</th><th>Notas</th></tr></thead><tbody>' +
         [
-          ["Kruse", "5:30"],
-          ["Horianski", "6:40"],
-          ["El Cometa", "7:30"],
-          ["Horianski", "7:45"],
-          ["Crucero del Norte", "8:15"],
-          ["Oro Verde", "9:20"],
-          ["Horianski", "9:50"],
-          ["Crucero del Norte", "10:45"],
-          ["Horianski", "10:45"],
-          ["Crucero del Norte", "11:00"],
-          ["Río Uruguay", "11:35"],
-          ["Horianski", "12:00"],
-          ["Argentinita", "12:30"],
-          ["Oro Verde", "12:50"],
-          ["Horianski", "13:15"],
-          ["Crucero del Norte", "13:40"],
-          ["Horianski", "14:30"],
-          ["Horianski", "15:00"],
-          ["Río Uruguay", "15:50"],
-          ["Argentinita", "16:45"],
-          ["Crucero del Norte", "16:50"],
-          ["Río Uruguay", "17:15"],
-          ["El Cometa", "17:30"],
-          ["Águila Dorada", "17:40"],
-          ["Argentinita", "18:00"],
-          ["Kruse", "18:20"],
+          ["Posadas", "Kruse", "5:30", ""],
+          ["Posadas", "Horianski", "6:40", ""],
+          ["Posadas", "El Cometa", "7:30", ""],
+          ["Posadas", "Horianski", "7:45", ""],
+          ["Posadas", "Crucero del Norte", "8:15", ""],
+          ["Posadas", "Oro Verde", "9:20", ""],
+          ["Posadas", "Horianski", "9:50", ""],
+          ["Posadas", "Crucero del Norte", "10:45", ""],
+          ["Posadas", "Horianski", "10:45", ""],
+          ["Posadas", "Crucero del Norte", "11:00", ""],
+          ["Posadas", "Río Uruguay", "11:35", ""],
+          ["Posadas", "Horianski", "12:00", ""],
+          ["Posadas", "Argentinita", "12:30", ""],
+          ["Posadas", "Oro Verde", "12:50", ""],
+          ["Posadas", "Horianski", "13:15", ""],
+          ["Posadas", "Crucero del Norte", "13:40", ""],
+          ["Posadas", "Horianski", "14:30", ""],
+          ["Posadas", "Horianski", "15:00", ""],
+          ["Posadas", "Río Uruguay", "15:50", ""],
+          ["Posadas", "Argentinita", "16:45", ""],
+          ["Posadas", "Crucero del Norte", "16:50", ""],
+          ["Posadas", "Río Uruguay", "17:15", ""],
+          ["Posadas", "El Cometa", "17:30", ""],
+          ["Posadas", "Águila Dorada", "17:40", ""],
+          ["Posadas", "Argentinita", "18:00", ""],
+          ["Posadas", "Kruse", "18:20", ""],
         ]
           .map(function (r) {
-            return "<tr><td>" + r[0] + "</td><td>" + r[1] + " hs</td></tr>";
+            return (
+              "<tr><td>" +
+              r[0] +
+              "</td><td>" +
+              r[1] +
+              "</td><td>" +
+              r[2] +
+              " hs</td><td>" +
+              (r[3] || "—") +
+              "</td></tr>"
+            );
           })
           .join("") +
         "</tbody></table></div>" +
@@ -130,68 +140,90 @@
       areaSlug: "turismo",
       titulo: "Horarios de colectivos a Iguazú (lun–vie)",
       keywords: ["colectivo", "iguazu", "puerto iguazu", "eldorado", "andresito", "horario", "omnibus"],
-      resumen: "Salidas lunes a viernes hacia Puerto Iguazú y conexiones (orientativo).",
+      resumen: "Salidas lunes a viernes desde Jardín América hacia Puerto Iguazú (orientativo).",
       detalleHtml:
-        "<p>Horarios <strong>orientativos</strong>. Confirmá siempre antes de viajar.</p>" +
-        '<div class="muni-consultas-table-wrap"><table class="muni-consultas-table"><thead><tr><th>Empresa</th><th>Horario</th><th>Notas</th></tr></thead><tbody>' +
+        "<p>Salidas desde la terminal (frente al Cristo de la Hermandad). Horarios <strong>orientativos</strong>: confirmá en terminal o con la empresa.</p>" +
+        '<div class="muni-consultas-table-wrap"><table class="muni-consultas-table"><thead><tr><th>Destino</th><th>Empresa</th><th>Horario</th><th>Notas</th></tr></thead><tbody>' +
         [
-          ["Argentinita", "5:00", ""],
-          ["Argentinita", "6:00", ""],
-          ["Horianski", "7:00", ""],
-          ["Río Uruguay", "7:15", ""],
-          ["Crucero del Norte", "8:15", ""],
-          ["Río Uruguay", "9:15", ""],
-          ["Crucero del Norte", "9:40", "Hasta Eldorado; por Ruta 17 a B. de Irigoyen"],
-          ["Argentinita", "10:00", ""],
-          ["Horianski", "10:00", ""],
-          ["Río Uruguay", "11:00", ""],
-          ["Crucero del Norte", "11:20", ""],
-          ["Argentinita", "11:30", ""],
-          ["Crucero del Norte", "11:50", ""],
-          ["Río Uruguay", "12:40", ""],
-          ["Crucero del Norte", "13:15", ""],
-          ["Horianski", "13:20", ""],
-          ["Horianski", "15:00", ""],
-          ["Kruse", "15:00", "Andresito directo"],
-          ["El Cometa", "16:00", ""],
-          ["Horianski", "16:30", ""],
-          ["Argentinita", "17:00", ""],
-          ["Crucero del Norte", "17:20", "San Antonio directo"],
+          ["Puerto Iguazú", "Argentinita", "5:00", ""],
+          ["Puerto Iguazú", "Argentinita", "6:00", ""],
+          ["Puerto Iguazú", "Horianski", "7:00", ""],
+          ["Puerto Iguazú", "Río Uruguay", "7:15", ""],
+          ["Puerto Iguazú", "Crucero del Norte", "8:15", ""],
+          ["Puerto Iguazú", "Río Uruguay", "9:15", ""],
+          ["Puerto Iguazú", "Crucero del Norte", "9:40", "Hasta Eldorado; por Ruta 17 a B. de Irigoyen"],
+          ["Puerto Iguazú", "Argentinita", "10:00", ""],
+          ["Puerto Iguazú", "Horianski", "10:00", ""],
+          ["Puerto Iguazú", "Río Uruguay", "11:00", ""],
+          ["Puerto Iguazú", "Crucero del Norte", "11:20", ""],
+          ["Puerto Iguazú", "Argentinita", "11:30", ""],
+          ["Puerto Iguazú", "Crucero del Norte", "11:50", ""],
+          ["Puerto Iguazú", "Río Uruguay", "12:40", ""],
+          ["Puerto Iguazú", "Crucero del Norte", "13:15", ""],
+          ["Puerto Iguazú", "Horianski", "13:20", ""],
+          ["Puerto Iguazú", "Horianski", "15:00", ""],
+          ["Andresito", "Kruse", "15:00", "Directo"],
+          ["Puerto Iguazú", "El Cometa", "16:00", ""],
+          ["Puerto Iguazú", "Horianski", "16:30", ""],
+          ["Puerto Iguazú", "Argentinita", "17:00", ""],
+          ["San Antonio", "Crucero del Norte", "17:20", "Directo"],
         ]
           .map(function (r) {
-            return "<tr><td>" + r[0] + "</td><td>" + r[1] + " hs</td><td>" + (r[2] || "—") + "</td></tr>";
+            return (
+              "<tr><td>" +
+              r[0] +
+              "</td><td>" +
+              r[1] +
+              "</td><td>" +
+              r[2] +
+              " hs</td><td>" +
+              (r[3] || "—") +
+              "</td></tr>"
+            );
           })
           .join("") +
-        "</tbody></table></div>",
-      enlaces: [{ titulo: "Ver en web de Turismo", url: TURISMO_URL + "#colectivos", externo: true }],
+        "</tbody></table></div>" +
+        "<p><em>Fuente: Municipalidad de Jardín América · Web de Turismo.</em></p>",
+      enlaces: [{ titulo: "Ver horarios completos en Turismo", url: TURISMO_URL + "#colectivos", externo: true }],
     },
     {
       id: "turismo-colectivos-ruta14",
       categoria: "turismo",
       areaSlug: "turismo",
-      titulo: "Colectivos por Ruta 14 (lun–vie)",
+      titulo: "Horarios de colectivos por Ruta 14 (lun–vie)",
       keywords: ["ruta 14", "san vicente", "aristobulo", "25 de mayo", "el soberbio", "colectivo", "oberá"],
-      resumen: "Salidas hacia localidades por Ruta Provincial / corredor Ruta 14.",
+      resumen: "Salidas lunes a viernes desde Jardín América hacia localidades por Ruta 14 (orientativo).",
       detalleHtml:
-        '<div class="muni-consultas-table-wrap"><table class="muni-consultas-table"><thead><tr><th>Destino</th><th>Empresa</th><th>Horario</th></tr></thead><tbody>' +
+        "<p>Salidas desde la terminal (frente al Cristo de la Hermandad). Horarios <strong>orientativos</strong>: confirmá en terminal o con la empresa.</p>" +
+        '<div class="muni-consultas-table-wrap"><table class="muni-consultas-table"><thead><tr><th>Destino</th><th>Empresa</th><th>Horario</th><th>Notas</th></tr></thead><tbody>' +
         [
-          ["San Vicente", "Horianski", "8:00"],
-          ["A. del Valle", "El Misionero", "9:30"],
-          ["25 de Mayo", "Horianski", "10:30"],
-          ["San Vicente", "Horianski", "11:15"],
-          ["A. del Valle", "El Cometa", "12:30"],
-          ["25 de Mayo", "Horianski", "13:15"],
-          ["El Soberbio", "El Cometa", "16:15"],
-          ["A. del Valle", "Horianski", "17:00"],
-          ["San Vicente", "Horianski", "19:15"],
+          ["San Vicente", "Horianski", "8:00", ""],
+          ["A. del Valle", "El Misionero", "9:30", ""],
+          ["25 de Mayo", "Horianski", "10:30", ""],
+          ["San Vicente", "Horianski", "11:15", ""],
+          ["A. del Valle", "El Cometa", "12:30", ""],
+          ["25 de Mayo", "Horianski", "13:15", ""],
+          ["El Soberbio", "El Cometa", "16:15", ""],
+          ["A. del Valle", "Horianski", "17:00", ""],
+          ["San Vicente", "Horianski", "19:15", ""],
         ]
           .map(function (r) {
-            return "<tr><td>" + r[0] + "</td><td>" + r[1] + "</td><td>" + r[2] + " hs</td></tr>";
+            return (
+              "<tr><td>" +
+              r[0] +
+              "</td><td>" +
+              r[1] +
+              "</td><td>" +
+              r[2] +
+              " hs</td><td>" +
+              (r[3] || "—") +
+              "</td></tr>"
+            );
           })
           .join("") +
         "</tbody></table></div>" +
-        "<p><em>Horarios orientativos. Fuente: Municipalidad / Turismo.</em></p>",
-      enlaces: [{ titulo: "Ver en web de Turismo", url: TURISMO_URL + "#colectivos", externo: true }],
+        "<p><em>Fuente: Municipalidad de Jardín América · Web de Turismo.</em></p>",
+      enlaces: [{ titulo: "Ver horarios completos en Turismo", url: TURISMO_URL + "#colectivos", externo: true }],
     },
     {
       id: "turismo-saltos-tabay",
