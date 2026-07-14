@@ -1,0 +1,404 @@
+.muni-consultas-fab {
+  position: fixed;
+  right: max(1rem, env(safe-area-inset-right));
+  bottom: calc(max(1rem, env(safe-area-inset-bottom)) + 4.25rem);
+  z-index: 950;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.55rem;
+  max-width: min(18.5rem, calc(100vw - 2rem));
+  pointer-events: none;
+}
+
+.muni-consultas-fab > * {
+  pointer-events: auto;
+}
+
+.muni-consultas-bubble {
+  position: relative;
+  width: max-content;
+  max-width: 100%;
+  background: #fff;
+  color: var(--muni-text);
+  border: 1px solid var(--muni-border);
+  border-radius: 1rem;
+  padding: 0.75rem 0.9rem;
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.14);
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  opacity: 0;
+  transform: translateY(8px);
+  visibility: hidden;
+  transition: opacity 0.35s ease, transform 0.35s ease, visibility 0s linear 0.35s;
+  pointer-events: none;
+}
+
+.muni-consultas-fab.is-bubble-open .muni-consultas-bubble {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+  transition: opacity 0.35s ease, transform 0.35s ease, visibility 0s;
+}
+
+.muni-consultas-bubble[hidden] {
+  display: none !important;
+}
+
+.muni-consultas-bubble-text {
+  margin: 0;
+}
+
+.muni-consultas-bubble-tail {
+  position: absolute;
+  right: 1.35rem;
+  bottom: -7px;
+  width: 12px;
+  height: 12px;
+  background: #fff;
+  border-right: 1px solid var(--muni-border);
+  border-bottom: 1px solid var(--muni-border);
+  transform: rotate(45deg);
+}
+
+.muni-consultas-float {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.4rem 0.95rem 0.4rem 0.4rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--muni-blue-dark);
+  color: #fff;
+  text-decoration: none;
+  font: inherit;
+  cursor: pointer;
+  box-shadow: 0 8px 28px rgba(13, 122, 168, 0.4);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.muni-consultas-float:hover {
+  background: var(--muni-blue);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.muni-consultas-float-avatar {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: #fff;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.35);
+}
+
+.muni-consultas-float-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.05rem;
+  line-height: 1.1;
+  padding-right: 0.15rem;
+}
+
+.muni-consultas-float-name {
+  font-size: 0.9375rem;
+  font-weight: 700;
+}
+
+.muni-consultas-float-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+@media (max-width: 640px) {
+  .muni-consultas-fab {
+    bottom: calc(max(1rem, env(safe-area-inset-bottom)) + 4rem);
+    max-width: min(16.5rem, calc(100vw - 1.5rem));
+  }
+
+  .muni-consultas-float {
+    padding: 0.3rem;
+    justify-content: center;
+    border-radius: 50%;
+  }
+
+  .muni-consultas-float-text {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .muni-consultas-float-avatar {
+    width: 2.65rem;
+    height: 2.65rem;
+  }
+
+  .muni-consultas-bubble {
+    font-size: 0.75rem;
+    padding: 0.65rem 0.75rem;
+  }
+
+  .muni-consultas-bubble-tail {
+    right: 1.1rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .muni-consultas-bubble {
+    transition: none;
+  }
+}
+
+body.muni-consultas-open {
+  overflow: hidden;
+}
+
+body.muni-consultas-open .muni-consultas-fab {
+  visibility: hidden;
+}
+
+.muni-consultas-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(2px);
+}
+
+.muni-consultas-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 1101;
+  display: flex;
+  flex-direction: column;
+  width: min(440px, 100vw);
+  height: 100%;
+  max-height: 100dvh;
+  background: #fff;
+  box-shadow: -12px 0 40px rgba(15, 23, 42, 0.18);
+  padding: 0;
+}
+
+.muni-consultas-panel[hidden],
+.muni-consultas-overlay[hidden] {
+  display: none !important;
+}
+
+.muni-consultas-panel-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 1.1rem 1.15rem 0.85rem;
+  border-bottom: 1px solid var(--muni-border);
+}
+
+.muni-consultas-panel-brand {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.muni-consultas-panel-avatar {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: var(--muni-surface-soft);
+  box-shadow: 0 0 0 2px rgba(13, 122, 168, 0.15);
+}
+
+.muni-consultas-panel-kicker {
+  margin: 0 0 0.15rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muni-blue-dark);
+}
+
+.muni-consultas-panel-head h2 {
+  margin: 0;
+  font-family: var(--muni-font-display);
+  font-size: 1.25rem;
+  line-height: 1.25;
+}
+
+.muni-consultas-panel-sub {
+  margin: 0.25rem 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.35;
+  color: var(--muni-text-muted);
+}
+
+.muni-consultas-panel-close {
+  appearance: none;
+  border: 0;
+  background: var(--muni-surface-soft);
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 999px;
+  font-size: 1.35rem;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--muni-text);
+}
+
+.muni-consultas-panel-search {
+  padding: 0.85rem 1.15rem 0.5rem;
+}
+
+.muni-consultas-panel-search input {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid var(--muni-border);
+  border-radius: var(--muni-radius);
+  font: inherit;
+  font-size: 1rem;
+}
+
+.muni-consultas-panel-search input:focus {
+  outline: none;
+  box-shadow: var(--muni-focus);
+  border-color: var(--muni-blue);
+}
+
+.muni-consultas-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+
+.muni-consultas-panel-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  padding: 0.15rem 1.15rem 0.85rem;
+  overflow: visible;
+}
+
+.muni-consultas-filter {
+  appearance: none;
+  flex: 0 1 auto;
+  border: 1px solid var(--muni-border);
+  background: #fff;
+  color: var(--muni-text);
+  border-radius: 999px;
+  padding: 0.4rem 0.7rem;
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  line-height: 1.2;
+}
+
+.muni-consultas-filter.is-active {
+  background: var(--muni-blue-dark);
+  border-color: var(--muni-blue-dark);
+  color: #fff;
+}
+
+.muni-consultas-panel-body {
+  flex: 1 1 auto;
+  overflow: auto;
+  padding: 0 1.15rem 1.5rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+.muni-consultas-panel-hint {
+  margin: 0 0 0.75rem;
+  font-size: 0.8125rem;
+  color: var(--muni-text-muted);
+}
+
+.muni-consultas-group {
+  margin-bottom: 1.1rem;
+}
+
+.muni-consultas-group h3 {
+  margin: 0 0 0.45rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muni-text-muted);
+}
+
+.muni-consultas-group h3 span {
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+.muni-consultas-options {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.muni-consultas-option {
+  appearance: none;
+  width: 100%;
+  text-align: left;
+  border: 1px solid var(--muni-border);
+  background: var(--muni-surface-soft);
+  border-radius: var(--muni-radius);
+  padding: 0.75rem 0.85rem;
+  cursor: pointer;
+  font: inherit;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.muni-consultas-option:hover {
+  border-color: rgba(27, 163, 212, 0.45);
+  background: #fff;
+}
+
+.muni-consultas-option-title {
+  display: block;
+  font-weight: 700;
+  font-size: 0.9375rem;
+  line-height: 1.3;
+  color: var(--muni-text);
+  margin-bottom: 0.2rem;
+}
+
+.muni-consultas-option-resumen {
+  display: block;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: var(--muni-text-muted);
+}
+
+.muni-consultas-back {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--muni-blue-dark);
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.875rem;
+  padding: 0;
+  margin: 0 0 0.85rem;
+  cursor: pointer;
+}
+
+.muni-consultas-card--panel {
+  box-shadow: none;
+}
+
+/* P??gina Consultas */

@@ -32,7 +32,6 @@
   }
 
   var SECONDARY = [
-    "js/muni-whatsapp.js?v=20260713perf",
     "js/muni-radio-config.js?v=20260713perf",
     "js/muni-radio.js?v=20260713perf",
     "js/campana-config.js?v=20260524",
@@ -43,7 +42,6 @@
   ];
 
   var AREA_SECONDARY = [
-    "js/muni-whatsapp.js?v=20260713perf",
     "js/muni-radio-config.js?v=20260713perf",
     "js/muni-radio.js?v=20260713perf",
   ];
