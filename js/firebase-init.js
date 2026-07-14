@@ -30,12 +30,19 @@
       } catch (_e) {
         app = firebase.initializeApp(window.FIREBASE_CONFIG, APP_NAME);
       }
-      db = firebase.firestore(app);
-      auth = firebase.auth(app);
-      var bucketUrl = getStorageBucketUrl();
-      storage = bucketUrl ? firebase.storage(app, bucketUrl) : firebase.storage(app);
-      if (auth && firebase.auth.Auth && firebase.auth.Auth.Persistence) {
-        auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(function () {});
+      if (firebase.firestore) {
+        db = firebase.firestore(app);
+      }
+      // Auth/Storage solo si el SDK está cargado (páginas admin / paneles)
+      if (firebase.auth) {
+        auth = firebase.auth(app);
+        if (auth && firebase.auth.Auth && firebase.auth.Auth.Persistence) {
+          auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(function () {});
+        }
+      }
+      if (firebase.storage) {
+        var bucketUrl = getStorageBucketUrl();
+        storage = bucketUrl ? firebase.storage(app, bucketUrl) : firebase.storage(app);
       }
     }
     return app;
