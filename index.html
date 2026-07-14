@@ -1,7 +1,9 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <link rel="icon" href="/favicon.png?v=20260709" type="image/png">
+  <link rel="apple-touch-icon" href="/favicon.png?v=20260709">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#0d7aa8">
   <meta name="description" content="Portal oficial de la Municipalidad de Jardín América. Novedades de gestión, obras y acciones de cada área municipal.">
@@ -9,9 +11,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preload" as="image" href="assets/jardin-saltos-tabay-portal.png" fetchpriority="high">
-  <link rel="preload" as="image" href="assets/logo-municipalidad.png">
-  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Plus+Jakarta+Sans:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/muni-portal.css">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap"></noscript>
+  <link rel="stylesheet" href="css/muni-portal.css?v=20260713perf">
 </head>
 <body class="muni-body">
   <a class="muni-skip" href="#contenido-principal">Saltar al contenido</a>
@@ -23,8 +25,9 @@
       <span class="muni-topbar-tagline">Una ciudad que florece</span>
       <span id="muni-fecha-hoy" aria-live="polite"></span>
       <ul class="muni-topbar-links">
-        <li><a href="#proximos-eventos">Eventos</a></li>
+        <li><a href="eventos.html">Eventos</a></li>
         <li><a href="#ultimas-novedades">Novedades</a></li>
+        <li><a href="mapa.html">Mapa de obras y más</a></li>
         <li><a href="#recibir-avisos">Recibir avisos</a></li>
       </ul>
     </div>
@@ -48,15 +51,23 @@
     <section class="muni-portal-hero" aria-label="Bienvenida al portal municipal">
       <div class="muni-container muni-portal-hero-grid">
         <div class="muni-portal-hero-brand">
-          <img class="muni-portal-hero-logo" src="assets/logo-municipalidad.png" alt="Municipalidad de Jardín América" width="520" height="162" decoding="async">
+          <img class="muni-portal-hero-logo" src="assets/logo-municipalidad.png" alt="Municipalidad de Jardín América" width="520" height="162" loading="lazy" decoding="async">
           <p class="muni-portal-hero-lead">Portal oficial de gestión municipal. Novedades, obras y acciones de cada área de la ciudad.</p>
           <div class="muni-portal-hero-actions">
-            <a class="muni-btn muni-btn--turismo" href="https://enzomantay-del.github.io/jardin-america-turismo/" target="_blank" rel="noopener noreferrer">
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.4 8 12 8 12s8-6.6 8-12a8 8 0 0 0-8-8z"/></svg>
-              Información turística
-            </a>
+            <div class="muni-portal-hero-actions-featured">
+              <a class="muni-btn muni-btn--turismo" href="https://enzomantay-del.github.io/jardin-america-turismo/" target="_blank" rel="noopener noreferrer">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.4 8 12 8 12s8-6.6 8-12a8 8 0 0 0-8-8z"/></svg>
+                Información turística
+              </a>
+              <a class="muni-btn muni-btn--radio muni-btn--radio-compact" href="#radio-municipal" data-muni-radio-play>
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 010 8.49M7.76 7.76a6 6 0 000 8.49M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>
+                Radio en vivo
+              </a>
+            </div>
             <a class="muni-btn muni-btn--primary" href="#ultimas-novedades">Ver novedades</a>
+            <a class="muni-btn muni-btn--secondary" href="mapa.html">Mapa de obras y más</a>
             <a class="muni-btn muni-btn--secondary" href="#areas-municipales">Áreas municipales</a>
+            <a class="muni-btn muni-btn--secondary" href="#recibir-avisos">Recibir avisos</a>
           </div>
         </div>
 
@@ -75,6 +86,8 @@
         </div>
       </div>
     </section>
+
+    <div id="muni-accesos-root"></div>
 
     <div class="muni-lightbox" id="muni-lightbox" role="dialog" aria-modal="true" aria-label="Imagen ampliada" hidden>
       <button type="button" class="muni-lightbox-close" data-lightbox-close aria-label="Cerrar">×</button>
@@ -107,22 +120,31 @@
       </button>
     </div>
 
+    <div class="muni-anuncio-modal" id="muni-anuncio-modal" role="dialog" aria-modal="true" aria-labelledby="muni-anuncio-title" hidden>
+      <div class="muni-anuncio-backdrop" id="muni-anuncio-backdrop"></div>
+      <div class="muni-anuncio-dialog">
+        <h2 id="muni-anuncio-title" class="muni-anuncio-title">Anuncio municipal</h2>
+        <button type="button" class="muni-anuncio-close" id="muni-anuncio-close" aria-label="Cerrar anuncio">×</button>
+        <a class="muni-anuncio-link" id="muni-anuncio-link" href="#" target="_blank" rel="noopener noreferrer">
+          <img class="muni-anuncio-img" id="muni-anuncio-img" src="" alt="">
+        </a>
+      </div>
+    </div>
+
     <div class="muni-content-band">
       <div class="muni-container">
-      <div id="muni-hero" aria-live="polite"></div>
-
       <div class="muni-layout" id="ultimas-novedades">
         <section aria-labelledby="titulo-novedades">
           <div class="muni-section-label">
             <h2 id="titulo-novedades">Últimas novedades de gestión</h2>
           </div>
-          <div class="muni-news-grid" id="muni-news-grid"></div>
+          <div id="muni-news-grid"></div>
         </section>
 
         <aside class="muni-sidebar" aria-label="Complementos">
           <div class="muni-sidebar-block">
-            <h3>Recientes</h3>
-            <div id="muni-sidebar-recientes"></div>
+            <h3>Más leídas</h3>
+            <div id="muni-sidebar-mas-leidas"></div>
           </div>
           <div class="muni-sidebar-block">
             <h3>Áreas municipales</h3>
@@ -132,6 +154,37 @@
       </div>
       </div>
     </div>
+
+    <section class="muni-radio-section" id="radio-municipal" aria-labelledby="titulo-radio">
+      <div class="muni-container">
+        <div class="muni-radio-section-inner">
+          <div class="muni-radio-section-copy">
+            <div class="muni-section-label muni-section-label--compact">
+              <h2 id="titulo-radio">Radio municipal en vivo</h2>
+            </div>
+            <p class="muni-radio-section-lead">
+              Escuchá <strong>FM Los Pioneros 98.5</strong>, la radio oficial de la municipalidad, las 24 horas desde Jardín América.
+            </p>
+            <div class="muni-radio-section-player">
+              <button type="button" class="muni-btn muni-btn--radio" data-muni-radio-toggle>
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+                <span>Escuchar en vivo</span>
+              </button>
+              <p class="muni-radio-section-status" role="status">Listo para escuchar</p>
+            </div>
+            <a class="muni-radio-section-site" href="https://fmlospioneros.com.ar/" target="_blank" rel="noopener noreferrer">Ver noticias y programación en fmlospioneros.com.ar</a>
+          </div>
+          <div class="muni-radio-section-visual" aria-hidden="true">
+            <div class="muni-radio-section-badge">
+              <span class="muni-radio-live-dot"></span>
+              <span>EN VIVO</span>
+            </div>
+            <p class="muni-radio-section-station">FM Los Pioneros</p>
+            <p class="muni-radio-section-freq">98.5 FM</p>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <section class="muni-areas-strip" id="areas-municipales" aria-labelledby="titulo-areas">
       <div class="muni-container">
@@ -149,15 +202,11 @@
           <ul class="muni-contact-list">
             <li>
               <strong>Dirección</strong>
-              Av. San Martín y Av. Libertad · Jardín América, Misiones
+              Av. Belgrano 666 · Jardín América, Misiones
             </li>
             <li>
-              <strong>Teléfono</strong>
-              <a href="tel:+543754000000">(03754) 000-000</a>
-            </li>
-            <li>
-              <strong>Email</strong>
-              <a href="mailto:contacto@municipalidadjardin.gov.ar">contacto@municipalidadjardin.gov.ar</a>
+              <strong>WhatsApp</strong>
+              <a href="https://wa.me/543743509860" target="_blank" rel="noopener noreferrer">3743-509860</a>
             </li>
             <li>
               <strong>Horario</strong>
@@ -228,20 +277,18 @@
   </footer>
 
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js" defer></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js" defer></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js" defer></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js" defer></script>
-  <script src="js/firebase-config.js" defer></script>
-  <script src="js/firebase-init.js" defer></script>
-  <script src="js/firebase-seed-areas.js" defer></script>
-  <script src="js/muni-data.js" defer></script>
-  <script src="js/muni-api.js" defer></script>
-  <script src="js/muni-icons.js" defer></script>
-  <script src="js/muni-common.js" defer></script>
-  <script src="js/muni-eventos.js" defer></script>
-  <script src="js/muni-hero-gallery.js" defer></script>
-  <script src="js/campana-config.js" defer></script>
-  <script src="js/muni-avisos.js" defer></script>
-  <script src="js/muni-home.js" defer></script>
+  <script src="js/firebase-config.js?v=20260524" defer></script>
+  <script src="js/firebase-init.js?v=20260713perf" defer></script>
+  <script src="js/firebase-seed-areas.js?v=20260623d" defer></script>
+  <script src="js/muni-data.js?v=20260524" defer></script>
+  <script src="js/muni-noticia-imagenes.js?v=20260702" defer></script>
+  <script src="js/muni-api.js?v=20260702" defer></script>
+  <script src="js/muni-icons.js?v=20260622" defer></script>
+  <script src="js/muni-common.js?v=20260713h" defer></script>
+  <script src="js/muni-hero-gallery.js?v=20260609" defer></script>
+  <script src="js/muni-accesos.js?v=20260713h" defer></script>
+  <script src="js/muni-home.js?v=20260713perf" defer></script>
+  <script src="js/muni-lazy.js?v=20260713perf" defer></script>
 </body>
 </html>

@@ -48,26 +48,24 @@
     }
 
     var destacada = M.getDestacada();
-    var heroEl = document.getElementById("muni-hero");
-    if (heroEl) {
-      heroEl.innerHTML = destacada
-        ? M.renderHero(destacada)
-        : '<p class="muni-empty">Todavía no hay novedades publicadas.</p>';
-    }
-
     var all = M.getAllNoticiasSorted();
     var rest = destacada ? all.filter(function (n) { return n.id !== destacada.id; }) : all;
 
     var gridEl = document.getElementById("muni-news-grid");
     if (gridEl) {
-      gridEl.innerHTML = rest.length
-        ? rest.map(M.renderCard).join("")
-        : '<p class="muni-empty">Todavía no hay novedades publicadas.</p>';
+      M.mountHomeNoticias(gridEl, destacada, rest, {
+        emptyText: "Todavía no hay novedades publicadas.",
+        recentDays: 15,
+        sideCount: 4,
+      });
     }
 
-    var sidebarEl = document.getElementById("muni-sidebar-recientes");
+    var sidebarEl = document.getElementById("muni-sidebar-mas-leidas");
     if (sidebarEl) {
-      sidebarEl.innerHTML = M.renderSidebarList(all, 6);
+      sidebarEl.innerHTML = M.renderSidebarList(M.getTopNoticiasByViews(5), 5, {
+        showViews: true,
+        emptyText: "Todavía no hay lecturas registradas.",
+      });
     }
 
     var areasSidebar = document.getElementById("muni-sidebar-areas");
@@ -80,16 +78,11 @@
       stripEl.innerHTML = M.renderAreasStrip();
     }
 
-    if (window.MuniEventos) {
-      var eventos = M.DATA.eventosFlyers || [];
-      var mountEventos = function () {
-        window.MuniEventos.mountEventos(eventos);
-      };
-      if ("requestIdleCallback" in window) {
-        requestIdleCallback(mountEventos, { timeout: 1500 });
-      } else {
-        setTimeout(mountEventos, 0);
-      }
+    if (window.MuniAccesos) {
+      window.MuniAccesos.mountAccesos();
     }
+
+    // Eventos / anuncio se montan cuando muni-lazy termina de cargarlos
+    window.__muniHomePayload = payload;
   });
 })();
