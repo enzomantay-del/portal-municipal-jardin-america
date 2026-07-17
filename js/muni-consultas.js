@@ -13,7 +13,7 @@
   var CATEGORY_ORDER = ["tramite", "obras", "turismo", "area", "contacto"];
   var CATEGORY_LABELS = {
     tramite: "Trámites",
-    obras: "Obras",
+    obras: "Obras en curso",
     turismo: "Turismo",
     area: "Áreas",
     contacto: "Contacto",
@@ -88,16 +88,16 @@
       score += 6;
     }
 
-    // Priorizar resumen de obras cuando preguntan por obras / en curso / mapa
+    // Priorizar resumen de obras cuando preguntan por obras / en curso
     var obraIntent = tokens.some(function (t) {
       return (
         t === "obra" ||
         t === "obras" ||
         t === "curso" ||
-        t === "mapa" ||
         t === "pavimento" ||
         t === "calle" ||
-        t === "construccion"
+        t === "construccion" ||
+        t === "publicas"
       );
     });
     if (obraIntent && entry.categoria === "obras") score += 10;

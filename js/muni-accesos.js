@@ -10,6 +10,15 @@
       openConsultas: true,
     },
     {
+      icon: "🚧",
+      titulo: "Obras en curso",
+      desc: "Novedades de Obras Públicas que están en ejecución",
+      href: "#",
+      openConsultas: true,
+      consultasQ: "obras en curso",
+      consultasCat: "obras",
+    },
+    {
       icon: "📊",
       titulo: "Encuesta de gestión",
       desc: "Contanos tu opinión sobre la gestión municipal (anónima)",
@@ -99,6 +108,15 @@
       var attrs = externo ? ' target="_blank" rel="noopener noreferrer"' : "";
       if (item.openConsultas) {
         attrs += ' data-open-consultas role="button"';
+        if (item.consultasQ) {
+          attrs += ' data-consultas-q="' + escapeHtml(item.consultasQ) + '"';
+        }
+        if (item.consultasCat) {
+          attrs += ' data-consultas-cat="' + escapeHtml(item.consultasCat) + '"';
+        }
+        if (item.consultasArea) {
+          attrs += ' data-consultas-area="' + escapeHtml(item.consultasArea) + '"';
+        }
         href = "#";
       }
       return (
