@@ -11,6 +11,17 @@
   var soloObrasEnCurso = false;
   var userMarker = null;
 
+  function applyObrasCursoFromUrl() {
+    try {
+      var params = new URLSearchParams(window.location.search || "");
+      var hash = String(window.location.hash || "").replace(/^#/, "");
+      if (params.get("obras") === "curso" || hash === "obras-curso" || hash === "obras") {
+        soloObrasEnCurso = true;
+        activeTipos = new Set(["obra"]);
+      }
+    } catch (_e) {}
+  }
+
   function $(id) {
     return document.getElementById(id);
   }
@@ -103,6 +114,16 @@
           });
         }
         refreshMarkers();
+      });
+    }
+
+    if (soloObrasEnCurso && obrasBtn) {
+      obrasBtn.classList.add("is-active");
+      obrasBtn.setAttribute("aria-pressed", "true");
+      wrap.querySelectorAll("[data-tipo]").forEach(function (btn) {
+        var on = btn.getAttribute("data-tipo") === "obra";
+        btn.classList.toggle("is-active", on);
+        btn.setAttribute("aria-pressed", on ? "true" : "false");
       });
     }
   }
@@ -281,6 +302,7 @@
   function init() {
     var container = $("mapa-public-canvas");
     if (!container) return;
+    applyObrasCursoFromUrl();
 
     if (!window.L) {
       if (window.MuniMapa) {

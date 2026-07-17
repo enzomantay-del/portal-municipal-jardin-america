@@ -16,6 +16,9 @@
       folletoUrl: data.folletoUrl || "",
       mapasUrl: data.mapasUrl || "",
       mapaBarriosUrl: data.mapaBarriosUrl || "",
+      documentos: Array.isArray(data.documentos) ? data.documentos : [],
+      enlaces: Array.isArray(data.enlaces) ? data.enlaces : [],
+      recursosIntro: data.recursosIntro || "",
       orden: data.orden != null ? data.orden : 999,
       activa: data.activa !== false,
     };
@@ -99,6 +102,13 @@
   }
 
   function mapTrabajo(id, data) {
+    data = data || {};
+    var imagenes = window.MuniNoticiaImagenes
+      ? window.MuniNoticiaImagenes.normalizeImagenes(data)
+      : [];
+    var cover = window.MuniNoticiaImagenes
+      ? window.MuniNoticiaImagenes.coverUrl(data)
+      : data.imagenUrl || "";
     return {
       id: id,
       slug: data.slug || id,
@@ -106,7 +116,8 @@
       titulo: data.titulo,
       bajada: data.bajada,
       cuerpo: data.cuerpo,
-      imagen: data.imagenUrl || "",
+      imagen: cover,
+      imagenes: imagenes,
       ubicacion: data.ubicacion || "",
       barrio: data.barrio || "",
       estadoObra: data.estadoObra,
@@ -199,6 +210,15 @@
       if (seedArea.mapaBarriosUrl) {
         bySlug[seedArea.slug].mapaBarriosUrl = seedArea.mapaBarriosUrl;
       }
+      if (Array.isArray(seedArea.documentos) && seedArea.documentos.length) {
+        bySlug[seedArea.slug].documentos = seedArea.documentos.slice();
+      }
+      if (Array.isArray(seedArea.enlaces) && seedArea.enlaces.length) {
+        bySlug[seedArea.slug].enlaces = seedArea.enlaces.slice();
+      }
+      if (seedArea.recursosIntro) {
+        bySlug[seedArea.slug].recursosIntro = seedArea.recursosIntro;
+      }
     });
 
     return filterVisibleAreas(
@@ -271,14 +291,50 @@
     if (window.MuniMapa && window.MuniMapa.mapMapaPunto) {
       return window.MuniMapa.mapMapaPunto(id, data);
     }
+    data = data || {};
+    var lat = data.lat != null && data.lat !== "" ? Number(data.lat) : null;
+    var lng = data.lng != null && data.lng !== "" ? Number(data.lng) : null;
+    if ((lat == null || isNaN(lat)) && data.location && typeof data.location.latitude === "number") {
+      lat = data.location.latitude;
+      lng = data.location.longitude;
+    }
     return {
       id: id,
       titulo: data.titulo || "",
+      descripcion: data.descripcion || "",
       tipoMapa: data.tipoMapa || "actividad",
-      lat: data.lat,
-      lng: data.lng,
-      estadoPublicacion: data.estadoPublicacion || "",
+      lat: lat != null && !isNaN(lat) ? lat : null,
+      lng: lng != null && !isNaN(lng) ? lng : null,
+      radioMetros: data.radioMetros != null ? Number(data.radioMetros) : null,
+      barrio: data.barrio || "",
+      areaSlug: data.areaSlug || "",
+      areaNombre: data.areaNombre || "",
+      estadoObra: data.estadoObra || "",
+      fechaInicio: data.fechaInicio || "",
+      fechaFin: data.fechaFin || "",
+      enlaceUrl: data.enlaceUrl || "",
+      estadoPublicacion: String(data.estadoPublicacion || "pendiente").trim(),
+      createdBy: data.createdBy || "",
     };
+  }
+
+  function isValidMapCoord(lat, lng) {
+    if (window.MuniMapa && window.MuniMapa.isValidCoord) {
+      return window.MuniMapa.isValidCoord(lat, lng);
+    }
+    if (lat == null || lng == null || isNaN(lat) || isNaN(lng)) return false;
+    if (lat < -90 || lat > 90 || lng < -180 || lng > 180) return false;
+    return true;
+  }
+
+  function filterPuntosPublicos(puntos) {
+    return (puntos || []).filter(function (p) {
+      if (!isValidMapCoord(p.lat, p.lng)) return false;
+      if (window.MuniMapa && window.MuniMapa.isPuntoVisibleEnMapaPublico) {
+        return window.MuniMapa.isPuntoVisibleEnMapaPublico(p);
+      }
+      return p.tipoMapa !== "barrio";
+    });
   }
 
   function parseFirestoreFieldValue(value) {
@@ -313,16 +369,6 @@
     if (!data) return false;
     if (data.activa === false) return false;
     return true;
-  }
-
-  function filterPuntosPublicos(puntos) {
-    return (puntos || []).filter(function (p) {
-      if (!window.MuniMapa || !window.MuniMapa.isValidCoord(p.lat, p.lng)) return false;
-      if (window.MuniMapa.isPuntoVisibleEnMapaPublico) {
-        return window.MuniMapa.isPuntoVisibleEnMapaPublico(p);
-      }
-      return p.tipoMapa !== "barrio";
-    });
   }
 
   async function loadMapaPuntosPublicRest() {
@@ -365,7 +411,7 @@
       if (!row || !row.document) return;
       var punto = parseFirestoreDocument(row.document);
       if (!punto || punto.estadoPublicacion !== "publicado") return;
-      if (window.MuniMapa && window.MuniMapa.isValidCoord(punto.lat, punto.lng)) {
+      if (isValidMapCoord(punto.lat, punto.lng)) {
         puntos.push(punto);
       }
     });
@@ -379,7 +425,7 @@
     snap.forEach(function (doc) {
       var punto = mapMapaPunto(doc.id, doc.data());
       if (punto.estadoPublicacion !== "publicado") return;
-      if (window.MuniMapa && window.MuniMapa.isValidCoord(punto.lat, punto.lng)) {
+      if (isValidMapCoord(punto.lat, punto.lng)) {
         puntos.push(punto);
       }
     });

@@ -405,12 +405,262 @@
       });
   }
 
+  var liveObras = {
+    status: "idle",
+    at: 0,
+    puntos: [],
+    promise: null,
+  };
+
+  var LIVE_CACHE_MS = 2 * 60 * 1000;
+
+  function escapeText(str) {
+    return String(str || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function formatFechaCorta(iso) {
+    if (!iso) return "";
+    var parts = String(iso).slice(0, 10).split("-");
+    if (parts.length !== 3) return String(iso);
+    return parts[2] + "/" + parts[1] + "/" + parts[0];
+  }
+
+  function isObraEnCursoMapa(p) {
+    return (
+      p &&
+      p.tipoMapa === "obra" &&
+      p.estadoObra === "en_curso" &&
+      String(p.estadoPublicacion || "") === "publicado"
+    );
+  }
+
+  function isTrabajoEnCurso(n) {
+    return n && n.estadoObra === "en_curso";
+  }
+
+  function getNoticiasEnCurso() {
+    var noticias =
+      (window.MuniPortal && window.MuniPortal.DATA && window.MuniPortal.DATA.noticias) || [];
+    return noticias.filter(isTrabajoEnCurso);
+  }
+
+  function buildObrasEnCursoEntries() {
+    var obras = (liveObras.puntos || []).filter(isObraEnCursoMapa);
+    var trabajos = getNoticiasEnCurso();
+    var entries = [];
+
+    if (liveObras.status === "loading" && !obras.length) {
+      entries.push({
+        id: "obras-en-curso-resumen",
+        categoria: "obras",
+        titulo: "Obras en curso (actualizando…)",
+        keywords: ["obras", "obra", "en curso", "mapa", "trabajos", "construccion"],
+        resumen: "Estoy consultando el mapa municipal en este momento.",
+        detalleHtml:
+          "<p>Dame un segundo: estoy cargando las obras publicadas como <strong>en curso</strong>.</p>",
+        enlaces: [{ titulo: "Ver mapa de obras", url: "mapa.html?obras=curso" }],
+      });
+      return entries;
+    }
+
+    var listHtml = "";
+    if (obras.length) {
+      listHtml =
+        "<ul>" +
+        obras
+          .slice(0, 20)
+          .map(function (p) {
+            var meta = [];
+            if (p.barrio) meta.push(escapeText(p.barrio));
+            if (p.areaNombre) meta.push(escapeText(p.areaNombre));
+            return (
+              "<li><strong>" +
+              escapeText(p.titulo || "Obra sin título") +
+              "</strong>" +
+              (meta.length ? " — " + meta.join(" · ") : "") +
+              (p.descripcion
+                ? "<br><span>" +
+                  escapeText(String(p.descripcion).slice(0, 160)) +
+                  (String(p.descripcion).length > 160 ? "…" : "") +
+                  "</span>"
+                : "") +
+              "</li>"
+            );
+          })
+          .join("") +
+        "</ul>";
+    } else {
+      listHtml =
+        "<p>En este momento no hay obras publicadas en el mapa con estado <strong>en curso</strong>.</p>";
+    }
+
+    var trabajosHtml = "";
+    if (trabajos.length) {
+      trabajosHtml =
+        "<h4>También en el portal</h4><ul>" +
+        trabajos
+          .slice(0, 8)
+          .map(function (n) {
+            return (
+              '<li><a href="noticia.html?id=' +
+              encodeURIComponent(n.id || n.slug || "") +
+              '">' +
+              escapeText(n.titulo) +
+              "</a>" +
+              (n.ubicacion || n.barrio ? " — " + escapeText(n.ubicacion || n.barrio) : "") +
+              "</li>"
+            );
+          })
+          .join("") +
+        "</ul>";
+    }
+
+    var actualizado = "Actualizado al momento de la búsqueda.";
+
+    entries.push({
+      id: "obras-en-curso-resumen",
+      categoria: "obras",
+      titulo: "Obras en curso",
+      keywords: [
+        "obras",
+        "obra",
+        "en curso",
+        "mapa",
+        "trabajos",
+        "construccion",
+        "pavimento",
+        "calle",
+        "resumen",
+      ],
+      resumen:
+        (obras.length
+          ? obras.length === 1
+            ? "1 obra en curso en el mapa municipal."
+            : obras.length + " obras en curso en el mapa municipal."
+          : "Sin obras en curso en el mapa ahora.") +
+        (trabajos.length
+          ? " Además hay " + trabajos.length + " novedad(es) de gestión en curso."
+          : "") +
+        " " +
+        actualizado,
+      detalleHtml:
+        "<p>Resumen de obras publicadas como <strong>en curso</strong> en el mapa municipal.</p>" +
+        listHtml +
+        trabajosHtml +
+        "<p><em>" +
+        escapeText(actualizado) +
+        "</em></p>",
+      enlaces: [
+        { titulo: "Ver en el mapa", url: "mapa.html?obras=curso" },
+        { titulo: "Área Obras Públicas", url: "area.html?area=obras-publicas" },
+      ],
+      searchText: obras
+        .map(function (p) {
+          return [p.titulo, p.barrio, p.areaNombre, p.descripcion].join(" ");
+        })
+        .join(" "),
+    });
+
+    obras.forEach(function (p) {
+      entries.push({
+        id: "obra-mapa-" + p.id,
+        categoria: "obras",
+        areaSlug: p.areaSlug || "obras-publicas",
+        titulo: "Obra en curso — " + (p.titulo || "Sin título"),
+        keywords: ["obra", "obras", "en curso", p.titulo, p.barrio, p.areaNombre, p.areaSlug].filter(
+          Boolean
+        ),
+        resumen:
+          [p.barrio, p.areaNombre].filter(Boolean).join(" · ") || "Publicada en el mapa municipal",
+        detalleHtml:
+          "<p><strong>Estado:</strong> En curso</p>" +
+          (p.barrio ? "<p><strong>Barrio:</strong> " + escapeText(p.barrio) + "</p>" : "") +
+          (p.areaNombre ? "<p><strong>Área:</strong> " + escapeText(p.areaNombre) + "</p>" : "") +
+          (p.fechaInicio
+            ? "<p><strong>Inicio:</strong> " + escapeText(formatFechaCorta(p.fechaInicio)) + "</p>"
+            : "") +
+          (p.fechaFin
+            ? "<p><strong>Fin estimado:</strong> " + escapeText(formatFechaCorta(p.fechaFin)) + "</p>"
+            : "") +
+          (p.descripcion ? "<p>" + escapeText(p.descripcion) + "</p>" : ""),
+        enlaces: [
+          { titulo: "Ver mapa de obras en curso", url: "mapa.html?obras=curso" },
+          p.enlaceUrl
+            ? {
+                titulo: "Más información",
+                url: p.enlaceUrl,
+                externo: /^https?:/i.test(p.enlaceUrl),
+              }
+            : null,
+        ].filter(Boolean),
+        searchText: [p.titulo, p.descripcion, p.barrio, p.areaNombre].join(" "),
+      });
+    });
+
+    return entries;
+  }
+
+  async function refreshLiveObras(force) {
+    var now = Date.now();
+    if (!force && liveObras.status === "ready" && now - liveObras.at < LIVE_CACHE_MS) {
+      return liveObras.puntos;
+    }
+    if (liveObras.promise) return liveObras.promise;
+
+    liveObras.status = "loading";
+    liveObras.promise = (async function () {
+      try {
+        var hasFirebase =
+          window.FIREBASE_CONFIG &&
+          window.FIREBASE_CONFIG.projectId &&
+          window.FIREBASE_CONFIG.apiKey &&
+          !String(window.FIREBASE_CONFIG.projectId).includes("tu-proyecto");
+
+        var puntos = [];
+        if (hasFirebase && window.MuniApi && window.MuniApi.loadMapaPuntosPublic) {
+          if (window.MuniFirebase && window.MuniFirebase.init) {
+            try {
+              window.MuniFirebase.init();
+            } catch (_e) {}
+          }
+          var db = window.MuniFirebase && window.MuniFirebase.db ? window.MuniFirebase.db() : null;
+          puntos = await window.MuniApi.loadMapaPuntosPublic(db);
+        }
+
+        liveObras.puntos = puntos || [];
+        liveObras.at = Date.now();
+        liveObras.status = "ready";
+        return liveObras.puntos;
+      } catch (err) {
+        console.warn("AmiBot obras en curso", err);
+        liveObras.status = "error";
+        liveObras.puntos = liveObras.puntos || [];
+        liveObras.at = Date.now();
+        return liveObras.puntos;
+      } finally {
+        liveObras.promise = null;
+      }
+    })();
+
+    return liveObras.promise;
+  }
+
   function getEntries() {
-    return STATIC_ENTRIES.concat(buildFromDocumentos()).concat(buildFromAreas());
+    return STATIC_ENTRIES.concat(buildFromDocumentos())
+      .concat(buildFromAreas())
+      .concat(buildObrasEnCursoEntries());
   }
 
   window.MuniConsultasKnowledge = {
     turismoUrl: TURISMO_URL,
     getEntries: getEntries,
+    refreshLiveObras: refreshLiveObras,
+    getLiveObrasStatus: function () {
+      return liveObras.status;
+    },
   };
 })();

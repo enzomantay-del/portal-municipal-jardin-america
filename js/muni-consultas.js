@@ -10,9 +10,10 @@
     areaSlug: "",
   };
 
-  var CATEGORY_ORDER = ["tramite", "turismo", "area", "contacto"];
+  var CATEGORY_ORDER = ["tramite", "obras", "turismo", "area", "contacto"];
   var CATEGORY_LABELS = {
     tramite: "Trámites",
+    obras: "Obras",
     turismo: "Turismo",
     area: "Áreas",
     contacto: "Contacto",
@@ -21,6 +22,7 @@
 
   var GROUP_LABELS = {
     tramite: "Trámites y documentos",
+    obras: "Obras en curso",
     turismo: "Turismo y colectivos",
     area: "Áreas municipales",
     contacto: "Contacto",
@@ -85,6 +87,21 @@
     ) {
       score += 6;
     }
+
+    // Priorizar resumen de obras cuando preguntan por obras / en curso / mapa
+    var obraIntent = tokens.some(function (t) {
+      return (
+        t === "obra" ||
+        t === "obras" ||
+        t === "curso" ||
+        t === "mapa" ||
+        t === "pavimento" ||
+        t === "calle" ||
+        t === "construccion"
+      );
+    });
+    if (obraIntent && entry.categoria === "obras") score += 10;
+    if (obraIntent && entry.id === "obras-en-curso-resumen") score += 8;
 
     return score;
   }
@@ -190,7 +207,7 @@
       "<div>" +
       '<p class="muni-consultas-panel-kicker">Asistente del portal</p>' +
       '<h2 id="muni-consultas-panel-title">Hola, soy AmiBot</h2>' +
-      '<p class="muni-consultas-panel-sub">Te ayudo a encontrar trámites, documentos, ordenanzas e info turística.</p>' +
+      '<p class="muni-consultas-panel-sub">Te ayudo con trámites, documentos, obras en curso, turismo y más.</p>' +
       "</div></div>" +
       '<button type="button" class="muni-consultas-panel-close" data-consultas-close aria-label="Cerrar">×</button>' +
       "</header>" +
@@ -362,6 +379,19 @@
         .join("");
   }
 
+  function refreshObrasThenRender() {
+    var K = window.MuniConsultasKnowledge;
+    if (!K || !K.refreshLiveObras) return;
+    renderBody();
+    K.refreshLiveObras(false).then(function () {
+      if (!state.open) return;
+      if (state.selectedId && String(state.selectedId).indexOf("obra") === 0) {
+        // mantener detalle si sigue existiendo
+      }
+      renderBody();
+    });
+  }
+
   function openPanel(options) {
     options = options || {};
     ensurePanel();
@@ -389,7 +419,7 @@
     }
 
     renderFilters();
-    renderBody();
+    refreshObrasThenRender();
   }
 
   function closePanel() {
@@ -548,6 +578,9 @@
     bindOpenTriggers();
     initFloat();
     mountLegacyPage();
+    if (window.MuniConsultasKnowledge && window.MuniConsultasKnowledge.refreshLiveObras) {
+      window.MuniConsultasKnowledge.refreshLiveObras(false).catch(function () {});
+    }
   });
 
   window.MuniConsultas = {
