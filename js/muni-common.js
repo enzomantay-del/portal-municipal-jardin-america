@@ -272,55 +272,227 @@
     );
   }
 
-  function renderCard(noticia) {
+  function noticiaCover(noticia) {
     var area = getArea(noticia.areaSlug);
-    var img = noticia.imagen || placeholderImage(area);
     return (
-      '<article class="muni-card">' +
-      '<a href="' + noticiaUrl(noticia) + '" class="muni-card-media" tabindex="-1" aria-hidden="true">' +
-      '<img src="' + escapeHtml(img) + '" alt="" loading="lazy" decoding="async" width="480" height="300">' +
+      (window.MuniNoticiaImagenes && window.MuniNoticiaImagenes.coverFromNoticia(noticia)) ||
+      noticia.imagen ||
+      placeholderImage(area)
+    );
+  }
+
+  function renderCard(noticia, options) {
+    options = options || {};
+    var area = getArea(noticia.areaSlug);
+    var img = noticiaCover(noticia);
+    var cardClass = "muni-card" + (options.compact ? " muni-card--compact" : "");
+    return (
+      '<article class="' +
+      cardClass +
+      '">' +
+      '<a href="' +
+      noticiaUrl(noticia) +
+      '" class="muni-card-media" tabindex="-1" aria-hidden="true">' +
+      '<img src="' +
+      escapeHtml(img) +
+      '" alt="" loading="lazy" decoding="async" width="480" height="300">' +
       "</a>" +
       (area
-        ? '<a class="muni-card-tag ' + areaTagClass(area.slug) + '" href="' + areaUrl(area) + '">' +
+        ? '<a class="muni-card-tag ' +
+          areaTagClass(area.slug) +
+          '" href="' +
+          areaUrl(area) +
+          '">' +
           escapeHtml(area.nombre) +
           "</a>"
         : "") +
-      '<h3 class="muni-card-title"><a href="' + noticiaUrl(noticia) + '">' + escapeHtml(noticia.titulo) + "</a></h3>" +
-      '<p class="muni-card-excerpt">' + escapeHtml(noticia.bajada) + "</p>" +
+      '<h3 class="muni-card-title"><a href="' +
+      noticiaUrl(noticia) +
+      '">' +
+      escapeHtml(noticia.titulo) +
+      "</a></h3>" +
+      (options.hideExcerpt
+        ? ""
+        : '<p class="muni-card-excerpt">' + escapeHtml(noticia.bajada) + "</p>") +
+      renderMeta(noticia, area) +
+      "</article>"
+    );
+  }
+
+  function renderTapaLead(noticia) {
+    if (!noticia) return "";
+    var area = getArea(noticia.areaSlug);
+    var img = noticiaCover(noticia);
+    return (
+      '<article class="muni-tapa-lead">' +
+      (area
+        ? '<a class="muni-card-tag ' +
+          areaTagClass(area.slug) +
+          '" href="' +
+          areaUrl(area) +
+          '">' +
+          escapeHtml(area.nombre) +
+          "</a>"
+        : "") +
+      '<h3 class="muni-tapa-lead-title"><a href="' +
+      noticiaUrl(noticia) +
+      '">' +
+      escapeHtml(noticia.titulo) +
+      "</a></h3>" +
+      '<p class="muni-tapa-lead-excerpt">' +
+      escapeHtml(noticia.bajada) +
+      "</p>" +
+      renderMeta(noticia, area) +
+      '<a href="' +
+      noticiaUrl(noticia) +
+      '" class="muni-tapa-lead-media" tabindex="-1" aria-hidden="true">' +
+      '<img src="' +
+      escapeHtml(img) +
+      '" alt="" fetchpriority="high" decoding="async" width="900" height="560">' +
+      "</a>" +
+      "</article>"
+    );
+  }
+
+  function renderTapaSide(noticia) {
+    if (!noticia) return "";
+    var area = getArea(noticia.areaSlug);
+    var img = noticiaCover(noticia);
+    return (
+      '<article class="muni-tapa-side">' +
+      '<a href="' +
+      noticiaUrl(noticia) +
+      '" class="muni-tapa-side-media" tabindex="-1" aria-hidden="true">' +
+      '<img src="' +
+      escapeHtml(img) +
+      '" alt="" loading="lazy" decoding="async" width="480" height="300">' +
+      "</a>" +
+      (area
+        ? '<a class="muni-card-tag ' +
+          areaTagClass(area.slug) +
+          '" href="' +
+          areaUrl(area) +
+          '">' +
+          escapeHtml(area.nombre) +
+          "</a>"
+        : "") +
+      '<h3 class="muni-tapa-side-title"><a href="' +
+      noticiaUrl(noticia) +
+      '">' +
+      escapeHtml(noticia.titulo) +
+      "</a></h3>" +
+      '<p class="muni-tapa-side-excerpt">' +
+      escapeHtml(noticia.bajada) +
+      "</p>" +
       renderMeta(noticia, area) +
       "</article>"
     );
   }
 
   function renderHero(noticia) {
-    if (!noticia) return "";
-    var area = getArea(noticia.areaSlug);
-    var img = noticia.imagen || placeholderImage(area);
-    return (
-      '<section class="muni-featured" aria-label="Noticia destacada">' +
-      '<div class="muni-section-label muni-section-label--compact">' +
-      '<h2>Destacado</h2>' +
-      "</div>" +
-      '<div class="muni-hero">' +
-      '<div class="muni-hero-media">' +
-      '<img src="' + escapeHtml(img) + '" alt="' + escapeHtml(noticia.titulo) + '" fetchpriority="high" decoding="async" width="900" height="560">' +
-      "</div>" +
-      '<div class="muni-hero-body">' +
-      (area
-        ? '<p class="muni-hero-kicker">' +
-          renderAreaIcon(area.slug, "muni-hero-kicker-icon") +
-          "<span>" + escapeHtml(area.nombre) + "</span></p>"
-        : "") +
-      '<h3 class="muni-hero-title"><a href="' + noticiaUrl(noticia) + '">' + escapeHtml(noticia.titulo) + "</a></h3>" +
-      '<p class="muni-hero-excerpt">' + escapeHtml(noticia.bajada) + "</p>" +
-      '<div class="muni-portal-hero-actions">' +
-      '<a class="muni-btn muni-btn--primary" href="' + noticiaUrl(noticia) + '">Leer novedad</a>' +
-      "</div>" +
-      renderMeta(noticia, area) +
-      "</div>" +
-      "</div>" +
-      "</section>"
-    );
+    return renderTapaLead(noticia);
+  }
+
+  function mountHomeNoticias(container, destacada, rest, options) {
+    if (!container) return;
+    options = options || {};
+    var days = options.recentDays || 15;
+    var emptyText = options.emptyText || "Todavía no hay novedades publicadas.";
+    var sideCount = options.sideCount != null ? options.sideCount : 4;
+    var restList = rest || [];
+    var side = restList.slice(0, sideCount);
+    var below = restList.slice(sideCount);
+    var split = splitNoticiasByRecency(below, days);
+    var expanded = false;
+
+    function railClass(count) {
+      if (count <= 1) return " muni-tapa-rail--one";
+      if (count === 2) return " muni-tapa-rail--two";
+      if (count === 3) return " muni-tapa-rail--three";
+      return " muni-tapa-rail--quad";
+    }
+
+    function paint() {
+      if (!destacada && !side.length && !below.length) {
+        container.innerHTML = '<p class="muni-empty">' + escapeHtml(emptyText) + "</p>";
+        return;
+      }
+
+      var html = "";
+
+      if (destacada || side.length) {
+        html +=
+          '<div class="muni-tapa' +
+          (side.length ? "" : " muni-tapa--solo") +
+          '" aria-label="Tapa de novedades">' +
+          '<div class="muni-tapa-main">' +
+          (destacada ? renderTapaLead(destacada) : "") +
+          "</div>" +
+          (side.length
+            ? '<div class="muni-tapa-rail' +
+              railClass(side.length) +
+              '">' +
+              side.map(renderTapaSide).join("") +
+              "</div>"
+            : "") +
+          "</div>";
+      }
+
+      if (split.recent.length) {
+        html +=
+          '<div class="muni-news-grid muni-news-grid--row">' +
+          split.recent
+            .map(function (n) {
+              return renderCard(n, { compact: true });
+            })
+            .join("") +
+          "</div>";
+      }
+
+      if (split.older.length) {
+        html +=
+          '<div class="muni-noticias-older-wrap">' +
+          '<button type="button" class="muni-btn muni-btn--ghost muni-noticias-older-toggle" data-noticias-older-toggle aria-expanded="' +
+          (expanded ? "true" : "false") +
+          '">' +
+          (expanded
+            ? "Ocultar novedades anteriores (" + split.older.length + ")"
+            : "Ver " +
+              split.older.length +
+              " novedades anteriores (más de " +
+              days +
+              " días)") +
+          "</button>" +
+          '<div class="muni-noticias-older-list"' +
+          (expanded ? "" : " hidden") +
+          ">" +
+          '<div class="muni-news-grid muni-news-grid--row">' +
+          split.older
+            .map(function (n) {
+              return renderCard(n, { compact: true });
+            })
+            .join("") +
+          "</div></div></div>";
+      }
+
+      if (!html) {
+        html = '<p class="muni-empty">' + escapeHtml(emptyText) + "</p>";
+      }
+
+      container.innerHTML = html;
+    }
+
+    if (!container._muniHomeOlderBound) {
+      container._muniHomeOlderBound = true;
+      container.addEventListener("click", function (e) {
+        var btn = e.target.closest("[data-noticias-older-toggle]");
+        if (!btn || !container.contains(btn)) return;
+        expanded = !expanded;
+        paint();
+      });
+    }
+
+    paint();
   }
 
   function renderSidebarList(noticias, limit, options) {
@@ -450,6 +622,7 @@
     }
 
     html +=
+      '<li><a href="#" data-nav="consultas" data-open-consultas>AmiBot</a></li>' +
       '<li><a href="index.html#contacto" data-nav="contacto">Contacto</a></li>';
 
     return html;
@@ -846,6 +1019,9 @@
     areaUrl: areaUrl,
     renderCard: renderCard,
     renderHero: renderHero,
+    renderTapaLead: renderTapaLead,
+    renderTapaSide: renderTapaSide,
+    mountHomeNoticias: mountHomeNoticias,
     renderAreaIcon: renderAreaIcon,
     renderSidebarList: renderSidebarList,
     renderAreaLinks: renderAreaLinks,
