@@ -36,24 +36,6 @@
       ],
     },
     {
-      id: "contactos-por-area",
-      categoria: "contacto",
-      titulo: "Teléfonos y WhatsApp de cada área",
-      keywords: [
-        "contactos",
-        "telefonos",
-        "whatsapp",
-        "areas",
-        "numeros",
-        "llamar",
-        "directorio",
-      ],
-      resumen: "Listado completo de contactos municipales con enlace a WhatsApp.",
-      detalleHtml:
-        "<p>Encontrás los teléfonos de Obras Públicas, Salud, Turismo, Defensa Civil y el resto de las áreas, con botón directo a WhatsApp.</p>",
-      enlaces: [{ titulo: "Abrir listado de contactos", url: "contactos.html" }],
-    },
-    {
       id: "obras-privadas-contacto",
       categoria: "area",
       areaSlug: "obras-privadas",
@@ -338,6 +320,137 @@
       .trim();
   }
 
+  function phoneDigits(value) {
+    return String(value || "").replace(/\D/g, "");
+  }
+
+  function toIntlPhone(value) {
+    var d = phoneDigits(value);
+    if (!d) return "";
+    if (d.indexOf("54") === 0) return d;
+    return "54" + d;
+  }
+
+  function whatsappAreaUrl(telefono, areaNombre) {
+    var intl = toIntlPhone(telefono);
+    if (!intl) return "";
+    return (
+      "https://wa.me/" +
+      intl +
+      "?text=" +
+      encodeURIComponent("Hola, quiero consultar al área de " + (areaNombre || "la Municipalidad") + ".")
+    );
+  }
+
+  function contactosBySlug() {
+    var map = {};
+    (window.MUNI_CONTACTOS || []).forEach(function (item) {
+      if (item && item.slug) map[item.slug] = item;
+    });
+    return map;
+  }
+
+  function buildFromContactos() {
+    var list = window.MUNI_CONTACTOS || [];
+    if (!list.length) return [];
+
+    var directoryEntry = {
+      id: "contactos-por-area-vivo",
+      categoria: "contacto",
+      titulo: "Teléfonos y WhatsApp de cada área",
+      keywords: [
+        "contactos",
+        "telefonos",
+        "whatsapp",
+        "areas",
+        "numeros",
+        "llamar",
+        "directorio",
+        "guia",
+      ],
+      resumen: list.length + " áreas con teléfono y WhatsApp directo.",
+      detalleHtml:
+        "<p>Listado oficial de contactos municipales:</p><ul>" +
+        list
+          .map(function (item) {
+            var wa = whatsappAreaUrl(item.telefono, item.area);
+            return (
+              "<li><strong>" +
+              escapeText(item.area) +
+              (item.nota ? " (" + escapeText(item.nota) + ")" : "") +
+              ":</strong> " +
+              escapeText(item.telefono) +
+              (wa
+                ? ' · <a href="' +
+                  escapeText(wa) +
+                  '" target="_blank" rel="noopener noreferrer">WhatsApp</a>'
+                : "") +
+              "</li>"
+            );
+          })
+          .join("") +
+        "</ul>",
+      enlaces: [{ titulo: "Abrir listado completo de contactos", url: "contactos.html" }],
+      searchText: list
+        .map(function (item) {
+          return [item.area, item.telefono, item.nota, item.slug].join(" ");
+        })
+        .join(" "),
+    };
+
+    var perArea = list.map(function (item) {
+      var wa = whatsappAreaUrl(item.telefono, item.area);
+      var tel = toIntlPhone(item.telefono);
+      var nota = item.nota ? " (" + item.nota + ")" : "";
+      return {
+        id: "contacto-wa-" + (item.slug || phoneDigits(item.telefono)),
+        categoria: "contacto",
+        areaSlug: item.slug || "",
+        titulo: "WhatsApp / teléfono — " + item.area + nota,
+        keywords: [
+          item.area,
+          item.slug,
+          item.telefono,
+          phoneDigits(item.telefono),
+          item.nota,
+          "whatsapp",
+          "telefono",
+          "contacto",
+          "llamar",
+          "numero",
+        ].filter(Boolean),
+        resumen: item.telefono + (item.nota ? " · " + item.nota : ""),
+        detalleHtml:
+          "<p><strong>Área:</strong> " +
+          escapeText(item.area) +
+          "</p>" +
+          (item.nota ? "<p><strong>Nota:</strong> " + escapeText(item.nota) + "</p>" : "") +
+          "<p><strong>Teléfono:</strong> " +
+          escapeText(item.telefono) +
+          "</p>" +
+          "<p>Podés escribirles por WhatsApp o llamar directamente.</p>",
+        enlaces: [
+          wa
+            ? { titulo: "WhatsApp " + item.area, url: wa, externo: true }
+            : null,
+          tel ? { titulo: "Llamar " + item.telefono, url: "tel:+" + tel } : null,
+          item.slug
+            ? {
+                titulo: "Ir al área " + item.area,
+                url: "area.html?area=" + encodeURIComponent(item.slug),
+              }
+            : null,
+          { titulo: "Ver todos los contactos", url: "contactos.html" },
+        ].filter(Boolean),
+        searchText: [item.area, item.telefono, item.nota, item.slug, "whatsapp telefono contacto"].join(
+          " "
+        ),
+      };
+    });
+
+    return [directoryEntry].concat(perArea);
+  }
+
   function buildFromDocumentos() {
     var catalog = window.MUNI_DOCUMENTOS_CONTENIDO || {};
     var docsMeta = {
@@ -407,32 +520,53 @@
   }
 
   function buildFromAreas() {
+    var contacts = contactosBySlug();
     var areas = window.MUNI_FIREBASE_SEED_AREAS || [];
     return areas
       .filter(function (a) {
-        return a && a.activa !== false && a.responsable && a.responsable !== "A definir";
+        if (!a || a.activa === false) return false;
+        var phone = (contacts[a.slug] && contacts[a.slug].telefono) || a.contacto || "";
+        var hasPhone = /\d{6,}/.test(String(phone));
+        var hasResponsable = a.responsable && a.responsable !== "A definir";
+        return hasResponsable || hasPhone;
       })
       .map(function (a) {
+        var contact = contacts[a.slug];
+        var phone = (contact && contact.telefono) || a.contacto || "";
+        var wa = /\d{6,}/.test(String(phone)) ? whatsappAreaUrl(phone, a.nombre) : "";
+        var tel = toIntlPhone(phone);
         return {
           id: "area-" + a.slug,
           categoria: "area",
           areaSlug: a.slug,
           titulo: "Área municipal — " + a.nombre,
-          keywords: [a.nombre, a.slug.replace(/-/g, " "), a.responsable].concat(
-            (a.contacto || "").split(/[·,]/).map(function (x) {
-              return x.trim();
-            })
-          ),
-          resumen: a.descripcion || "",
+          keywords: [a.nombre, a.slug.replace(/-/g, " "), a.responsable, phone, contact && contact.nota]
+            .concat(
+              String(phone || "")
+                .split(/[·,]/)
+                .map(function (x) {
+                  return x.trim();
+                })
+            )
+            .filter(Boolean),
+          resumen: a.descripcion || (phone ? "Contacto: " + phone : ""),
           detalleHtml:
             "<p>" +
-            (a.descripcion || "") +
+            escapeText(a.descripcion || "") +
             "</p>" +
-            "<p><strong>Responsable:</strong> " +
-            a.responsable +
-            "</p>" +
-            (a.contacto ? "<p><strong>Contacto:</strong> " + a.contacto + "</p>" : ""),
-          enlaces: [{ titulo: "Ir al área " + a.nombre, url: "area.html?area=" + encodeURIComponent(a.slug) }],
+            (a.responsable && a.responsable !== "A definir"
+              ? "<p><strong>Responsable:</strong> " + escapeText(a.responsable) + "</p>"
+              : "") +
+            (phone ? "<p><strong>Contacto:</strong> " + escapeText(phone) + "</p>" : "") +
+            (contact && contact.nota
+              ? "<p><strong>Nota:</strong> " + escapeText(contact.nota) + "</p>"
+              : ""),
+          enlaces: [
+            { titulo: "Ir al área " + a.nombre, url: "area.html?area=" + encodeURIComponent(a.slug) },
+            wa ? { titulo: "WhatsApp " + a.nombre, url: wa, externo: true } : null,
+            tel ? { titulo: "Llamar " + phone, url: "tel:+" + tel } : null,
+            { titulo: "Ver todos los contactos", url: "contactos.html" },
+          ].filter(Boolean),
         };
       });
   }
@@ -656,6 +790,7 @@
   function getEntries() {
     return STATIC_ENTRIES.concat(buildFromDocumentos())
       .concat(buildFromAreas())
+      .concat(buildFromContactos())
       .concat(buildObrasEnCursoEntries());
   }
 

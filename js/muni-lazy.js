@@ -32,7 +32,7 @@
     );
   }
 
-  var KNOWLEDGE = "js/muni-consultas-conocimiento.js?v=20260721perf";
+  var KNOWLEDGE = "js/muni-consultas-conocimiento.js?v=20260721amibot";
 
   var SECONDARY = [
     "js/muni-radio-config.js?v=20260713perf",
@@ -69,7 +69,11 @@
 
     // Conocimiento de AmiBot: justo después del primer pintado (botón ya está).
     setTimeout(function () {
-      loadScript(KNOWLEDGE).then(afterKnowledge);
+      loadScript("js/muni-contactos-data.js?v=20260721amibot")
+        .then(function () {
+          return loadScript(KNOWLEDGE);
+        })
+        .then(afterKnowledge);
     }, 120);
 
     schedule(function () {
