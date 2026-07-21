@@ -18,6 +18,9 @@
     }
     DATA.eventosFlyers = eventos;
     window.MuniPortal.DATA = DATA;
+    if (window.MuniEventos && typeof window.MuniEventos.mountEventos === "function") {
+      window.MuniEventos.mountEventos(eventos);
+    }
   }
 
   function escapeHtml(str) {

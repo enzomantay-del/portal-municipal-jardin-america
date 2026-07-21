@@ -82,7 +82,25 @@
       window.MuniAccesos.mountAccesos();
     }
 
-    // Eventos / anuncio se montan cuando muni-lazy termina de cargarlos
+    function mountEventosYAnuncio() {
+      if (window.MuniEventos) {
+        window.MuniEventos.mountEventos((M.DATA && M.DATA.eventosFlyers) || []);
+      }
+      if (window.MuniAnuncio && window.MuniAnuncio.mountAnuncioEntrada) {
+        window.MuniAnuncio.mountAnuncioEntrada();
+      }
+    }
+
+    mountEventosYAnuncio();
+    var tries = 0;
+    var retry = setInterval(function () {
+      tries += 1;
+      mountEventosYAnuncio();
+      if ((window.MuniEventos && window.MuniAnuncio) || tries >= 40) {
+        clearInterval(retry);
+      }
+    }, 250);
+
     window.__muniHomePayload = payload;
   });
 })();
