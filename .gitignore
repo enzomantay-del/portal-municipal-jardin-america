@@ -6,5 +6,4 @@ Thumbs.db
 .env.local
 
 # Credenciales opcionales (ver *.example.js)
-js/campana-config.js
 js/reportar-config.js

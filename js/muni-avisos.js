@@ -36,6 +36,10 @@
     if (!select) return;
 
     try {
+      var cfg = getCampanaConfig();
+      if (!String(cfg.apiBase || "").trim() || !String(cfg.publicKey || "").trim()) {
+        throw new Error("Falta la configuración de campaña en el portal.");
+      }
       var res = await fetch(campanaApiUrl("/api/public/barrios"));
       var data = await res.json();
 
@@ -54,7 +58,14 @@
     } catch (err) {
       select.innerHTML = '<option value="">No se pudieron cargar los barrios</option>';
       select.disabled = true;
+      select.setAttribute("aria-invalid", "true");
       console.error("Barrios campaña:", err);
+      var alertEl = document.getElementById("muni-avisos-alert");
+      showFormAlert(
+        alertEl,
+        "error",
+        "No se pudieron cargar los barrios. Recargá la página. Si sigue fallando, avisá al administrador del portal."
+      );
     }
   }
 

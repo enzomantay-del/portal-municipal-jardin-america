@@ -81,6 +81,7 @@
         <a href="#seccion-agenda" class="muni-panel-nav-link muni-panel-nav-link--agenda is-active" aria-current="true">📅 Agenda</a>
         <a href="#seccion-novedades" class="muni-panel-nav-link muni-panel-nav-link--novedades">📰 Novedades</a>
         <a href="#seccion-mapa" class="muni-panel-nav-link muni-panel-nav-link--mapa">🗺️ Mapa</a>
+        <a href="#seccion-avisos" class="muni-panel-nav-link">📲 Recibir avisos</a>
         <a href="#seccion-config" class="muni-panel-nav-link">⚙️ Configuración</a>
       </nav>
 
@@ -438,6 +439,26 @@
         </div>
       </section>
 
+      <section id="seccion-avisos" class="muni-panel-zone muni-panel-zone--avisos">
+        <header class="muni-panel-zone-head">
+          <span class="muni-panel-zone-icon" aria-hidden="true">📲</span>
+          <div>
+            <h2>Contactos de "Recibir avisos"</h2>
+            <p>Los vecinos que se anotan en el portal se guardan en el sistema de campaña WhatsApp (no en este panel de Firebase).</p>
+          </div>
+        </header>
+        <div class="muni-panel-zone-body">
+          <div class="muni-panel-zone-block">
+            <h3 class="muni-panel-zone-block-title">Ver y gestionar contactos</h3>
+            <p class="muni-panel-zone-block-sub">Abrí el panel de campaña con el mismo usuario municipal. Allí están todos los WhatsApp cargados desde el formulario público y por los referentes.</p>
+            <div class="muni-encuesta-admin-toolbar">
+              <a class="muni-btn muni-btn--primary" href="https://sistema-municipal-directoalvecino.netlify.app/panel/contactos" target="_blank" rel="noopener noreferrer">Abrir contactos WhatsApp</a>
+              <a class="muni-btn muni-btn--ghost" href="index.html#recibir-avisos" target="_blank" rel="noopener noreferrer">Ver formulario público</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section id="seccion-config" class="muni-panel-zone muni-panel-zone--config">
         <header class="muni-panel-zone-head">
           <span class="muni-panel-zone-icon" aria-hidden="true">⚙️</span>
@@ -554,7 +575,7 @@
   <script src="js/muni-mapa-core.js?v=20260615"></script>
   <script src="js/admin-mapa.js?v=20260617"></script>
   <script>window.MUNI_AGENDA_EMBED = true;</script>
-  <script src="js/campana-config.js?v=20260529" onerror="window.CAMPANA_CONFIG=window.CAMPANA_CONFIG||{}"></script>
+  <script src="js/campana-config.js?v=20260709" onerror="window.CAMPANA_CONFIG=window.CAMPANA_CONFIG||{}"></script>
   <script src="js/muni-staff-notify.js?v=20260623b"></script>
   <script src="js/agenda-interna.js?v=20260521d"></script>
   <script src="js/muni-panel-nav.js?v=20260611"></script>

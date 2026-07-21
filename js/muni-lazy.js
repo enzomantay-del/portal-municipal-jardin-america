@@ -37,8 +37,8 @@
   var SECONDARY = [
     "js/muni-radio-config.js?v=20260713perf",
     "js/muni-radio.js?v=20260713perf",
-    "js/campana-config.js?v=20260524",
-    "js/muni-avisos.js?v=20260524",
+    "js/campana-config.js?v=20260709",
+    "js/muni-avisos.js?v=20260709",
     "js/muni-anuncio.js?v=20260521",
     "js/muni-agenda-render.js?v=20260625",
     "js/muni-eventos.js?v=20260524",
