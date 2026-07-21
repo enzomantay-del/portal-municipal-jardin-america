@@ -1,0 +1,12 @@
+se-database-compat.js"></script><script>firebase.initializeApp({apiKey:"AIzaSyB989o_VK26oBoROWQRTknSA-D8NLWzsrs",authDomain:"turigest-ja.fireb
+t\xe1 recargar la p\xe1gina.</div>';}},10000);firebase.database().ref("/eventos").on("value",e=>{clearTimeout(evTout);const a=document.getEleme
+firebase.database().ref('/promociones').on('value',function(snap){
+List.contains("visible"))cerrar()});try{firebase.database().ref("sitio_turismo").on("value",function(snap){var st=snap.val()||{};if(typeo
+databaseURL=https://turigest-ja-default-rtdb.firebaseio.com
+font links=2
+script#1 attrs=' src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"' body_start= len=0
+script#2 attrs=' src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"' body_start= len=0
+script#3 attrs='' body_start=firebase.initializeApp({apiKey:"AIzaSyB989o_VK26oBoROWQRTknSA-D8NLWzsrs",authDom len=2990
+script#4 attrs='' body_start=
+var PROMO_TIPO_LABELS={descuento:'Descuento',paquete:'Paquete',oferta:'Oferta e len=2078
+script#5 attrs='' body_start=(function(){function mergeSitioTurismo(st){if(!st)return;if(st.listasAloj&&windo len=2418
