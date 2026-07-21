@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Folleto Tríptico — Jardín América Turismo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,600;0,700;0,800;0,900;1,800&family=Open+Sans:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+
+    :root {
+      --verde:       #1B4332;
+      --verde-med:   #2D6A4F;
+      --verde-claro: #52B788;
+      --naranja:     #F4A261;
+      --crema:       #FDF8F0;
+      --gris:        #4A4A4A;
+      --gris-claro:  #F0F4EE;
+      --borde:       #D8E3D2;
+      --blanco:      #FFFFFF;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      font-family: 'Open Sans', sans-serif;
+      background: #888;
+      color: #1A1A1A;
+    }
+
+    /* ══ HOJA A4 HORIZONTAL (297 × 210 mm) ══ */
+    .hoja {
+      width: 297mm;
+      height: 210mm;
+      margin: 10px auto;
+      background: white;
+      box-shadow: 0 6px 40px rgba(0,0,0,.45);
+      display: flex;
+      flex-direction: row;
+      overflow: hidden;
+    }
+
+    /* Cada panel: 99mm × 210mm */
+    .panel {
+      width: 99mm;
+      height: 210mm;
+      flex-shrink: 0;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Guías de pliegue (solo pantalla) */
+    .panel:not(:last-child) {
+      border-right: 1px dashed rgba(0,0,0,.18);
+    }
+
+    @media print {
+      body { background: white; }
+      .hoja { box-shadow: none; margin: 0; page-break-after: always; }
+      .panel { border-right: none !important; }
+      @page { size: A4 landscape; margin: 0; }
+    }
+
+    /* ── Título de sección compartido ── */
+    .sec-h {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 8px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .13em;
+      color: var(--verde);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-bottom: 3mm;
+    }
+    .sec-h::before {
+      content: '';
+      width: 3px; height: 11px;
+      background: var(--naranja);
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+    .sec-h::after {
+      content: '';
+      flex: 1;
+      height: 1.5px;
+      background: linear-gradient(90deg, var(--verde-claro), transparent);
+    }
+
+    /* ════════════════════════════════
+       EXTERIOR — P3: TAPA
+    ════════════════════════════════ */
+    .tapa { position: relative; background: var(--verde); }
+    .tapa-foto {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center 35%;
+    }
+    .tapa-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg,
+        rgba(13,40,24,.25) 0%, rgba(13,40,24,.05) 25%,
+        rgba(13,40,24,.65) 60%, rgba(13,40,24,.97) 100%);
+    }
+    .tapa-topbar {
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 6mm; background: var(--naranja);
+      display: flex; align-items: center;
+      justify-content: space-between; padding: 0 5mm; z-index: 5;
+    }
+    .tapa-topbar-txt {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 5.5px; font-weight: 800;
+      letter-spacing: .16em; text-transform: uppercase; color: var(--verde);
+    }
+    .tapa-contenido {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      z-index: 4; padding: 0 5.5mm 6mm;
+    }
+    .tapa-eyebrow {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 7.5px; font-weight: 700;
+      letter-spacing: .22em; text-transform: uppercase;
+      color: var(--naranja); margin-bottom: 1.5px;
+    }
+    .tapa-ciudad {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 40px; font-weight: 900;
+      line-height: .88; letter-spacing: -1.5px;
+      color: var(--blanco); text-shadow: 0 3px 16px rgba(0,0,0,.6);
+      margin-bottom: 4px;
+    }
+    .tapa-ciudad em { font-style: normal; color: var(--naranja); }
+    .tapa-sub {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 8.5px; font-weight: 600;
+      color: rgba(255,255,255,.8); letter-spacing: .07em; margin-bottom: 9px;
+    }
+    .tapa-fichas { display: flex; flex-direction: column; gap: 2.5px; margin-bottom: 9px; }
+    .tapa-ficha {
+      display: flex; align-items: center; gap: 5px;
+      background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2);
+      border-radius: 4px; padding: 3px 7px;
+    }
+    .tapa-ficha-ico { font-size: 9px; }
+    .tapa-ficha-txt {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 6.5px; font-weight: 600; color: rgba(255,255,255,.9);
+    }
+    .tapa-logo { height: 28px; width: auto; display: block; }
+
+    /* ════════════════════════════════
+       EXTERIOR — P2: EXCURSIONES
+    ════════════════════════════════ */
+    .exc-panel {
+      background: var(--verde); color: var(--blanco);
+      display: flex; flex-direction: column; padding: 5mm 5mm 4mm;
+    }
+    .exc-panel-h {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13px; font-weight: 900; line-height: 1.1;
+      color: var(--blanco); margin-bottom: 1.5mm;
+    }
+    .exc-panel-h em { font-style: normal; color: var(--naranja); }
+    .exc-panel-sub { font-size: 7px; opacity: .6; margin-bottom: 4mm; line-height: 1.5; }
+    .exc-lista { display: flex; flex-direction: column; gap: 3.5mm; flex: 1; }
+    .exc-item { display: grid; grid-template-columns: 28mm 1fr; gap: 3mm; align-items: start; }
+    .exc-item-foto {
+      height: 22mm; border-radius: 6px; overflow: hidden;
+      position: relative; flex-shrink: 0;
+    }
+    .exc-item-foto img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .exc-dist {
+      position: absolute; bottom: 3px; left: 3px; right: 3px;
+      background: rgba(13,40,24,.88); border-radius: 3px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 5.5px; font-weight: 800; color: var(--naranja);
+      text-align: center; padding: 2px 3px; letter-spacing: .04em;
+    }
+    .exc-item-nombre {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 8.5px; font-weight: 800; color: var(--blanco);
+      line-height: 1.2; margin-bottom: 2.5px;
+    }
+    .exc-item-desc { font-size: 7px; opacity: .72; line-height: 1.5; }
+
+    /* ════════════════════════════════
+       EXTERIOR — P1: SOLAPA
+    ════════════════════════════════ */
+    .solapa {
+      background: var(--verde-med); color: var(--blanco);
+      display: flex; flex-direction: column;
+      padding: 6mm 5mm 4.5mm; gap: 3.5mm;
+    }
+    .solapa-logo { height: 34px; width: auto; display: block; }
+    .solapa-tagline {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 9.5px; font-weight: 800;
+      color: var(--naranja); line-height: 1.3;
+    }
+    .solapa-bloque { background: rgba(0,0,0,.15); border-radius: 7px; padding: 3.5mm; }
+    .solapa-bloque-h {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 6.5px; font-weight: 800;
+      letter-spacing: .1em; text-transform: uppercase;
+      color: var(--naranja); margin-bottom: 2.5mm;
+    }
+    .solapa-fila {
+      display: flex; align-items: flex-start; gap: 4px;
+      font-size: 7px; line-height: 1.55; margin-bottom: 2px; opacity: .88;
+    }
+    .solapa-fila-ico { flex-shrink: 0; }
+    .redes-wrap { display: flex; flex-direction: column; gap: 2mm; }
+    .red-solapa {
+      display: flex; align-items: center; gap: 3mm;
+      background: rgba(255,255,255,.1); border-radius: 6px; padding: 2mm 3mm;
+    }
+    .red-solapa-ico {
+      width: 20px; height: 20px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .red-solapa-ico svg { width: 11px; height: 11px; fill: white; }
+    .red-ig { background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
+    .red-fb { background: #1877F2; }
+    .red-plat {
+      display: block; font-family: 'Montserrat', sans-serif;
+      font-size: 5.5px; font-weight: 700; letter-spacing: .1em;
+      text-transform: uppercase; opacity: .6;
+    }
+    .red-handle { display: block; font-size: 7.5px; font-weight: 600; }
+    .solapa-qr {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 2mm; flex: 1; justify-content: center;
+    }
+    .qr-marco {
+      width: 28mm; height: 28mm; background: white;
+      border-radius: 7px; padding: 2mm; display: block;
+    }
+    .qr-marco img { width: 100%; height: 100%; display: block; }
+    .qr-label { font-size: 6.5px; text-align: center; opacity: .6; line-height: 1.55; }
+    .solapa-credito {
+      display: flex; align-items: center; gap: 3mm;
+      border-top: 1px solid rgba(255,255,255,.15); padding-top: 3mm;
+    }
+    .solapa-credito img { height: 24px; width: auto; opacity: .8; }
+    .solapa-credito-txt { font-size: 6.5px; opacity: .5; line-height: 1.5; }
+
+    /* ════════════════════════════════
+       INTERIOR — P4: SALTOS DEL TABAY
+    ════════════════════════════════ */
+    .tabay-panel { background: var(--verde); color: var(--blanco); display: flex; flex-direction: column; }
+    .tabay-hero { height: 66mm; position: relative; flex-shrink: 0; }
+    .tabay-hero img {
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center 40%; display: block;
+    }
+    .tabay-hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(13,40,24,.2) 40%, rgba(13,40,24,.9) 100%);
+    }
+    .tabay-badge {
+      position: absolute; top: 8px; left: 8px;
+      background: var(--naranja); color: var(--verde);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 6px; font-weight: 800; letter-spacing: .1em;
+      text-transform: uppercase; padding: 3px 8px; border-radius: 100px; z-index: 2;
+    }
+    .tabay-hero-titulo { position: absolute; bottom: 5mm; left: 5mm; right: 5mm; z-index: 2; }
+    .tabay-hero-titulo h2 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 24px; font-weight: 900; line-height: .92; letter-spacing: -.5px;
+      color: var(--blanco); text-shadow: 0 2px 10px rgba(0,0,0,.5); margin-bottom: 3px;
+    }
+    .tabay-hero-titulo p { font-size: 7.5px; opacity: .78; }
+    .tabay-strip {
+      display: grid; grid-template-columns: repeat(3,1fr);
+      height: 18mm; flex-shrink: 0; gap: 1px;
+    }
+    .tabay-strip img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .tabay-body {
+      flex: 1; padding: 4mm 5mm;
+      display: flex; flex-direction: column; gap: 2.5mm; overflow: hidden;
+    }
+    .tabay-desc { font-size: 7.5px; line-height: 1.65; opacity: .88; }
+    .tabay-chips { display: flex; flex-wrap: wrap; gap: 2px; }
+    .tabay-chip {
+      background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.18);
+      border-radius: 100px; padding: 2px 7px;
+      font-size: 6.5px; font-family: 'Montserrat', sans-serif; font-weight: 600;
+    }
+    .tabay-dormi { background: rgba(0,0,0,.2); border-radius: 7px; padding: 3mm; }
+    .tabay-dormi-h {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 6.5px; font-weight: 800; color: var(--naranja);
+      text-transform: uppercase; letter-spacing: .08em; margin-bottom: 2px;
+    }
+    .tabay-dormi p { font-size: 7px; opacity: .8; line-height: 1.55; }
+    .tabay-tel {
+      background: rgba(244,162,97,.18); border-left: 2px solid var(--naranja);
+      border-radius: 0 6px 6px 0; padding: 3mm; margin-top: auto;
+    }
+    .tabay-tel-h {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 6.5px; font-weight: 800; color: var(--naranja);
+      text-transform: uppercase; letter-spacing: .08em; margin-bottom: 2px;
+    }
+    .tabay-tel p { font-size: 7.5px; opacity: .9; line-height: 1.5; }
+
+    /* ════════════════════════════════
+       INTERIOR — P5: ATRACTIVOS + FESTIVIDADES
+    ════════════════════════════════ */
+    .atrac-panel {
+      background: var(--crema);
+      display: flex; flex-direction: column;
+      padding: 4mm 4mm 3mm; gap: 2.5mm;
+    }
+    .atrac-mini-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.8mm; }
+    .atrac-mini {
+      background: var(--blanco); border-radius: 6px;
+      border: 1px solid var(--borde); overflow: hidden;
+    }
+    .atrac-mini-foto { height: 15mm; overflow: hidden; }
+    .atrac-mini-foto img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .atrac-mini-body { padding: 2mm 2mm 2.5mm; }
+    .atrac-mini-nombre {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 6.5px; font-weight: 800; color: var(--verde);
+      line-height: 1.2; margin-bottom: 1px;
+    }
+    .atrac-mini-desc { font-size: 6px; color: var(--gris); line-height: 1.45; }
+    .fest-mini-list { display: flex; flex-direction: column; gap: 1.8mm; flex: 1; }
+    .fest-mini {
+      display: flex; align-items: flex-start; gap: 2.5mm;
+      background: var(--blanco); border-radius: 6px;
+      padding: 2mm 2.5mm; border: 1px solid var(--borde);
+    }
+    .fest-mini-badge {
+      background: var(--verde); color: var(--naranja);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 5.5px; font-weight: 800; text-transform: uppercase;
+      letter-spacing: .06em; padding: 2px 5px; border-radius: 4px;
+      white-space: nowrap; flex-shrink: 0; text-align: center; line-height: 1.5;
+    }
+    .fest-mini-nombre {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 7px; font-weight: 800; color: var(--verde);
+      line-height: 1.2; margin-bottom: 1px;
+    }
+    .fest-mini-desc { font-size: 6.5px; color: var(--gris); line-height: 1.4; }
+
+    /* ════════════════════════════════
+       INTERIOR — P6: INFO PRÁCTICA
+    ════════════════════════════════ */
+    .info-panel {
+      background: var(--blanco); border-left: 3px solid var(--verde);
+      display: flex; flex-direction: column; padding: 5mm 5mm 4mm; gap: 3mm;
+    }
+    .info-panel-h {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 16px; font-weight: 900; color: var(--verde); line-height: 1.05;
+    }
+    .info-panel-h em { font-style: normal; color: var(--naranja); }
+    .info-bloque { background: var(--gris-claro); border-radius: 7px; padding: 3mm; }
+    .info-bloque-h {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 7px; font-weight: 800; text-transform: uppercase;
+      letter-spacing: .1em; color: var(--verde);
+      margin-bottom: 2.5mm; padding-bottom: 1.5mm; border-bottom: 1px solid var(--borde);
+    }
+    .info-fila {
+      display: flex; align-items: flex-start; gap: 3px;
+      font-size: 7px; color: var(--gris); line-height: 1.55; margin-bottom: 2px;
+    }
+    .info-fila strong { color: var(--verde); font-weight: 700; }
+    .info-ico { flex-shrink: 0; font-size: 8px; margin-top: 1px; }
+    .aloj-lista { display: flex; flex-direction: column; gap: 1.5mm; }
+    .aloj-item {
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--blanco); border-radius: 5px;
+      padding: 1.5mm 2.5mm; border: 1px solid var(--borde);
+    }
+    .aloj-nombre { font-size: 7px; font-weight: 600; color: var(--verde); }
+    .aloj-tel { font-size: 6.5px; color: var(--gris); opacity: .8; }
+    .info-nota {
+      font-size: 7px; color: var(--gris); line-height: 1.6;
+      background: var(--gris-claro); border-radius: 7px;
+      padding: 3mm; margin-top: auto;
+    }
+    .info-nota strong { color: var(--verde); }
+
+  </style>
+</head>
+<body>
+
+
+<!-- ══════════════════════════════════════════════════
+     HOJA 1 — EXTERIOR
+     Izq→Der: SOLAPA (P1) | EXCURSIONES (P2) | TAPA (P3)
+══════════════════════════════════════════════════ -->
+<div class="hoja" id="exterior">
+
+  <!-- P1 — SOLAPA TRASERA -->
+  <div class="panel solapa">
+    <img src="img/logo-municipalidad.png" alt="Municipalidad de Jardín América" class="solapa-logo">
+    <p class="solapa-tagline">Municipalidad de<br>Jardín América</p>
+
+    <div class="solapa-bloque">
+      <p class="solapa-bloque-h">📍 Oficina de Turismo</p>
+      <div class="solapa-fila">
+        <span class="solapa-fila-ico">📌</span>
+        <span>Ruta 12, frente a la terminal de ómnibus<br>Jardín América, Misiones</span>
+      </div>
+      <div class="solapa-fila">
+        <span class="solapa-fila-ico">✉️</span>
+        <span>jardinamericaturismo36@gmail.com</span>
+      </div>
+    </div>
+
+    <div>
+      <p class="solapa-bloque-h">📲 Seguinos en redes</p>
+      <div class="redes-wrap">
+        <div class="red-solapa">
+          <div class="red-solapa-ico red-ig">
+            <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+          </div>
+          <div><span class="red-plat">Instagram</span><span class="red-handle">@jardinamericaturismo</span></div>
+        </div>
+        <div class="red-solapa">
+          <div class="red-solapa-ico red-fb">
+            <svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          </div>
+          <div><span class="red-plat">Facebook</span><span class="red-handle">Jardín América Turismo</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="solapa-qr">
+      <a class="qr-marco" href="#" title="Escaneá para visitar el sitio web">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://jardinamericaturismo.com.ar&bgcolor=FFFFFF&color=1B4332&margin=4" alt="QR web">
+      </a>
+      <p class="qr-label">Escaneá para visitar<br>nuestro sitio web</p>
+    </div>
+
+    <div class="solapa-credito">
+      <img src="img/logo-selva-tic.png" alt="Selva.tic">
+      <p class="solapa-credito-txt">Desarrollado por Selva.tic<br>Todos los derechos reservados</p>
+    </div>
+  </div>
+
+  <!-- P2 — EXCURSIONES DESDE JARDÍN AMÉRICA -->
+  <div class="panel exc-panel">
+    <h2 class="exc-panel-h">¿Qué visitar<br>desde <em>aquí</em>?</h2>
+    <p class="exc-panel-sub">Jardín América: punto de partida ideal para recorrer las maravillas de Misiones.</p>
+
+    <div class="exc-lista">
+      <div class="exc-item">
+        <div class="exc-item-foto">
+          <img src="img/cataratas-iguazu.webp" alt="Cataratas del Iguazú">
+          <span class="exc-dist">200 km · ~2 h 30 min</span>
+        </div>
+        <div>
+          <p class="exc-item-nombre">Cataratas del Iguazú</p>
+          <p class="exc-item-desc">Una de las Siete Maravillas Naturales del Mundo y Patrimonio UNESCO. El espectáculo más imponente de la Argentina.</p>
+        </div>
+      </div>
+      <div class="exc-item">
+        <div class="exc-item-foto">
+          <img src="img/san-ignacio.webp" alt="Reducciones de San Ignacio Miní">
+          <span class="exc-dist">30 km · ~30 min</span>
+        </div>
+        <div>
+          <p class="exc-item-nombre">Reducciones de San Ignacio Miní</p>
+          <p class="exc-item-desc">Sitio arqueológico jesuítico Patrimonio UNESCO. A 30 km, perfecto para una tarde. Espectáculo de luz y sonido imperdible.</p>
+        </div>
+      </div>
+      <div class="exc-item">
+        <div class="exc-item-foto">
+          <img src="img/mocona.webp" alt="Saltos del Moconá">
+          <span class="exc-dist">~200 km · ~3 hs</span>
+        </div>
+        <div>
+          <p class="exc-item-nombre">Saltos del Moconá</p>
+          <p class="exc-item-desc">Fenómeno único en el mundo: cascadas longitudinales de 12 km sobre el Río Uruguay en plena selva misionera.</p>
+        </div>
+      </div>
+      <div class="exc-item">
+        <div class="exc-item-foto">
+          <img src="img/salto-encantado.webp" alt="Salto Encantado">
+          <span class="exc-dist">45 km · ~45 min</span>
+        </div>
+        <div>
+          <p class="exc-item-nombre">Salto Encantado & Parque de la Cruz</p>
+          <p class="exc-item-desc">64 metros de caída libre entre paredes de basalto. Junto al Parque Temático de la Cruz, una excursión completa.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- P3 — TAPA (COVER) -->
+  <div class="panel tapa">
+    <img src="img/tabay-hero.webp" alt="Saltos del Tabay — Jardín América" class="tapa-foto">
+    <div class="tapa-overlay"></div>
+    <div class="tapa-topbar">
+      <span class="tapa-topbar-txt">🌿 Guía Turística Oficial</span>
+      <span class="tapa-topbar-txt">Misiones · Argentina</span>
+    </div>
+    <div class="tapa-contenido">
+      <p class="tapa-eyebrow">Descubrí</p>
+      <h1 class="tapa-ciudad">Jardín<br><em>América</em></h1>
+      <p class="tapa-sub">Misiones · Argentina · Ruta Nacional 12</p>
+      <div class="tapa-fichas">
+        <div class="tapa-ficha">
+          <span class="tapa-ficha-ico">📍</span>
+          <span class="tapa-ficha-txt">Centro de Misiones · Ruta Nacional 12</span>
+        </div>
+        <div class="tapa-ficha">
+          <span class="tapa-ficha-ico">🌡️</span>
+          <span class="tapa-ficha-txt">Clima subtropical · Todo el año</span>
+        </div>
+        <div class="tapa-ficha">
+          <span class="tapa-ficha-ico">🚗</span>
+          <span class="tapa-ficha-txt">Posadas 100 km · Iguazú 200 km</span>
+        </div>
+      </div>
+      <img src="img/logo-municipalidad.png" alt="Municipalidad de Jardín América" class="tapa-logo">
+    </div>
+  </div>
+
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     HOJA 2 — INTERIOR
+     Izq→Der: TABAY (P4) | ATRACTIVOS+FEST (P5) | INFO PRÁCTICA (P6)
+══════════════════════════════════════════════════ -->
+<div class="hoja" id="interior">
+
+  <!-- P4 — SALTOS DEL TABAY -->
+  <div class="panel tabay-panel">
+    <div class="tabay-hero">
+      <img src="img/tabay-hero.webp" alt="Saltos del Tabay">
+      <div class="tabay-hero-overlay"></div>
+      <span class="tabay-badge">⭐ Atractivo Nº 1</span>
+      <div class="tabay-hero-titulo">
+        <h2>Saltos del<br>Tabay</h2>
+        <p>El gran tesoro natural de Jardín América</p>
+      </div>
+    </div>
+    <div class="tabay-strip">
+      <img src="img/tabay-04.webp" alt="Tabay">
+      <img src="img/tabay-06.webp" alt="Tabay">
+      <img src="img/tabay-02.webp" alt="Tabay">
+    </div>
+    <div class="tabay-body">
+      <p class="tabay-desc">Una serie de cascadas y pozones escalonados en plena selva paranaense, donde el agua cristalina de nacientes serranas cae sobre rocas basálticas cubiertas de vegetación exuberante. A solo 4 km del centro, un entorno prácticamente intacto.</p>
+      <div class="tabay-chips">
+        <span class="tabay-chip">🥾 Trekking</span>
+        <span class="tabay-chip">🏊 Baños naturales</span>
+        <span class="tabay-chip">🦜 Avistaje de aves</span>
+        <span class="tabay-chip">🏕️ Camping</span>
+        <span class="tabay-chip">👨‍👩‍👧 Familiar</span>
+      </div>
+      <div class="tabay-dormi">
+        <p class="tabay-dormi-h">🛖 Dormis en el predio</p>
+        <p>"Cañón del Tabay", "Lagos", "Los Pioneros", "Los Senderos" y "Selva Misionera". Reservas con anticipación recomendadas.</p>
+      </div>
+      <div class="tabay-tel">
+        <p class="tabay-tel-h">📞 Contacto y reservas</p>
+        <p>Tel: (3743) 400-421 &nbsp;·&nbsp; WA: +54 9 3743 400-421</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- P5 — ATRACTIVOS LOCALES + FESTIVIDADES -->
+  <div class="panel atrac-panel">
+    <h2 class="sec-h">🏙️ Qué visitar en Jardín América</h2>
+    <div class="atrac-mini-grid">
+      <div class="atrac-mini">
+        <div class="atrac-mini-foto"><img src="img/plaza-colon.webp" alt="Plaza Colón"></div>
+        <div class="atrac-mini-body">
+          <p class="atrac-mini-nombre">Plaza Colón</p>
+          <p class="atrac-mini-desc">Diseño único de 1967, pirámides de basalto y Domingos Culturales.</p>
+        </div>
+      </div>
+      <div class="atrac-mini">
+        <div class="atrac-mini-foto"><img src="img/parroquia-cristo-redentor-nueva.webp" alt="Parroquia Cristo Redentor"></div>
+        <div class="atrac-mini-body">
+          <p class="atrac-mini-nombre">Parroquia Cristo Redentor</p>
+          <p class="atrac-mini-desc">58 vitrales policromados (125 m²) y Cristo en cedro colorado de 2,50 m.</p>
+        </div>
+      </div>
+      <div class="atrac-mini">
+        <div class="atrac-mini-foto"><img src="img/cristo-hermandad.webp" alt="Cristo de la Hermandad"></div>
+        <div class="atrac-mini-body">
+          <p class="atrac-mini-nombre">Cristo de la Hermandad</p>
+          <p class="atrac-mini-desc">Escultura de 18 m en timbó. Primer símbolo que recibe al visitante.</p>
+        </div>
+      </div>
+      <div class="atrac-mini">
+        <div class="atrac-mini-foto"><img src="img/cooperativa-flor.webp" alt="Cooperativa Flor de Jardín"></div>
+        <div class="atrac-mini-body">
+          <p class="atrac-mini-nombre">Cooperativa Flor de Jardín</p>
+          <p class="atrac-mini-desc">Yerba mate y pepinillos artesanales a precio de origen. Parada obligada.</p>
+        </div>
+      </div>
+      <div class="atrac-mini">
+        <div class="atrac-mini-foto"><img src="img/baden-baden.webp" alt="Complejo Baden Baden"></div>
+        <div class="atrac-mini-body">
+          <p class="atrac-mini-nombre">Complejo Baden Baden</p>
+          <p class="atrac-mini-desc">Piscinas, tirolesa, trekking, cabalgatas y alojamiento en la selva.</p>
+        </div>
+      </div>
+      <div class="atrac-mini">
+        <div class="atrac-mini-foto"><img src="img/ysiry.webp" alt="Complejo Natural Ysirý"></div>
+        <div class="atrac-mini-body">
+          <p class="atrac-mini-nombre">Complejo Natural Ysirý</p>
+          <p class="atrac-mini-desc">15 ha con piscinas de manantial y animales en semilibertad.</p>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="sec-h">🎉 Festividades del año</h2>
+    <div class="fest-mini-list">
+      <div class="fest-mini">
+        <span class="fest-mini-badge">Enero</span>
+        <div>
+          <p class="fest-mini-nombre">Fiesta Provincial del Turista</p>
+          <p class="fest-mini-desc">Shows nacionales, gastronomía y coronación de la Reina del Turista en los Saltos del Tabay.</p>
+        </div>
+      </div>
+      <div class="fest-mini">
+        <span class="fest-mini-badge">Semana<br>Santa</span>
+        <div>
+          <p class="fest-mini-nombre">Vía Crucis de la Selva</p>
+          <p class="fest-mini-desc">14 estaciones de la Pasión por los senderos selváticos del Tabay. Ceremonia de profundo arraigo espiritual.</p>
+        </div>
+      </div>
+      <div class="fest-mini">
+        <span class="fest-mini-badge">Julio</span>
+        <div>
+          <p class="fest-mini-nombre">Akimatsuri</p>
+          <p class="fest-mini-desc">Festival de cultura japonesa con gastronomía, danzas y arte oriental.</p>
+        </div>
+      </div>
+      <div class="fest-mini">
+        <span class="fest-mini-badge">Sept.</span>
+        <div>
+          <p class="fest-mini-nombre">Festival Infanto Juvenil del Folclore</p>
+          <p class="fest-mini-desc">Jóvenes de toda Misiones compiten rumbo al Festival Nacional de Cosquín.</p>
+        </div>
+      </div>
+      <div class="fest-mini">
+        <span class="fest-mini-badge">Nov.</span>
+        <div>
+          <p class="fest-mini-nombre">Fiesta Provincial de las Raíces</p>
+          <p class="fest-mini-desc">Colectividades inmigrantes celebran con danzas, música y gastronomía auténtica.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- P6 — INFORMACIÓN PRÁCTICA -->
+  <div class="panel info-panel">
+    <h2 class="info-panel-h">Info<br><em>práctica</em></h2>
+
+    <div class="info-bloque">
+      <p class="info-bloque-h">🚗 Cómo llegar</p>
+      <div class="info-fila">
+        <span class="info-ico">🚗</span>
+        <span><strong>En auto:</strong> Ruta Nacional 12 entre Posadas (100 km, 1 h 15 min) y Puerto Iguazú (200 km, 2 h 30 min). Pavimentada y en buen estado.</span>
+      </div>
+      <div class="info-fila">
+        <span class="info-ico">🚌</span>
+        <span><strong>En colectivo:</strong> Servicios frecuentes desde Posadas, Iguazú y Oberá. Empresas Río Uruguay y Expreso Singer. Terminal frente al Cristo de la Hermandad.</span>
+      </div>
+      <div class="info-fila">
+        <span class="info-ico">✈️</span>
+        <span><strong>En avión:</strong> Aeropuerto Posadas (POS) a 100 km · Aeropuerto Iguazú (IGR) a 200 km.</span>
+      </div>
+    </div>
+
+    <div class="info-bloque">
+      <p class="info-bloque-h">🏨 Alojamientos destacados</p>
+      <div class="aloj-lista">
+        <div class="aloj-item">
+          <span class="aloj-nombre">Dormis Saltos del Tabay</span>
+          <span class="aloj-tel">(3743) 400-421</span>
+        </div>
+        <div class="aloj-item">
+          <span class="aloj-nombre">Complejo Baden Baden</span>
+          <span class="aloj-tel">(03743) 482-081</span>
+        </div>
+        <div class="aloj-item">
+          <span class="aloj-nombre">Paraíso Lodge</span>
+          <span class="aloj-tel">(03743) 460-521</span>
+        </div>
+        <div class="aloj-item">
+          <span class="aloj-nombre">Las Azaleas del Tabay</span>
+          <span class="aloj-tel">(03743) 444-378</span>
+        </div>
+        <div class="aloj-item">
+          <span class="aloj-nombre">Dúplex El Ciprés</span>
+          <span class="aloj-tel">+54 374 344-0582</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-nota">
+      <strong>🦜 Parque Provincial Valle del Cuñá Pirú</strong> — Reservorio de biodiversidad con cientos de especies de aves y flora subtropical, a pocos kilómetros.<br><br>
+      <strong>🫖 Tierra de yerba mate</strong> — La Cooperativa Flor de Jardín produce y vende directamente al público desde la Ruta 12. Llevate el sabor de Misiones.
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

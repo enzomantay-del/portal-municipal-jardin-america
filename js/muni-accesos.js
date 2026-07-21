@@ -77,8 +77,8 @@
       icon: "🧳",
       titulo: "Turismo",
       desc: "Atractivos, folleto y circuitos",
-      href: "https://enzomantay-del.github.io/jardin-america-turismo/",
-      externo: true,
+      href: "/turismo/",
+      externo: false,
     },
   ];
 

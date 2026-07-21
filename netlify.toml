@@ -1,8 +1,17 @@
 [build]
   publish = "."
+  # Si actualizás el repo hermano jardin-america-turismo, corré:
+  #   python scripts/sync-turismo.py
+  # antes de publicar, para refrescar /turismo/
 
 [functions]
   directory = "netlify/functions"
+
+# Turismo vive en el mismo dominio: jardinamerica.gob.ar/turismo/
+[[redirects]]
+  from = "/turismo"
+  to = "/turismo/"
+  status = 301
 
 [build.environment]
   # La API key de Firebase Web es pública (se restringe en Firebase Console, no es un secreto de servidor).

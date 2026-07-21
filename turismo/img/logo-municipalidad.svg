@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 175" role="img" aria-label="Municipalidad de Jardín América — Una ciudad que Florece">
+  <title>Municipalidad de Jardín América</title>
+  <defs>
+    <clipPath id="icon-clip">
+      <rect x="8" y="38" width="128" height="128" rx="10"/>
+    </clipPath>
+  </defs>
+
+  <!-- ── ÍCONO ── -->
+
+  <!-- Fondo azul (agua/cascada) -->
+  <rect x="8" y="38" width="128" height="128" rx="10" fill="#41b6e6"/>
+
+  <!-- Colina verde (izquierda) -->
+  <path d="M8 105 Q30 55 72 72 Q100 82 136 108 L136 166 L8 166 Z"
+        fill="#6db33f" clip-path="url(#icon-clip)"/>
+
+  <!-- Efecto cascada (líneas claras) -->
+  <line x1="85" y1="38" x2="83" y2="130" stroke="#a8dff7" stroke-width="9"
+        opacity=".55" stroke-linecap="round" clip-path="url(#icon-clip)"/>
+  <line x1="100" y1="38" x2="99" y2="125" stroke="#c5ebf9" stroke-width="5"
+        opacity=".4"  stroke-linecap="round" clip-path="url(#icon-clip)"/>
+  <line x1="115" y1="38" x2="114" y2="120" stroke="#d8f1fc" stroke-width="3"
+        opacity=".35" stroke-linecap="round" clip-path="url(#icon-clip)"/>
+
+  <!-- Camino / sendero gris en la base -->
+  <path d="M8 145 Q40 132 72 138 Q100 143 136 132 L136 166 L8 166 Z"
+        fill="#9e9e9e" clip-path="url(#icon-clip)"/>
+  <path d="M8 152 Q40 140 72 146 Q100 151 136 140 L136 160 L8 160 Z"
+        fill="#b5b5b5" opacity=".5" clip-path="url(#icon-clip)"/>
+
+  <!-- ── FLOR DE ORQUÍDEA ── -->
+  <g transform="translate(72, 32)">
+    <!-- Tallo -->
+    <line x1="0" y1="8" x2="0" y2="20" stroke="#6db33f" stroke-width="3"/>
+    <!-- Pétalos (5, rotados) -->
+    <g opacity=".95">
+      <ellipse cx="0" cy="-13" rx="7.5" ry="14" fill="#e8168b"/>
+      <ellipse cx="0" cy="-13" rx="7.5" ry="14" fill="#e8168b" transform="rotate(72)"/>
+      <ellipse cx="0" cy="-13" rx="7.5" ry="14" fill="#e8168b" transform="rotate(144)"/>
+      <ellipse cx="0" cy="-13" rx="7.5" ry="14" fill="#e8168b" transform="rotate(216)"/>
+      <ellipse cx="0" cy="-13" rx="7.5" ry="14" fill="#e8168b" transform="rotate(288)"/>
+    </g>
+    <!-- Brillo en pétalos -->
+    <ellipse cx="0" cy="-15" rx="3" ry="6" fill="white" opacity=".22"/>
+    <!-- Centro amarillo -->
+    <circle cx="0" cy="0" r="7.5" fill="#ffc107"/>
+    <circle cx="0" cy="0" r="4.5" fill="#f5a623"/>
+    <circle cx="-1.5" cy="-1.5" r="2" fill="#ffe082" opacity=".7"/>
+  </g>
+
+  <!-- ── TEXTO ── -->
+
+  <!-- "Municipalidad de" -->
+  <text x="153" y="75"
+        font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif"
+        font-size="24"
+        font-weight="400"
+        fill="#555555"
+        letter-spacing="0.3">Municipalidad de</text>
+
+  <!-- "Jardín América" -->
+  <text x="150" y="133"
+        font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif"
+        font-size="70"
+        font-weight="800"
+        fill="#222222"
+        letter-spacing="-1">Jardín América</text>
+
+  <!-- "Una ciudad que Florece" (cursiva, azul) -->
+  <text x="320" y="163"
+        font-family="'Segoe Script', 'Brush Script MT', 'Comic Sans MS', cursive"
+        font-size="26"
+        font-style="italic"
+        fill="#41b6e6"
+        letter-spacing="0.2">Una ciudad que Florece</text>
+</svg>

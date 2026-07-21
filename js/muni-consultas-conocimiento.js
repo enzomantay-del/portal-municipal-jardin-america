@@ -5,7 +5,7 @@
 (function () {
   "use strict";
 
-  var TURISMO_URL = "https://enzomantay-del.github.io/jardin-america-turismo/";
+  var TURISMO_URL = "/turismo/";
 
   var STATIC_ENTRIES = [
     {
@@ -96,7 +96,7 @@
         "<li><strong>En colectivo:</strong> servicios de larga distancia desde Posadas, Iguazú y otras ciudades. Terminal en el centro, frente al Cristo de la Hermandad. Empresas como Río Uruguay y Expreso Singer operan el corredor.</li>" +
         "<li><strong>En avión:</strong> aeropuerto más cercano en Posadas (100 km); también Iguazú (200 km).</li>" +
         "</ul>",
-      enlaces: [{ titulo: "Ver web de turismo", url: TURISMO_URL, externo: true }],
+      enlaces: [{ titulo: "Ver web de turismo", url: TURISMO_URL }],
     },
     {
       id: "turismo-colectivos-posadas",
@@ -165,7 +165,7 @@
           .join("") +
         "</tbody></table></div>" +
         "<p><em>Fuente: Municipalidad de Jardín América · Web de Turismo.</em></p>",
-      enlaces: [{ titulo: "Ver horarios completos en Turismo", url: TURISMO_URL + "#colectivos", externo: true }],
+      enlaces: [{ titulo: "Ver horarios completos en Turismo", url: TURISMO_URL + "#colectivos" }],
     },
     {
       id: "turismo-colectivos-iguazu",
@@ -217,7 +217,7 @@
           .join("") +
         "</tbody></table></div>" +
         "<p><em>Fuente: Municipalidad de Jardín América · Web de Turismo.</em></p>",
-      enlaces: [{ titulo: "Ver horarios completos en Turismo", url: TURISMO_URL + "#colectivos", externo: true }],
+      enlaces: [{ titulo: "Ver horarios completos en Turismo", url: TURISMO_URL + "#colectivos" }],
     },
     {
       id: "turismo-colectivos-ruta14",
@@ -256,7 +256,7 @@
           .join("") +
         "</tbody></table></div>" +
         "<p><em>Fuente: Municipalidad de Jardín América · Web de Turismo.</em></p>",
-      enlaces: [{ titulo: "Ver horarios completos en Turismo", url: TURISMO_URL + "#colectivos", externo: true }],
+      enlaces: [{ titulo: "Ver horarios completos en Turismo", url: TURISMO_URL + "#colectivos" }],
     },
     {
       id: "turismo-saltos-tabay",
@@ -272,7 +272,7 @@
         "<li>Aguas de nacientes serranas</li>" +
         "<li>Entorno de selva subtropical nativa</li>" +
         "</ul>",
-      enlaces: [{ titulo: "Más info en Turismo", url: TURISMO_URL, externo: true }],
+      enlaces: [{ titulo: "Más info en Turismo", url: TURISMO_URL }],
     },
     {
       id: "turismo-cristo-hermandad",
@@ -283,7 +283,7 @@
       resumen: "Monumento frente a la terminal de ómnibus, símbolo de ingreso a la ciudad.",
       detalleHtml:
         "<p>Tallado originalmente en madera de timbó; con el pedestal alcanza unos 18 m. Está frente a la terminal de ómnibus, en el centro de Jardín América.</p>",
-      enlaces: [{ titulo: "Ver en Turismo", url: TURISMO_URL, externo: true }],
+      enlaces: [{ titulo: "Ver en Turismo", url: TURISMO_URL }],
     },
     {
       id: "reportar-problema",

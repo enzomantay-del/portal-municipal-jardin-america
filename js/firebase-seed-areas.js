@@ -148,7 +148,7 @@ window.MUNI_FIREBASE_SEED_AREAS = [
     responsable: "Lic. en Turismo Enzo Gabriel Mantay",
     contacto: "3743 483429",
     fotoEncargado: "assets/encargados/turismo-enzo-mantay.png",
-    webExterna: "https://enzomantay-del.github.io/jardin-america-turismo/",
+    webExterna: "/turismo/",
     folletoUrl: "folleto-turismo.html",
     enlaces: [
       {
