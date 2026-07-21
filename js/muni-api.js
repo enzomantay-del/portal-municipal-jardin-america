@@ -890,14 +890,13 @@
           console.warn("No se pudieron cargar flyers de eventos; el resto del portal sigue disponible.", err);
           return [];
         }),
+        loadTrabajoEngagementMap(db).catch(function () {
+          return {};
+        }),
       ]);
       areas = results[0];
-      noticias = results[1];
+      noticias = applyEngagementMap(results[1], results[3] || {});
       eventosFlyers = results[2];
-      var engagementMap = await loadTrabajoEngagementMap(db).catch(function () {
-        return {};
-      });
-      noticias = applyEngagementMap(noticias, engagementMap);
     } catch (err) {
       console.warn("Error al cargar datos del portal.", err);
     }

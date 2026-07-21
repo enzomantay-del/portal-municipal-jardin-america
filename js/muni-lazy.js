@@ -1,5 +1,6 @@
 /**
  * Carga diferida de scripts no críticos del portal (home / área).
+ * Mejora Time to Interactive sin quitar funciones visibles.
  */
 (function () {
   "use strict";
@@ -23,13 +24,15 @@
     return loaded[src];
   }
 
-  function loadMany(list) {
-    return list.reduce(function (chain, src) {
-      return chain.then(function () {
+  function loadParallel(list) {
+    return Promise.all(
+      list.map(function (src) {
         return loadScript(src);
-      });
-    }, Promise.resolve());
+      })
+    );
   }
+
+  var KNOWLEDGE = "js/muni-consultas-conocimiento.js?v=20260721perf";
 
   var SECONDARY = [
     "js/muni-radio-config.js?v=20260713perf",
@@ -46,11 +49,17 @@
     "js/muni-radio.js?v=20260713perf",
   ];
 
-  function schedule(fn) {
+  function schedule(fn, timeout) {
     if ("requestIdleCallback" in window) {
-      requestIdleCallback(fn, { timeout: 2500 });
+      requestIdleCallback(fn, { timeout: timeout || 2500 });
     } else {
-      setTimeout(fn, 1200);
+      setTimeout(fn, Math.min(timeout || 1200, 1200));
+    }
+  }
+
+  function afterKnowledge() {
+    if (window.MuniConsultasKnowledge && window.MuniConsultasKnowledge.refreshLiveObras) {
+      window.MuniConsultasKnowledge.refreshLiveObras(false).catch(function () {});
     }
   }
 
@@ -58,8 +67,13 @@
     var isArea = /area\.html/i.test(window.location.pathname || "");
     var list = isArea ? AREA_SECONDARY : SECONDARY;
 
+    // Conocimiento de AmiBot: justo después del primer pintado (botón ya está).
+    setTimeout(function () {
+      loadScript(KNOWLEDGE).then(afterKnowledge);
+    }, 120);
+
     schedule(function () {
-      loadMany(list)
+      loadParallel(list)
         .then(function () {
           var M = window.MuniPortal;
           if (window.MuniEventos && M && M.DATA) {
@@ -70,7 +84,7 @@
           }
         })
         .catch(function () {});
-    });
+    }, 2800);
   }
 
   if (document.readyState === "loading") {
@@ -79,5 +93,5 @@
     boot();
   }
 
-  window.MuniLazy = { loadScript: loadScript, loadMany: loadMany };
+  window.MuniLazy = { loadScript: loadScript, loadMany: loadParallel, loadParallel: loadParallel };
 })();
