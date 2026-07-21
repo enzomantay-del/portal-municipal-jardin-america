@@ -22,7 +22,12 @@ SKIP_NAMES = {
 
 
 def should_skip(path: pathlib.Path) -> bool:
-    return path.name in SKIP_NAMES or path.suffix.lower() == ".lnk"
+    if path.name in SKIP_NAMES or path.suffix.lower() == ".lnk":
+        return True
+    # Scripts temporales locales (análisis / publish helpers)
+    if path.name.startswith("_") and path.suffix.lower() in {".py", ".txt", ".md"}:
+        return True
+    return False
 
 
 def main() -> None:
