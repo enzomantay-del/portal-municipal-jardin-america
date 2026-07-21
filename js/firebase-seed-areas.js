@@ -123,6 +123,7 @@ window.MUNI_FIREBASE_SEED_AREAS = [
     descripcion: "Casa de la Cultura, actividades artísticas, biblioteca y patrimonio local.",
     responsable: "Prof. Arnaldo González",
     contacto: "3743 411337",
+    fotoEncargado: "assets/encargados/cultura-arnaldo-gonzalez.png",
     recursosIntro:
       "Proyectos digitales desarrollados en el Parque Tecnológico de Jardín América.",
     enlaces: [
