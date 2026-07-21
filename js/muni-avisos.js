@@ -1,7 +1,11 @@
 (function () {
   "use strict";
 
+  if (window.__MUNI_AVISOS_BOOTED) return;
+  window.__MUNI_AVISOS_BOOTED = true;
+
   var NOTAS_PORTAL = "Portal municipal — recibir avisos.";
+  var FETCH_TIMEOUT_MS = 20000;
 
   function getCampanaConfig() {
     return window.CAMPANA_CONFIG || {};
@@ -31,16 +35,37 @@
     el.textContent = message;
   }
 
+  function fetchWithTimeout(url, options) {
+    var ctrl = typeof AbortController !== "undefined" ? new AbortController() : null;
+    var timer = null;
+    var opts = options ? Object.assign({}, options) : {};
+    if (ctrl) {
+      opts.signal = ctrl.signal;
+      timer = setTimeout(function () {
+        try {
+          ctrl.abort();
+        } catch (e) {}
+      }, FETCH_TIMEOUT_MS);
+    }
+    return fetch(url, opts).finally(function () {
+      if (timer) clearTimeout(timer);
+    });
+  }
+
   async function loadBarrios() {
     var select = document.getElementById("avisos-barrio");
     if (!select) return;
+    if (select.getAttribute("data-loaded") === "1") return;
+
+    select.innerHTML = '<option value="">Cargando barrios…</option>';
+    select.disabled = true;
 
     try {
       var cfg = getCampanaConfig();
       if (!String(cfg.apiBase || "").trim() || !String(cfg.publicKey || "").trim()) {
         throw new Error("Falta la configuración de campaña en el portal.");
       }
-      var res = await fetch(campanaApiUrl("/api/public/barrios"));
+      var res = await fetchWithTimeout(campanaApiUrl("/api/public/barrios"));
       var data = await res.json();
 
       if (!res.ok || !data.ok || !Array.isArray(data.barrios)) {
@@ -55,6 +80,8 @@
         select.appendChild(option);
       });
       select.disabled = false;
+      select.setAttribute("data-loaded", "1");
+      select.removeAttribute("aria-invalid");
     } catch (err) {
       select.innerHTML = '<option value="">No se pudieron cargar los barrios</option>';
       select.disabled = true;
@@ -72,7 +99,8 @@
   function bindAvisosForm() {
     var form = document.getElementById("muni-avisos-form");
     var alertEl = document.getElementById("muni-avisos-alert");
-    if (!form) return;
+    if (!form || form.getAttribute("data-bound") === "1") return;
+    form.setAttribute("data-bound", "1");
 
     form.addEventListener("submit", async function (e) {
       e.preventDefault();
@@ -126,7 +154,7 @@
       }
 
       try {
-        var res = await fetch(campanaApiUrl("/api/public/contactos"), {
+        var res = await fetchWithTimeout(campanaApiUrl("/api/public/contactos"), {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
@@ -182,29 +210,6 @@
     });
   }
 
-  function scheduleBarriosLoad() {
-    var section = document.getElementById("recibir-avisos");
-    var hash = String(window.location.hash || "").replace(/^#/, "");
-    if (
-      !section ||
-      !("IntersectionObserver" in window) ||
-      hash === "recibir-avisos"
-    ) {
-      loadBarrios();
-      return;
-    }
-    var observer = new IntersectionObserver(
-      function (entries) {
-        if (entries.some(function (entry) { return entry.isIntersecting; })) {
-          observer.disconnect();
-          loadBarrios();
-        }
-      },
-      { rootMargin: "240px 0px" }
-    );
-    observer.observe(section);
-  }
-
   function initAvisos() {
     var cfg = getCampanaConfig();
     var mapaLink = document.getElementById("avisos-barrio-mapa");
@@ -212,10 +217,9 @@
       mapaLink.href = cfg.barriosMapaUrl;
     }
     bindAvisosForm();
-    scheduleBarriosLoad();
+    loadBarrios();
   }
 
-  /** Espera campana-config.js si se carga en paralelo (lazy). */
   function bootWhenConfigReady() {
     var tries = 0;
     function attempt() {
@@ -225,7 +229,7 @@
         return;
       }
       tries += 1;
-      if (tries >= 50) {
+      if (tries >= 60) {
         initAvisos();
         return;
       }
@@ -234,7 +238,6 @@
     attempt();
   }
 
-  // muni-lazy carga este script después del DOM: no depender solo de DOMContentLoaded
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", bootWhenConfigReady);
   } else {
