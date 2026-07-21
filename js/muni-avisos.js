@@ -182,19 +182,14 @@
     });
   }
 
-  document.addEventListener("DOMContentLoaded", function () {
-    var cfg = getCampanaConfig();
-    var mapaLink = document.getElementById("avisos-barrio-mapa");
-    if (mapaLink && cfg.barriosMapaUrl) {
-      mapaLink.href = cfg.barriosMapaUrl;
-    }
-    bindAvisosForm();
-    scheduleBarriosLoad();
-  });
-
   function scheduleBarriosLoad() {
     var section = document.getElementById("recibir-avisos");
-    if (!section || !("IntersectionObserver" in window)) {
+    var hash = String(window.location.hash || "").replace(/^#/, "");
+    if (
+      !section ||
+      !("IntersectionObserver" in window) ||
+      hash === "recibir-avisos"
+    ) {
       loadBarrios();
       return;
     }
@@ -208,5 +203,41 @@
       { rootMargin: "240px 0px" }
     );
     observer.observe(section);
+  }
+
+  function initAvisos() {
+    var cfg = getCampanaConfig();
+    var mapaLink = document.getElementById("avisos-barrio-mapa");
+    if (mapaLink && cfg.barriosMapaUrl) {
+      mapaLink.href = cfg.barriosMapaUrl;
+    }
+    bindAvisosForm();
+    scheduleBarriosLoad();
+  }
+
+  /** Espera campana-config.js si se carga en paralelo (lazy). */
+  function bootWhenConfigReady() {
+    var tries = 0;
+    function attempt() {
+      var cfg = getCampanaConfig();
+      if (String(cfg.apiBase || "").trim() && String(cfg.publicKey || "").trim()) {
+        initAvisos();
+        return;
+      }
+      tries += 1;
+      if (tries >= 50) {
+        initAvisos();
+        return;
+      }
+      setTimeout(attempt, 50);
+    }
+    attempt();
+  }
+
+  // muni-lazy carga este script después del DOM: no depender solo de DOMContentLoaded
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", bootWhenConfigReady);
+  } else {
+    bootWhenConfigReady();
   }
 })();
