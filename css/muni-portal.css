@@ -7922,3 +7922,160 @@ body.muni-anuncio-open {
     scroll-snap-align: start;
   }
 }
+
+/* ===== Contactos por área ===== */
+.muni-contactos-page {
+  padding-top: 1.5rem;
+  padding-bottom: 3rem;
+}
+
+.muni-contactos-hero {
+  margin-bottom: 1.5rem;
+  max-width: 40rem;
+}
+
+.muni-contactos-hero h1 {
+  margin: 0 0 0.5rem;
+  font-family: var(--muni-font-display);
+  font-size: clamp(1.75rem, 4vw, 2.25rem);
+  line-height: 1.15;
+}
+
+.muni-contactos-lead {
+  margin: 0 0 1.1rem;
+  color: var(--muni-text-muted);
+  font-size: 1.05rem;
+  line-height: 1.55;
+}
+
+.muni-contactos-search-label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+  color: var(--muni-text-muted);
+}
+
+.muni-contactos-search {
+  width: min(100%, 28rem);
+  min-height: 2.85rem;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid var(--muni-border);
+  border-radius: var(--muni-radius);
+  font: inherit;
+  font-size: 1rem;
+  background: #fff;
+}
+
+.muni-contactos-search:focus {
+  outline: none;
+  border-color: var(--muni-blue);
+  box-shadow: var(--muni-focus);
+}
+
+.muni-contactos-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.muni-contactos-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.85rem 1rem;
+  padding: 1rem 1.1rem;
+  border-bottom: 1px solid var(--muni-border);
+  background: transparent;
+}
+
+.muni-contactos-item:first-child {
+  border-top: 1px solid var(--muni-border);
+}
+
+.muni-contactos-area {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.muni-contactos-area a {
+  color: var(--muni-text);
+  text-decoration: none;
+}
+
+.muni-contactos-area a:hover {
+  color: var(--muni-blue-dark);
+  text-decoration: underline;
+}
+
+.muni-contactos-nota {
+  display: inline-block;
+  margin-left: 0.45rem;
+  padding: 0.12rem 0.5rem;
+  border-radius: 999px;
+  background: var(--muni-surface-soft);
+  color: var(--muni-text-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  vertical-align: middle;
+}
+
+.muni-contactos-phone {
+  margin: 0.25rem 0 0;
+  font-size: 1rem;
+}
+
+.muni-contactos-phone a {
+  color: var(--muni-blue-dark);
+  font-weight: 700;
+  text-decoration: none;
+  letter-spacing: 0.01em;
+}
+
+.muni-contactos-phone a:hover {
+  text-decoration: underline;
+}
+
+.muni-contactos-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  align-items: center;
+}
+
+.muni-btn--whatsapp {
+  background: #25d366;
+  color: #fff;
+  border: 0;
+}
+
+.muni-btn--whatsapp:hover {
+  background: #1ebe57;
+  color: #fff;
+}
+
+.muni-contactos-foot {
+  margin: 1.75rem 0 0;
+  font-size: 0.9rem;
+  color: var(--muni-text-muted);
+  line-height: 1.5;
+  max-width: 40rem;
+}
+
+@media (max-width: 640px) {
+  .muni-contactos-item {
+    align-items: flex-start;
+  }
+
+  .muni-contactos-actions {
+    width: 100%;
+  }
+
+  .muni-contactos-actions .muni-btn {
+    flex: 1 1 auto;
+    justify-content: center;
+    text-align: center;
+  }
+}

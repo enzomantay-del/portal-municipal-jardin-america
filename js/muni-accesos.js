@@ -32,6 +32,12 @@
       href: "reportar-problema.html",
     },
     {
+      icon: "📞",
+      titulo: "Contactos por área",
+      desc: "Teléfonos municipales con WhatsApp directo",
+      href: "contactos.html",
+    },
+    {
       icon: "🏥",
       titulo: "Salud",
       desc: "Turnos, campañas y programas de salud",

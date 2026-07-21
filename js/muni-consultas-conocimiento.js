@@ -26,10 +26,32 @@
       detalleHtml:
         "<ul>" +
         "<li><strong>Dirección:</strong> Av. Belgrano 666 · Jardín América, Misiones</li>" +
-        "<li><strong>WhatsApp:</strong> 3743-509860</li>" +
+        "<li><strong>WhatsApp general:</strong> 3743-509860</li>" +
         "<li><strong>Horario:</strong> lunes a viernes, 7:00 a 13:00 hs</li>" +
+        "<li>También hay un <strong>listado de teléfonos por área</strong> con WhatsApp directo.</li>" +
         "</ul>",
-      enlaces: [{ titulo: "Ir al contacto en el portal", url: "index.html#contacto" }],
+      enlaces: [
+        { titulo: "Ver contactos por área (WhatsApp)", url: "contactos.html" },
+        { titulo: "Ir al contacto en el portal", url: "index.html#contacto" },
+      ],
+    },
+    {
+      id: "contactos-por-area",
+      categoria: "contacto",
+      titulo: "Teléfonos y WhatsApp de cada área",
+      keywords: [
+        "contactos",
+        "telefonos",
+        "whatsapp",
+        "areas",
+        "numeros",
+        "llamar",
+        "directorio",
+      ],
+      resumen: "Listado completo de contactos municipales con enlace a WhatsApp.",
+      detalleHtml:
+        "<p>Encontrás los teléfonos de Obras Públicas, Salud, Turismo, Defensa Civil y el resto de las áreas, con botón directo a WhatsApp.</p>",
+      enlaces: [{ titulo: "Abrir listado de contactos", url: "contactos.html" }],
     },
     {
       id: "obras-privadas-contacto",
@@ -40,11 +62,12 @@
       resumen: "Responsable y teléfono del área de Obras Privadas.",
       detalleHtml:
         "<p><strong>Responsable:</strong> Arq. Florencia De Añais</p>" +
-        "<p><strong>Contacto:</strong> 3794 358121</p>" +
+        "<p><strong>Contacto:</strong> 379-4358121</p>" +
         "<p>Consultas sobre planos, permisos de obra, inspecciones y habilitación.</p>",
       enlaces: [
         { titulo: "Ir al área Obras Privadas", url: "area.html?area=obras-privadas" },
         { titulo: "Ver documentos del área", url: "area.html?area=obras-privadas#documentos" },
+        { titulo: "WhatsApp Obras Privadas", url: "https://wa.me/543794358121" },
       ],
     },
     {

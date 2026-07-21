@@ -623,7 +623,7 @@
 
     html +=
       '<li><a href="#" data-nav="consultas" data-open-consultas>AmiBot</a></li>' +
-      '<li><a href="index.html#contacto" data-nav="contacto">Contacto</a></li>';
+      '<li><a href="contactos.html" data-nav="contactos">Contactos</a></li>';
 
     return html;
   }

@@ -194,6 +194,9 @@
         } else {
           bySlug[seedArea.slug].contacto = seedArea.contacto || bySlug[seedArea.slug].contacto;
         }
+      } else if (seedArea.contacto && /\d{6,}/.test(String(seedArea.contacto))) {
+        // Teléfonos oficiales del listado, aunque el responsable figure "A definir"
+        bySlug[seedArea.slug].contacto = seedArea.contacto;
       }
       if (seedArea.fotoEncargado) {
         bySlug[seedArea.slug].fotoEncargado = seedArea.fotoEncargado;
@@ -890,13 +893,14 @@
           console.warn("No se pudieron cargar flyers de eventos; el resto del portal sigue disponible.", err);
           return [];
         }),
-        loadTrabajoEngagementMap(db).catch(function () {
-          return {};
-        }),
       ]);
       areas = results[0];
-      noticias = applyEngagementMap(results[1], results[3] || {});
+      noticias = results[1];
       eventosFlyers = results[2];
+      var engagementMap = await loadTrabajoEngagementMap(db).catch(function () {
+        return {};
+      });
+      noticias = applyEngagementMap(noticias, engagementMap);
     } catch (err) {
       console.warn("Error al cargar datos del portal.", err);
     }
