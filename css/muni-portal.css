@@ -769,21 +769,23 @@ a:hover {
 
 @media (max-width: 640px) {
   .muni-whatsapp-float {
-    width: 3.25rem;
-    height: 3.25rem;
-    padding: 0;
+    width: auto;
+    height: auto;
+    min-height: 3rem;
+    padding: 0.55rem 0.85rem 0.55rem 0.7rem;
     justify-content: center;
-    border-radius: 50%;
+    border-radius: 999px;
+    font-size: 0.78rem;
   }
 
   .muni-whatsapp-float-label {
-    position: absolute;
-    width: 1px;
-    height: 1px;
+    position: static;
+    width: auto;
+    height: auto;
     padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
+    margin: 0;
+    overflow: visible;
+    clip: auto;
     white-space: nowrap;
     border: 0;
   }

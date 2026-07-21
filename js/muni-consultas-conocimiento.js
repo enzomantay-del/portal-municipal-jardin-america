@@ -21,12 +21,12 @@
       id: "contacto-municipal",
       categoria: "contacto",
       titulo: "Contacto y horario de la Municipalidad",
-      keywords: ["contacto", "horario", "atencion", "whatsapp", "direccion", "municipalidad", "telefono"],
+      keywords: ["contacto", "horario", "atencion", "whatsapp", "direccion", "municipalidad", "telefono", "mesa de entrada", "mesa"],
       resumen: "Dirección, WhatsApp y horario de atención al vecino.",
       detalleHtml:
         "<ul>" +
         "<li><strong>Dirección:</strong> Av. Belgrano 666 · Jardín América, Misiones</li>" +
-        "<li><strong>WhatsApp general:</strong> 3743-509860</li>" +
+        "<li><strong>Mesa de entrada (WhatsApp):</strong> 3743-509860</li>" +
         "<li><strong>Horario:</strong> lunes a viernes, 7:00 a 13:00 hs</li>" +
         "<li>También hay un <strong>listado de teléfonos por área</strong> con WhatsApp directo.</li>" +
         "</ul>",

@@ -3,6 +3,7 @@
  * Fuente única para contactos.html — fácil de mantener.
  */
 window.MUNI_CONTACTOS = [
+  { area: "Mesa de entrada", slug: "", telefono: "3743-509860", nota: "WhatsApp general" },
   { area: "Obras Públicas", slug: "obras-publicas", telefono: "3743-667206" },
   { area: "Obras Privadas", slug: "obras-privadas", telefono: "379-4358121" },
   { area: "Salud", slug: "salud", telefono: "376-4603999" },

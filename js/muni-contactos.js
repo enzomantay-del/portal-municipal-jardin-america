@@ -57,19 +57,22 @@
 
     list.innerHTML = items
       .map(function (item) {
-        var areaHref = item.slug ? "area.html?area=" + encodeURIComponent(item.slug) : "index.html";
         var nota = item.nota
           ? '<span class="muni-contactos-nota">' + escapeHtml(item.nota) + "</span>"
           : "";
+        var titleInner = item.slug
+          ? '<a href="area.html?area=' +
+            encodeURIComponent(item.slug) +
+            '">' +
+            escapeHtml(item.area) +
+            "</a>"
+          : escapeHtml(item.area);
+
         return (
           '<article class="muni-contactos-item">' +
           '<div class="muni-contactos-item-main">' +
           '<h2 class="muni-contactos-area">' +
-          '<a href="' +
-          escapeHtml(areaHref) +
-          '">' +
-          escapeHtml(item.area) +
-          "</a>" +
+          titleInner +
           nota +
           "</h2>" +
           '<p class="muni-contactos-phone">' +
@@ -118,7 +121,6 @@
       input.addEventListener("input", paint);
     }
 
-    // Si los datos aún no cargaron (orden de scripts), reintentar breve.
     var tries = 0;
     function paintWhenReady() {
       var all = window.MUNI_CONTACTOS || [];
