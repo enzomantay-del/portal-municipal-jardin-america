@@ -117,7 +117,19 @@
     if (input) {
       input.addEventListener("input", paint);
     }
-    paint();
+
+    // Si los datos aún no cargaron (orden de scripts), reintentar breve.
+    var tries = 0;
+    function paintWhenReady() {
+      var all = window.MUNI_CONTACTOS || [];
+      if (all.length || tries >= 20) {
+        paint();
+        return;
+      }
+      tries += 1;
+      setTimeout(paintWhenReady, 50);
+    }
+    paintWhenReady();
   }
 
   if (document.readyState === "loading") {
