@@ -7,6 +7,13 @@ El sitio queda así:
 | `https://jardinamerica.gob.ar/` | Portal municipal |
 | `https://jardinamerica.gob.ar/turismo/` | Sitio de turismo |
 
+Mientras el dominio no esté delegado, también funciona en GitHub Pages:
+
+| URL temporal | Contenido |
+|---|---|
+| `https://enzomantay-del.github.io/portal-municipal-jardin-america/` | Portal |
+| `https://enzomantay-del.github.io/portal-municipal-jardin-america/turismo/` | Turismo |
+
 Hosting recomendado: **Netlify** (gratis) + delegación DNS en **NIC Argentina**.
 
 ## Paso 1 — Cuenta Netlify

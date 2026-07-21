@@ -77,7 +77,7 @@
       icon: "🧳",
       titulo: "Turismo",
       desc: "Atractivos, folleto y circuitos",
-      href: "/turismo/",
+      href: "turismo/",
       externo: false,
     },
   ];

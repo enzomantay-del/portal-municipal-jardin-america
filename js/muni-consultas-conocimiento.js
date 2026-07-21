@@ -5,7 +5,16 @@
 (function () {
   "use strict";
 
-  var TURISMO_URL = "/turismo/";
+  // En dominio propio: /turismo/ · En GitHub Pages: /portal-municipal-jardin-america/turismo/
+  var TURISMO_URL = (function () {
+    try {
+      var path = String(window.location.pathname || "");
+      if (path.indexOf("/portal-municipal-jardin-america") === 0) {
+        return "/portal-municipal-jardin-america/turismo/";
+      }
+    } catch (_e) {}
+    return "/turismo/";
+  })();
 
   var STATIC_ENTRIES = [
     {
