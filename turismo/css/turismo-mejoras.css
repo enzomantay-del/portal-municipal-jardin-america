@@ -250,6 +250,66 @@
   outline: none;
 }
 
+.tm-olala {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 1.25rem;
+  margin: 0 0 1.75rem;
+  padding: 1.15rem 1.25rem;
+  border: 1px solid rgba(15, 92, 58, 0.18);
+  border-radius: 14px;
+  background: linear-gradient(135deg, #ecfdf5 0%, #f0fdfa 55%, #fff 100%);
+}
+
+.tm-olala-kicker {
+  margin: 0 0 0.2rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--c-primary-dark, #0f5c3a);
+}
+
+.tm-olala-title {
+  margin: 0 0 0.35rem;
+  font-family: var(--f-heading, inherit);
+  font-size: clamp(1.05rem, 2.2vw, 1.25rem);
+  font-weight: 800;
+  color: #0b3d28;
+}
+
+.tm-olala-text {
+  margin: 0;
+  max-width: 42rem;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  color: #334155;
+}
+
+.tm-olala-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  min-height: 2.75rem;
+  padding: 0.7rem 1.2rem;
+  border-radius: 999px;
+  background: var(--c-primary-dark, #0f5c3a);
+  color: #fff !important;
+  font-weight: 800;
+  text-decoration: none;
+  box-shadow: 0 8px 20px rgba(15, 92, 58, 0.22);
+}
+
+.tm-olala-cta:hover,
+.tm-olala-cta:focus-visible {
+  filter: brightness(1.06);
+  outline: 2px solid rgba(15, 92, 58, 0.35);
+  outline-offset: 2px;
+}
+
 .gastro-intro-banner.tm-gastro-ok {
   background: linear-gradient(135deg, #ecfdf5, #d1fae5);
   border-color: #6ee7b7;

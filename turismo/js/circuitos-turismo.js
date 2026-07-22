@@ -105,12 +105,13 @@
       '<p class="tm-circuito-panel-empty">Tocá una parada en el mapa o en la lista para ver la explicación.</p>' +
       "</aside></div></div>";
 
-    var anchor =
-      document.getElementById("que-visitar-local") ||
-      document.getElementById("mapa-turistico") ||
-      document.getElementById("inicio");
-    if (anchor) {
-      anchor.insertAdjacentElement("beforebegin", section);
+    var local = document.getElementById("que-visitar-local");
+    var provincia = document.getElementById("que-visitar-provincia");
+    if (local) {
+      // Último bloque de “Qué visitar aquí”
+      local.appendChild(section);
+    } else if (provincia) {
+      provincia.insertAdjacentElement("beforebegin", section);
     } else {
       var main = document.getElementById("main-content") || document.body;
       main.appendChild(section);

@@ -95,6 +95,10 @@
       colecNone: "No hay más salidas listadas para hoy, o es fin de semana (la tabla es lun–vie).",
       festLink: "Ver agenda de eventos →",
       gastroOk: "Paradas del circuito turístico con contacto directo. Confirmá siempre horarios.",
+      olalaTitle: "Paquetes y tours receptivos",
+      olalaText:
+        "Olalá Viajes es la agencia habilitada en Jardín América para la venta de paquetes turísticos. Consultá tours por Misiones y Esteros del Iberá.",
+      olalaCta: "Ver paquetes receptivos",
       portal: "Portal municipal",
       folleto: "Folleto",
       langAria: "Idioma del sitio",
@@ -137,6 +141,10 @@
       colecNone: "Não há mais saídas listadas para hoje, ou é fim de semana (tabela seg–sex).",
       festLink: "Ver agenda de eventos →",
       gastroOk: "Paradas do circuito turístico com contato direto. Confirme sempre os horários.",
+      olalaTitle: "Pacotes e tours receptivos",
+      olalaText:
+        "Olalá Viajes é a agência habilitada em Jardín América para a venda de pacotes turísticos. Consulte tours por Missões e Esteros del Iberá.",
+      olalaCta: "Ver pacotes receptivos",
       portal: "Portal municipal",
       folleto: "Folheto",
       langAria: "Idioma do site",
@@ -179,6 +187,10 @@
       colecNone: "No more listed departures for today, or it’s the weekend (table is Mon–Fri).",
       festLink: "See events agenda →",
       gastroOk: "Tourism-circuit stops with direct contact. Always confirm opening hours.",
+      olalaTitle: "Packages and inbound tours",
+      olalaText:
+        "Olalá Viajes is the licensed agency in Jardín América for tour package sales. Browse tours around Misiones and the Iberá Wetlands.",
+      olalaCta: "View inbound packages",
       portal: "Municipal portal",
       folleto: "Brochure",
       langAria: "Site language",
@@ -549,6 +561,23 @@
     header.appendChild(meta);
   }
 
+  function injectOlalaReceptivos() {
+    var section = document.getElementById("que-visitar-provincia");
+    if (!section || section.querySelector(".tm-olala")) return;
+    var header = section.querySelector(".section-header");
+    if (!header) return;
+    var box = document.createElement("div");
+    box.className = "tm-olala";
+    box.innerHTML =
+      '<div class="tm-olala-copy">' +
+      '<p class="tm-olala-kicker">Agencia local habilitada</p>' +
+      '<p class="tm-olala-title" data-tm="olalaTitle"></p>' +
+      '<p class="tm-olala-text" data-tm="olalaText"></p>' +
+      "</div>" +
+      '<a class="tm-olala-cta" href="https://olalaviajes.tur.ar/#receptivos" target="_blank" rel="noopener noreferrer" data-tm="olalaCta"></a>';
+    header.insertAdjacentElement("afterend", box);
+  }
+
   function enhanceFooterOnly() {
     // Quitar restos viejos en el menú (Portal / idiomas inyectados antes)
     document.getElementById("tm-nav-portal") && document.getElementById("tm-nav-portal").remove();
@@ -623,6 +652,7 @@
     enhanceColectivos();
     enhanceMap();
     enhanceFestividades();
+    injectOlalaReceptivos();
     enhanceFooterOnly();
     replaceGastro();
     softEmptyStates();

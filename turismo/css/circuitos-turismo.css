@@ -1,6 +1,7 @@
 /* Circuitos — formato limpio, sin chips ni cajas de meta */
 .tm-circuitos {
-  padding: 2.75rem 0 3rem;
+  padding: 2.75rem 0 1.5rem;
+  margin-top: 2rem;
   background: linear-gradient(180deg, #f3f7f4 0%, #fff 42%);
   border-top: 1px solid rgba(20, 70, 45, 0.1);
 }
