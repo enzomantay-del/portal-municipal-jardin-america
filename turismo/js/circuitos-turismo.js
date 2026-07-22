@@ -176,20 +176,19 @@
             );
           })
           .join("");
+        var metaItems = [];
+        if (c.modalidad) metaItems.push(c.modalidad);
+        if (c.dificultad) metaItems.push("Dificultad " + String(c.dificultad).toLowerCase());
+        if (c.duracion) metaItems.push(c.duracion);
+        if (c.paradas && c.paradas.length) metaItems.push(c.paradas.length + " paradas");
         var meta =
-          "<ul class=\"tm-circuito-meta\">" +
-          "<li>" +
-          escapeHtml(c.modalidad) +
-          "</li>" +
-          "<li>" +
-          escapeHtml(c.dificultad || "") +
-          "</li>" +
-          "<li>" +
-          escapeHtml(c.duracion || "") +
-          "</li>" +
-          "<li>" +
-          (c.paradas ? c.paradas.length : 0) +
-          " paradas</li></ul>";
+          '<p class="tm-circuito-meta">' +
+          metaItems
+            .map(function (item) {
+              return "<span>" + escapeHtml(item) + "</span>";
+            })
+            .join('<span aria-hidden="true"> · </span>') +
+          "</p>";
         var recs = (c.recomendaciones || [])
           .map(function (r) {
             return "<li>" + escapeHtml(r) + "</li>";
@@ -217,7 +216,11 @@
           '<p class="tm-circuito-desc">' +
           escapeHtml(c.descripcion) +
           "</p>" +
-          (recs ? '<ul class="tm-circuito-recs">' + recs + "</ul>" : "") +
+          (recs
+            ? '<p class="tm-circuito-recs-label">Recomendaciones</p><ul class="tm-circuito-recs">' +
+              recs +
+              "</ul>"
+            : "") +
           '<div class="tm-circuito-actions">' +
           '<button type="button" class="tm-btn-primary" data-open-circuito="' +
           escapeHtml(c.id) +
@@ -312,6 +315,114 @@
       "</div>";
   }
 
+  function fetchStreetRoute(paradas) {
+    if (!paradas || paradas.length < 2) {
+      return Promise.resolve(null);
+    }
+    var coords = paradas
+      .map(function (p) {
+        return p.lng + "," + p.lat;
+      })
+      .join(";");
+    var url =
+      "https://router.project-osrm.org/route/v1/cycling/" +
+      coords +
+      "?overview=full&geometries=geojson";
+    return fetch(url)
+      .then(function (res) {
+        return res.json();
+      })
+      .then(function (data) {
+        if (!data || data.code !== "Ok" || !data.routes || !data.routes[0]) {
+          throw new Error("Sin ruta");
+        }
+        var route = data.routes[0];
+        var latlngs = (route.geometry.coordinates || []).map(function (c) {
+          return [c[1], c[0]];
+        });
+        return {
+          latlngs: latlngs,
+          distanceKm: route.distance ? (route.distance / 1000).toFixed(1) : null,
+          durationMin: route.duration ? Math.round(route.duration / 60) : null,
+        };
+      });
+  }
+
+  function drawCircuit(circuit, routeInfo) {
+    var el = $("tm-circuito-map");
+    if (!el || !window.L) return;
+
+    if (!map) {
+      map = window.L.map(el, { scrollWheelZoom: false });
+      window.L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      }).addTo(map);
+      layerGroup = window.L.layerGroup().addTo(map);
+    } else {
+      layerGroup.clearLayers();
+    }
+
+    setTimeout(function () {
+      map.invalidateSize();
+    }, 80);
+
+    var stopLatLngs = [];
+    (circuit.paradas || []).forEach(function (stop) {
+      var ll = [stop.lat, stop.lng];
+      stopLatLngs.push(ll);
+      var marker = window.L.marker(ll, {
+        icon: numberIcon(stop.orden, circuit.color),
+        title: stop.nombre,
+      });
+      marker.on("click", function () {
+        showStop(circuit, stop);
+        map.panTo(ll);
+      });
+      marker.addTo(layerGroup);
+    });
+
+    var linePoints =
+      routeInfo && routeInfo.latlngs && routeInfo.latlngs.length > 1
+        ? routeInfo.latlngs
+        : stopLatLngs;
+
+    if (linePoints.length >= 2) {
+      window.L.polyline(linePoints, {
+        color: circuit.color || "#1a5c3c",
+        weight: 5,
+        opacity: 0.9,
+      }).addTo(layerGroup);
+    }
+
+    if (linePoints.length) {
+      map.fitBounds(window.L.latLngBounds(linePoints).pad(0.2));
+    }
+
+    var note = "";
+    if (routeInfo && routeInfo.distanceKm) {
+      note =
+        "Recorrido sugerido por calles · ~" +
+        routeInfo.distanceKm +
+        " km" +
+        (routeInfo.durationMin ? " · ~" + routeInfo.durationMin + " min en bici" : "");
+    } else {
+      note = "Mostramos la secuencia de paradas. Si el detalle de calles no carga, usá “Cómo llegar” en cada punto.";
+    }
+    var existing = document.getElementById("tm-circuito-route-note");
+    if (!existing) {
+      existing = document.createElement("p");
+      existing.id = "tm-circuito-route-note";
+      existing.className = "tm-circuito-route-note";
+      var wrap = $("tm-circuito-map-wrap");
+      if (wrap) wrap.insertAdjacentElement("afterend", existing);
+    }
+    existing.textContent = note;
+
+    var first = circuit.paradas && circuit.paradas[0];
+    if (first) showStop(circuit, first);
+  }
+
   function openCircuitOnMap(circuitId) {
     var circuit = findCircuit(circuitId);
     if (!circuit) return;
@@ -325,63 +436,24 @@
       wrap.classList.add("is-open");
     }
 
+    var panel = $("tm-circuito-panel");
+    if (panel) {
+      panel.innerHTML =
+        '<p class="tm-circuito-panel-empty">Calculando el recorrido por calles…</p>';
+    }
+
     loadLeaflet()
       .then(function () {
-        var el = $("tm-circuito-map");
-        if (!el) return;
-
-        if (!map) {
-          map = window.L.map(el, { scrollWheelZoom: false });
-          window.L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-            maxZoom: 19,
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-          }).addTo(map);
-          layerGroup = window.L.layerGroup().addTo(map);
-          setTimeout(function () {
-            map.invalidateSize();
-          }, 80);
-        } else {
-          layerGroup.clearLayers();
-          setTimeout(function () {
-            map.invalidateSize();
-          }, 80);
-        }
-
-        var latlngs = [];
-        (circuit.paradas || []).forEach(function (stop) {
-          var ll = [stop.lat, stop.lng];
-          latlngs.push(ll);
-          var marker = window.L.marker(ll, {
-            icon: numberIcon(stop.orden, circuit.color),
-            title: stop.nombre,
+        return fetchStreetRoute(circuit.paradas || [])
+          .catch(function () {
+            return null;
+          })
+          .then(function (routeInfo) {
+            drawCircuit(circuit, routeInfo);
+            if (wrap) wrap.scrollIntoView({ behavior: "smooth", block: "start" });
           });
-          marker.on("click", function () {
-            showStop(circuit, stop);
-            map.panTo(ll);
-          });
-          marker.addTo(layerGroup);
-        });
-
-        if (latlngs.length >= 2) {
-          window.L.polyline(latlngs, {
-            color: circuit.color || "#0f5c3a",
-            weight: 4,
-            opacity: 0.85,
-            dashArray: "8 8",
-          }).addTo(layerGroup);
-        }
-
-        if (latlngs.length) {
-          map.fitBounds(window.L.latLngBounds(latlngs).pad(0.25));
-        }
-
-        var first = circuit.paradas && circuit.paradas[0];
-        if (first) showStop(circuit, first);
-
-        wrap.scrollIntoView({ behavior: "smooth", block: "start" });
       })
       .catch(function () {
-        var panel = $("tm-circuito-panel");
         if (panel) {
           panel.innerHTML =
             '<p class="tm-circuito-panel-empty">No se pudo cargar el mapa. Revisá tu conexión e intentá de nuevo.</p>';

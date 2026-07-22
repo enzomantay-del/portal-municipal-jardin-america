@@ -18,11 +18,11 @@ window.TURISMO_CIRCUITOS = [
       "Cámara o celular para fotos",
       "Uso de casco recomendado",
     ],
-    color: "#0f5c3a",
+    color: "#1a5c3c",
     imagenes: [
-      "img/cooperativa-flor.webp",
-      "img/parroquia-cristo-redentor-nueva.webp",
       "img/plaza-colon.webp",
+      "img/parroquia-cristo-redentor-nueva.webp",
+      "img/cooperativa-flor.webp",
     ],
     paradas: [
       {
@@ -33,7 +33,7 @@ window.TURISMO_CIRCUITOS = [
         lat: -27.0502945,
         lng: -55.2468406,
         mapsUrl:
-          "https://www.google.com/maps/search/?api=1&query=Cooperativa+Flor+de+Jard%C3%ADn+Ruta+12+Jard%C3%ADn+Am%C3%A9rica",
+          "https://www.google.com/maps/search/?api=1&query=-27.0502945,-55.2468406",
         imagen: "img/cooperativa-flor.webp",
         tip: "Puesto de ventas sobre Ruta Nacional 12, km 1436. Lun–sáb 8–12 y 14:30–18:30.",
         texto:
@@ -44,10 +44,10 @@ window.TURISMO_CIRCUITOS = [
         orden: 2,
         nombre: "Iglesia Cristo Redentor",
         tiempo: "20 min",
-        lat: -27.0436,
-        lng: -55.2282,
+        lat: -27.0433207,
+        lng: -55.2261022,
         mapsUrl:
-          "https://www.google.com/maps/search/?api=1&query=Iglesia+Cristo+Redentor+Jard%C3%ADn+Am%C3%A9rica+Misiones",
+          "https://www.google.com/maps/place/Iglesia+Cristo+Redentor/@-27.0433207,-55.2261022,17z",
         imagen: "img/parroquia-cristo-redentor-nueva.webp",
         tip: "Ingreso breve: respetá el silencio si hay misa u otra celebración.",
         texto:
