@@ -30,10 +30,22 @@
         imgs = Object.values(x.imagenes).filter(Boolean);
       else if (typeof x.imagenes === "string") imgs = parseLineas(x.imagenes);
     }
-    var main = JA_IMG[x.n || ""] || (x.img && String(x.img).trim()) || "";
+    imgs = imgs.filter(function (u) {
+      return isUsableMediaUrl(u);
+    });
+    var rawMain = JA_IMG[x.n || ""] || (x.img && String(x.img).trim()) || "";
+    var main = isUsableMediaUrl(rawMain) ? rawMain : "";
     if (main && imgs.indexOf(main) < 0) imgs.unshift(main);
     else if (main && !imgs.length) imgs = [main];
-    return { img: main || imgs[0] || "", imagenes: imgs };
+    return { img: main || imgs[0] || "", imagenes: imgs.slice(0, 8) };
+  }
+
+  function isUsableMediaUrl(u) {
+    u = String(u || "").trim();
+    if (!u) return false;
+    // Evitar data-URI enormes de Firebase que rompen/cuelgan el catálogo
+    if (u.indexOf("data:") === 0 && u.length > 8000) return false;
+    return true;
   }
 
   window.normalizeAlojItem = function (x) {
@@ -41,18 +53,18 @@
     var media = parseImagenes(x);
     return {
       n: x.n || "",
-      t: String(x.t || ""),
+      t: String(x.t || x.tel || x.telefono || "").trim(),
       p: !!x.p,
       r: !!x.r,
       img: media.img,
       imagenes: media.imagenes,
       activo: x.activo !== false,
-      desc: (x.desc || x.descripcion || "").trim(),
-      servicios: (x.servicios || "").trim(),
-      instalaciones: (x.instalaciones || "").trim(),
-      capacidad: (x.capacidad || "").trim(),
-      ubicacion: (x.ubicacion || "").trim(),
-      mapsUrl: (x.mapsUrl || x.maps || "").trim(),
+      desc: String(x.desc || x.descripcion || "").trim(),
+      servicios: String(x.servicios || "").trim(),
+      instalaciones: String(x.instalaciones || "").trim(),
+      capacidad: String(x.capacidad || "").trim(),
+      ubicacion: String(x.ubicacion || "").trim(),
+      mapsUrl: String(x.mapsUrl || x.maps || "").trim(),
     };
   };
 
@@ -164,7 +176,7 @@
       acc +=
         '<a class="aloj-detalle-btn aloj-detalle-btn--map" href="' +
         esc(a.mapsUrl) +
-        '" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">📍</span> Ver en mapa</a>"';
+        '" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">📍</span> Ver en mapa</a>';
     if (acc)
       body += '<div class="aloj-detalle-acciones">' + acc + "</div>";
     document.getElementById("aloj-detalle-body").innerHTML = body;
@@ -282,15 +294,35 @@
       typeof listasAloj === "object" && !Array.isArray(listasAloj)
         ? Object.values(listasAloj)
         : listasAloj;
-    var clean = raw.filter(function (x) {
+    var clean = (raw || []).filter(function (x) {
       return x && (x.n || "").trim();
     });
     if (!clean.length) return;
-    window.ALOJ.length = 0;
-    clean.forEach(function (x) {
-      var o = window.normalizeAlojItem(x);
-      if (o.activo !== false) window.ALOJ.push(o);
-    });
+
+    var backup = window.ALOJ.slice();
+    var next = [];
+    try {
+      clean.forEach(function (x) {
+        try {
+          var o = window.normalizeAlojItem(x);
+          if (o.activo !== false) next.push(o);
+        } catch (itemErr) {
+          console.warn("Aloj item omitido", x && x.n, itemErr);
+        }
+      });
+      if (!next.length) throw new Error("Catálogo Firebase vacío tras normalizar");
+      window.ALOJ.length = 0;
+      next.forEach(function (o) {
+        window.ALOJ.push(o);
+      });
+    } catch (err) {
+      console.warn("mergeAlojDesdeFirebase falló; se mantiene catálogo local.", err);
+      window.ALOJ.length = 0;
+      (backup.length ? backup : window.ALOJ_EMBEDDED || []).forEach(function (x) {
+        window.ALOJ.push(window.normalizeAlojItem(x));
+      });
+    }
+
     if (
       window.ALOJ.length === 0 &&
       window.ALOJ_EMBEDDED &&
