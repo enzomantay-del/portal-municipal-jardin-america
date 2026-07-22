@@ -2,6 +2,8 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <link rel="icon" href="/favicon.png?v=20260709" type="image/png">
+  <link rel="apple-touch-icon" href="/favicon.png?v=20260709">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#0d7aa8">
   <meta name="description" content="Panel de administración — moderar novedades del portal municipal.">
@@ -10,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
-  <link rel="stylesheet" href="css/muni-portal.css?v=20260623b">
+  <link rel="stylesheet" href="css/muni-portal.css?v=20260702">
 </head>
 <body class="muni-panel-page muni-enc-page">
   <a class="muni-skip" href="#contenido-panel">Saltar al contenido</a>
@@ -81,6 +83,7 @@
         <a href="#seccion-agenda" class="muni-panel-nav-link muni-panel-nav-link--agenda is-active" aria-current="true">📅 Agenda</a>
         <a href="#seccion-novedades" class="muni-panel-nav-link muni-panel-nav-link--novedades">📰 Novedades</a>
         <a href="#seccion-mapa" class="muni-panel-nav-link muni-panel-nav-link--mapa">🗺️ Mapa</a>
+        <a href="#seccion-encuesta" class="muni-panel-nav-link muni-panel-nav-link--encuesta">📊 Encuesta</a>
         <a href="#seccion-avisos" class="muni-panel-nav-link">📲 Recibir avisos</a>
         <a href="#seccion-config" class="muni-panel-nav-link">⚙️ Configuración</a>
       </nav>
@@ -96,6 +99,7 @@
         <div class="muni-panel-zone-body">
           <div id="agenda-stats" class="muni-agenda-stats" hidden aria-live="polite"></div>
           <div id="agenda-reminders" class="muni-agenda-reminders" hidden aria-label="Recordatorios"></div>
+          <div id="agenda-feedback" class="muni-agenda-feedback" hidden role="status" aria-live="polite"></div>
 
           <div class="muni-panel-zone-block">
             <div class="muni-agenda-list-head">
@@ -182,6 +186,59 @@
                 </div>
               </form>
             </section>
+          </div>
+
+          <div class="muni-panel-zone-block" id="admin-flyers-panel">
+            <h3 class="muni-panel-zone-block-title">Flyers del portal</h3>
+            <p class="muni-panel-zone-block-sub">Eventos cargados como imagen (flyer). Solo se listan los vigentes; los vencidos se eliminan solos al abrir o actualizar esta lista.</p>
+            <form id="admin-flyer-form" class="muni-form-grid muni-panel-card--nested" novalidate>
+              <h4 id="admin-flyer-form-title" class="muni-panel-zone-block-title">Nuevo flyer</h4>
+              <div class="muni-field muni-field--full">
+                <label for="admin-flyer-titulo">Título (opcional)</label>
+                <input id="admin-flyer-titulo" name="titulo" maxlength="120" placeholder="Ej: Fomentar empleo">
+              </div>
+              <div class="muni-field">
+                <label for="admin-flyer-area">Área</label>
+                <select id="admin-flyer-area" name="areaSlug" required></select>
+              </div>
+              <div class="muni-field">
+                <label for="admin-flyer-fecha">Fecha del evento</label>
+                <input id="admin-flyer-fecha" name="fecha_evento" type="date" required>
+              </div>
+              <div class="muni-field">
+                <label for="admin-flyer-estado">Estado</label>
+                <select id="admin-flyer-estado" name="estado_publicacion">
+                  <option value="publicado" selected>Publicar en el portal</option>
+                  <option value="pendiente">Dejar pendiente</option>
+                </select>
+              </div>
+              <div class="muni-field muni-field--full">
+                <label for="admin-flyer-archivo">Flyer (imagen vertical)</label>
+                <input id="admin-flyer-archivo" name="flyer_archivo" type="file" accept="image/*" required>
+                <p class="muni-field-hint" id="admin-flyer-archivo-hint" hidden>Dejá vacío para conservar la imagen actual.</p>
+                <div id="admin-flyer-imagen-preview" class="muni-agenda-imagen-preview" hidden></div>
+              </div>
+              <div class="muni-form-actions muni-field--full">
+                <button type="submit" class="muni-btn muni-btn--primary" id="admin-flyer-submit">Guardar flyer</button>
+                <button type="button" class="muni-btn muni-btn--ghost" id="admin-flyer-cancel-edit" hidden>Cancelar edición</button>
+              </div>
+            </form>
+            <div class="muni-form-grid" style="margin: 1rem 0">
+              <div class="muni-field">
+                <label for="admin-flyers-filter">Estado</label>
+                <select id="admin-flyers-filter">
+                  <option value="publicado" selected>Publicado</option>
+                  <option value="pendiente">Pendiente</option>
+                  <option value="rechazado">Rechazado</option>
+                  <option value="todos">Todos</option>
+                </select>
+              </div>
+              <div class="muni-form-actions" style="align-items:flex-end">
+                <button type="button" class="muni-btn muni-btn--ghost" id="admin-flyers-refresh">Actualizar</button>
+              </div>
+            </div>
+            <p id="admin-flyers-empty" class="muni-empty">No hay flyers en este estado.</p>
+            <div id="admin-flyers-list"></div>
           </div>
         </div>
       </section>
@@ -281,6 +338,7 @@
                 <div class="muni-field muni-field--full">
                   <label for="admin-cuerpo">Texto completo</label>
                   <textarea id="admin-cuerpo" name="cuerpo" required minlength="20" rows="6"></textarea>
+                  <p class="muni-field-hint">Para insertar imágenes 2 a 5 dentro del texto, escribí <code>[imagen:2]</code>, <code>[imagen:3]</code>, etc. Las que no insertes aparecerán al final del artículo.</p>
                 </div>
                 <div class="muni-field">
                   <label for="admin-area-slug">Área</label>
@@ -313,13 +371,10 @@
                   <label for="admin-fecha-publicacion">Fecha</label>
                   <input id="admin-fecha-publicacion" type="date" name="fecha_publicacion" required>
                 </div>
-                <div class="muni-field muni-field--full">
-                  <label for="admin-imagen-url">URL de imagen (opcional)</label>
-                  <input id="admin-imagen-url" name="imagen_url" type="url" placeholder="https://...">
-                </div>
-                <div class="muni-field muni-field--full">
-                  <label for="admin-imagen-archivo">O subir imagen nueva</label>
-                  <input id="admin-imagen-archivo" name="imagen_archivo" type="file" accept="image/*">
+                <div class="muni-field muni-field--full muni-trabajo-imagenes-wrap">
+                  <h4 class="muni-trabajo-imagenes-title">Imágenes (1 a 5)</h4>
+                  <p class="muni-field-hint">Elegí cuál es la <strong>portada</strong> (se ve en el listado del portal). Podés agregar leyenda debajo de cada imagen.</p>
+                  <div id="admin-trabajo-imagenes-list" class="muni-trabajo-imagenes-list"></div>
                 </div>
                 <div class="muni-form-actions muni-field--full">
                   <button type="submit" class="muni-btn muni-btn--primary" id="admin-trabajo-submit">Guardar novedad</button>
@@ -439,11 +494,51 @@
         </div>
       </section>
 
+      <section id="seccion-encuesta" class="muni-panel-zone muni-panel-zone--encuesta">
+        <header class="muni-panel-zone-head">
+          <span class="muni-panel-zone-icon" aria-hidden="true">📊</span>
+          <div>
+            <h2>Encuesta de gestión</h2>
+            <p>Control de participación y acceso a los resultados. <strong>La encuesta pública está suspendida</strong> (no visible en el portal ni acepta respuestas).</p>
+          </div>
+        </header>
+        <div class="muni-panel-zone-body">
+          <div class="muni-panel-zone-block muni-encuesta-admin-controls">
+            <h3 class="muni-panel-zone-block-title">Control de participación</h3>
+            <p class="muni-panel-zone-block-sub">Una respuesta por WhatsApp y por dispositivo. Podés desbloquear un número o permitir reenvíos generales.</p>
+            <label class="muni-check-row">
+              <input type="checkbox" id="admin-encuesta-permitir-reenvios">
+              Permitir que la misma persona responda más de una vez (desactiva el control por WhatsApp y dispositivo)
+            </label>
+            <div class="muni-form-grid muni-encuesta-admin-unblock">
+              <div class="muni-field">
+                <label for="admin-encuesta-desbloquear-tel">Desbloquear WhatsApp</label>
+                <input id="admin-encuesta-desbloquear-tel" type="tel" placeholder="Ej: 3743 509860" autocomplete="off">
+                <p class="muni-field-hint">Permite que ese número vuelva a responder. Si el vecino ya ve el mensaje de “gracias”, que borre datos del sitio o use otra ventana.</p>
+              </div>
+              <div class="muni-form-actions">
+                <button type="button" class="muni-btn muni-btn--ghost" id="admin-encuesta-desbloquear-btn">Permitir que vuelva a responder</button>
+              </div>
+            </div>
+            <p id="admin-encuesta-control-msg" class="muni-encuesta-admin-updated" hidden></p>
+          </div>
+
+          <div class="muni-panel-zone-block">
+            <h3 class="muni-panel-zone-block-title">Resultados</h3>
+            <p id="admin-encuesta-summary" class="muni-encuesta-admin-updated" aria-live="polite">Cargando resumen…</p>
+            <div class="muni-encuesta-admin-toolbar">
+              <a class="muni-btn muni-btn--ghost" href="encuesta.html" target="_blank" rel="noopener noreferrer">Abrir encuesta pública</a>
+              <a class="muni-btn muni-btn--primary" href="admin-encuesta.html" target="_blank" rel="noopener noreferrer">Ver gráficos y estadísticas</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section id="seccion-avisos" class="muni-panel-zone muni-panel-zone--avisos">
         <header class="muni-panel-zone-head">
           <span class="muni-panel-zone-icon" aria-hidden="true">📲</span>
           <div>
-            <h2>Contactos de "Recibir avisos"</h2>
+            <h2>Contactos de “Recibir avisos”</h2>
             <p>Los vecinos que se anotan en el portal se guardan en el sistema de campaña WhatsApp (no en este panel de Firebase).</p>
           </div>
         </header>
@@ -568,17 +663,21 @@
   <script src="js/firebase-seed-areas.js?v=20260623d"></script>
   <script src="js/muni-data.js"></script>
   <script src="js/muni-common.js?v=20260623"></script>
-  <script src="js/muni-api.js?v=20260521"></script>
+  <script src="js/muni-noticia-imagenes.js?v=20260702"></script>
+  <script src="js/admin-trabajo-imagenes.js?v=20260702"></script>
+  <script src="js/muni-api.js?v=20260702"></script>
   <script src="js/muni-image-compress.js"></script>
   <script src="vendor/leaflet/leaflet.js"></script>
   <script src="js/admin-anuncio.js?v=20260521"></script>
+  <script src="js/admin-flyers.js?v=20260722flyers"></script>
   <script src="js/muni-mapa-core.js?v=20260615"></script>
   <script src="js/admin-mapa.js?v=20260617"></script>
+  <script src="js/admin-encuesta.js?v=20260523"></script>
   <script>window.MUNI_AGENDA_EMBED = true;</script>
-  <script src="js/campana-config.js?v=20260709" onerror="window.CAMPANA_CONFIG=window.CAMPANA_CONFIG||{}"></script>
+  <script src="js/campana-config.js?v=20260529" onerror="window.CAMPANA_CONFIG=window.CAMPANA_CONFIG||{}"></script>
   <script src="js/muni-staff-notify.js?v=20260623b"></script>
-  <script src="js/agenda-interna.js?v=20260521d"></script>
+  <script src="js/agenda-interna.js?v=20260521f"></script>
   <script src="js/muni-panel-nav.js?v=20260611"></script>
-  <script src="js/admin.js?v=20260623e"></script>
+  <script src="js/admin.js?v=20260702"></script>
 </body>
 </html>

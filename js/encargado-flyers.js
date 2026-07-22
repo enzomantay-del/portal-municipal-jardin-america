@@ -61,6 +61,12 @@
     snap.forEach(function (doc) {
       var data = doc.data();
       if (data.areaSlug !== areaSlug) return;
+      var fecha = String(data.fechaEvento || "").slice(0, 10);
+      var today =
+        window.MuniApi && window.MuniApi.todayIsoArgentina
+          ? window.MuniApi.todayIsoArgentina()
+          : new Date().toLocaleDateString("en-CA", { timeZone: "America/Argentina/Cordoba" });
+      if (!fecha || fecha < today) return;
       items.push({ id: doc.id, data: data });
     });
     items.sort(function (a, b) {

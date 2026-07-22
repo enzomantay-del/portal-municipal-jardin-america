@@ -13,6 +13,7 @@
   var getDb = null;
   var getStorage = null;
   var formatError = null;
+  var editingFlyerId = null;
 
   function resolveClients() {
     if (getDb && getStorage) {
@@ -40,7 +41,7 @@
     var msg = (err && err.message) || fallback || String(err);
     var code = (err && err.code) || "";
 
-    if (err && err._flyerStep === "firestore" || /firestore|eventos_flyers/i.test(msg + code)) {
+    if ((err && err._flyerStep === "firestore") || /firestore|eventos_flyers/i.test(msg + code)) {
       return (
         "Permiso denegado al guardar el flyer en Firestore. " +
         "Andá a Firebase Console → Firestore Database → Reglas, pegá firebase/firestore.rules y publicá. " +
@@ -79,7 +80,7 @@
     }
     btn.disabled = false;
     btn.classList.remove("is-loading");
-    btn.textContent = btn.dataset.defaultLabel || "Guardar flyer";
+    btn.textContent = btn.dataset.defaultLabel || (editingFlyerId ? "Guardar cambios" : "Guardar flyer");
   }
 
   function todayIso() {
@@ -99,6 +100,31 @@
   function isFlyerVigente(data) {
     var fecha = normalizeFechaEvento(data && data.fechaEvento);
     return !!fecha && fecha >= todayIso();
+  }
+
+  async function deleteFlyerImage(imagenUrl) {
+    if (!imagenUrl || !storage || !storage.refFromURL) return;
+    try {
+      await storage.refFromURL(imagenUrl).delete();
+    } catch (_err) {
+      /* La imagen puede ser de otro usuario; el doc igual se borra. */
+    }
+  }
+
+  async function purgeExpiredFlyers(expiredRows) {
+    if (!expiredRows || !expiredRows.length || !db) return 0;
+    var purged = 0;
+    for (var i = 0; i < expiredRows.length; i++) {
+      var row = expiredRows[i];
+      try {
+        await deleteFlyerImage(row.data && row.data.imagenUrl);
+        await db.collection("eventos_flyers").doc(row.id).delete();
+        purged += 1;
+      } catch (err) {
+        console.warn("AdminFlyers.purgeExpired", row.id, err);
+      }
+    }
+    return purged;
   }
 
   async function uploadFlyer(file, uid) {
@@ -166,10 +192,24 @@
     return html;
   }
 
+  function renderFlyerPreview(url) {
+    var preview = document.getElementById("admin-flyer-imagen-preview");
+    if (!preview) return;
+    if (!url) {
+      preview.hidden = true;
+      preview.innerHTML = "";
+      return;
+    }
+    preview.hidden = false;
+    preview.innerHTML =
+      '<img src="' + escapeHtml(url) + '" alt="Vista previa del flyer" loading="lazy" decoding="async">';
+  }
+
   function renderFlyerRow(id, d) {
     var areaName = areasBySlug.get(d.areaSlug) || d.areaSlug || "—";
     var actions =
-      '<button type="button" class="muni-btn muni-btn--ghost" data-flyer-preview="' + escapeHtml(id) + '">Vista previa</button>';
+      '<button type="button" class="muni-btn muni-btn--ghost" data-flyer-edit="' + escapeHtml(id) + '">Editar</button>' +
+      ' <button type="button" class="muni-btn muni-btn--ghost" data-flyer-preview="' + escapeHtml(id) + '">Vista previa</button>';
     if (d.estadoPublicacion === "pendiente") {
       actions +=
         ' <button type="button" class="muni-btn muni-btn--primary" data-flyer-approve="' + escapeHtml(id) + '">Publicar</button>' +
@@ -193,7 +233,8 @@
       "<span>Evento: " + escapeHtml(d.fechaEvento || "—") + "</span>" +
       '<span class="muni-panel-badge muni-panel-badge--' + escapeHtml(d.estadoPublicacion) + '">' +
       escapeHtml(estadoPubLabel(d.estadoPublicacion)) +
-      "</span></div></div></div>" +
+      "</span>" +
+      "</div></div></div>" +
       '<div class="muni-panel-row-actions">' + actions + "</div></div>"
     );
   }
@@ -205,31 +246,49 @@
       throw new Error("Firebase no está listo para cargar flyers.");
     }
 
-    var snap = await db.collection("eventos_flyers").where("estadoPublicacion", "==", estado).get();
-    var rows = [];
-    flyersById = new Map();
-    snap.forEach(function (doc) {
-      var data = doc.data();
-      flyersById.set(doc.id, { id: doc.id, data: data });
-      rows.push({ id: doc.id, data: data });
-    });
-    if (estado === "publicado") {
-      rows = rows.filter(function (r) {
-        return isFlyerVigente(r.data);
-      });
+    var snap;
+    if (estado === "todos") {
+      snap = await db.collection("eventos_flyers").get();
+    } else {
+      snap = await db.collection("eventos_flyers").where("estadoPublicacion", "==", estado).get();
     }
 
+    var allRows = [];
+    snap.forEach(function (doc) {
+      allRows.push({ id: doc.id, data: doc.data() });
+    });
+
+    var expired = allRows.filter(function (row) {
+      return !isFlyerVigente(row.data);
+    });
+    var purged = await purgeExpiredFlyers(expired);
+    if (purged > 0 && showAlert) {
+      showAlert(
+        "ok",
+        purged === 1
+          ? "Se eliminó 1 flyer vencido."
+          : "Se eliminaron " + purged + " flyers vencidos."
+      );
+    }
+
+    var rows = allRows.filter(function (row) {
+      return isFlyerVigente(row.data);
+    });
+    flyersById = new Map();
+    rows.forEach(function (row) {
+      flyersById.set(row.id, row);
+    });
+
     rows.sort(function (a, b) {
-      return normalizeFechaEvento(a.data.fechaEvento).localeCompare(normalizeFechaEvento(b.data.fechaEvento));
+      return normalizeFechaEvento(b.data.fechaEvento).localeCompare(normalizeFechaEvento(a.data.fechaEvento));
     });
 
     if (emptyEl) {
       emptyEl.hidden = rows.length > 0;
       if (estado === "publicado" && !rows.length) {
-        emptyEl.textContent =
-          "No hay flyers publicados vigentes. Los eventos con fecha pasada ya no aparecen acá (siguen en Firestore por si necesitás consultarlos).";
+        emptyEl.textContent = "No hay flyers publicados vigentes.";
       } else {
-        emptyEl.textContent = "No hay flyers en este estado.";
+        emptyEl.textContent = "No hay flyers vigentes en este estado.";
       }
     }
     listEl.innerHTML = rows.length ? rows.map(function (r) { return renderFlyerRow(r.id, r.data); }).join("") : "";
@@ -243,12 +302,62 @@
     await db.collection("eventos_flyers").doc(id).update(patch);
   }
 
+  function setFlyerFormMode(mode) {
+    var titleEl = document.getElementById("admin-flyer-form-title");
+    var submitBtn = document.getElementById("admin-flyer-submit");
+    var cancelBtn = document.getElementById("admin-flyer-cancel-edit");
+    var fileInput = document.getElementById("admin-flyer-archivo");
+    var hint = document.getElementById("admin-flyer-archivo-hint");
+    var isEdit = mode === "edit";
+
+    if (titleEl) titleEl.textContent = isEdit ? "Editar flyer" : "Nuevo flyer";
+    if (submitBtn) submitBtn.textContent = isEdit ? "Guardar cambios" : "Guardar flyer";
+    if (cancelBtn) cancelBtn.hidden = !isEdit;
+    if (fileInput) {
+      if (isEdit) fileInput.removeAttribute("required");
+      else fileInput.setAttribute("required", "required");
+    }
+    if (hint) hint.hidden = !isEdit;
+  }
+
   function resetFlyerForm(form) {
-    if (!form) return;
-    form.reset();
+    editingFlyerId = null;
+    if (form) form.reset();
     var fileInput = document.getElementById("admin-flyer-archivo");
     if (fileInput) fileInput.value = "";
+    renderFlyerPreview("");
+    setFlyerFormMode("new");
     populateAreaSelect();
+  }
+
+  function fillFlyerForm(id) {
+    var row = flyersById.get(id);
+    if (!row) return;
+
+    var d = row.data;
+    var form = document.getElementById("admin-flyer-form");
+    if (!form) return;
+
+    editingFlyerId = id;
+    setFlyerFormMode("edit");
+
+    var titulo = form.querySelector('[name="titulo"]');
+    var area = document.getElementById("admin-flyer-area");
+    var fecha = form.querySelector('[name="fecha_evento"]');
+    var estado = form.querySelector('[name="estado_publicacion"]');
+    var fileInput = document.getElementById("admin-flyer-archivo");
+
+    if (titulo) titulo.value = d.titulo || "";
+    if (area) area.innerHTML = buildAreaOptions(d.areaSlug || "");
+    if (fecha) fecha.value = normalizeFechaEvento(d.fechaEvento);
+    if (estado) estado.value = d.estadoPublicacion || "publicado";
+    if (fileInput) fileInput.value = "";
+    renderFlyerPreview(d.imagenUrl || "");
+
+    var panel = document.getElementById("admin-flyers-panel");
+    if (panel && panel.scrollIntoView) {
+      panel.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   }
 
   function bindFlyerListActions() {
@@ -256,10 +365,13 @@
     if (!listEl) return;
 
     listEl.addEventListener("click", async function (e) {
-      var t = e.target.closest("[data-flyer-approve],[data-flyer-reject],[data-flyer-unpublish],[data-flyer-delete],[data-flyer-preview]");
+      var t = e.target.closest(
+        "[data-flyer-edit],[data-flyer-approve],[data-flyer-reject],[data-flyer-unpublish],[data-flyer-delete],[data-flyer-preview]"
+      );
       if (!t) return;
 
       var id =
+        t.getAttribute("data-flyer-edit") ||
         t.getAttribute("data-flyer-approve") ||
         t.getAttribute("data-flyer-reject") ||
         t.getAttribute("data-flyer-unpublish") ||
@@ -270,10 +382,17 @@
       var row = flyersById.get(id);
       if (!row) return;
 
+      if (t.hasAttribute("data-flyer-edit")) {
+        fillFlyerForm(id);
+        return;
+      }
+
       if (t.hasAttribute("data-flyer-preview")) {
         var w = window.open("", "_blank");
         if (w) {
-          w.document.write('<img src="' + row.data.imagenUrl + '" style="max-width:100%;height:auto;display:block;margin:0 auto;background:#111">');
+          w.document.write(
+            '<img src="' + row.data.imagenUrl + '" style="max-width:100%;height:auto;display:block;margin:0 auto;background:#111">'
+          );
         }
         return;
       }
@@ -292,9 +411,12 @@
           if (!window.confirm("¿Eliminar este flyer permanentemente?")) return;
           await db.collection("eventos_flyers").doc(id).delete();
           if (showAlert) showAlert("ok", "Flyer eliminado.");
+          if (editingFlyerId === id) {
+            resetFlyerForm(document.getElementById("admin-flyer-form"));
+          }
         }
         var filter = document.getElementById("admin-flyers-filter");
-        await loadFlyers(filter ? filter.value : "pendiente");
+        await loadFlyers(filter ? filter.value : "publicado");
       } catch (err) {
         if (showAlert) showAlert("error", flyerErrorMessage(err, "No se pudo actualizar el flyer."));
       }
@@ -327,6 +449,8 @@
     var titulo = String(fd.get("titulo") || "").trim();
     var estado = String(fd.get("estado_publicacion") || "publicado").trim();
     var file = fd.get("flyer_archivo");
+    var isEdit = !!editingFlyerId;
+    var existingRow = isEdit ? flyersById.get(editingFlyerId) : null;
 
     if (!areaSlug) {
       if (showAlert) showAlert("error", "Seleccioná el área del evento. Si no hay áreas, usá «Importar áreas municipales» arriba.");
@@ -336,27 +460,37 @@
       if (showAlert) showAlert("error", "Indicá la fecha del evento.");
       return;
     }
-    if (fechaEvento < todayIso()) {
+    if (!isEdit && fechaEvento < todayIso()) {
       if (showAlert) showAlert("error", "La fecha del evento no puede ser anterior a hoy.");
       return;
     }
-    if (!file || typeof file.size !== "number" || !file.size) {
+    if (!isEdit && (!file || typeof file.size !== "number" || !file.size)) {
       if (showAlert) showAlert("error", "Subí el archivo del flyer (imagen vertical).");
       return;
     }
 
-    var submitBtn = form.querySelector('[type="submit"]');
+    var submitBtn = document.getElementById("admin-flyer-submit") || form.querySelector('[type="submit"]');
     setFlyerSubmitLoading(submitBtn, true);
 
     try {
-      var imagenUrl;
-      try {
+      var imagenUrl = existingRow && existingRow.data ? existingRow.data.imagenUrl : "";
+      if (file && typeof file.size === "number" && file.size) {
         imagenUrl = await uploadFlyer(file, user.uid);
-      } catch (uploadErr) {
-        throw uploadErr;
+      }
+      if (!imagenUrl) {
+        if (showAlert) showAlert("error", "Subí el archivo del flyer (imagen vertical).");
+        return;
       }
 
-      try {
+      if (isEdit) {
+        await patchFlyer(editingFlyerId, {
+          areaSlug: areaSlug,
+          titulo: titulo || "Evento municipal",
+          imagenUrl: imagenUrl,
+          fechaEvento: fechaEvento,
+          estadoPublicacion: estado,
+        });
+      } else {
         await db.collection("eventos_flyers").add({
           areaSlug: areaSlug,
           titulo: titulo || "Evento municipal",
@@ -367,9 +501,6 @@
           createdAt: window.MuniFirebase.serverTimestamp(),
           updatedAt: window.MuniFirebase.serverTimestamp(),
         });
-      } catch (saveErr) {
-        saveErr._flyerStep = "firestore";
-        throw saveErr;
       }
 
       resetFlyerForm(form);
@@ -386,9 +517,11 @@
       if (showAlert) {
         showAlert(
           "ok",
-          estado === "publicado"
-            ? "Flyer publicado. Debería verse en el portal tras recargar (Ctrl+F5)."
-            : "Flyer guardado como pendiente. Cambiá el filtro de abajo para verlo."
+          isEdit
+            ? "Flyer actualizado."
+            : estado === "publicado"
+              ? "Flyer publicado. Debería verse en el portal tras recargar (Ctrl+F5)."
+              : "Flyer guardado como pendiente. Cambiá el filtro de abajo para verlo."
         );
       }
     } catch (err) {
@@ -402,8 +535,6 @@
   function populateAreaSelect() {
     var select = document.getElementById("admin-flyer-area");
     if (select) select.innerHTML = buildAreaOptions("");
-    var dateInput = document.getElementById("admin-flyer-fecha");
-    if (dateInput) dateInput.min = todayIso();
   }
 
   window.AdminFlyers = {
@@ -427,6 +558,13 @@
         form.addEventListener("submit", onAdminFlyerSubmit);
       }
 
+      var cancelBtn = document.getElementById("admin-flyer-cancel-edit");
+      if (cancelBtn) {
+        cancelBtn.addEventListener("click", function () {
+          resetFlyerForm(form);
+        });
+      }
+
       var filter = document.getElementById("admin-flyers-filter");
       var refresh = document.getElementById("admin-flyers-refresh");
       if (filter) {
@@ -438,7 +576,7 @@
       }
       if (refresh) {
         refresh.addEventListener("click", function () {
-          loadFlyers(filter ? filter.value : "pendiente").catch(function (err) {
+          loadFlyers(filter ? filter.value : "publicado").catch(function (err) {
             if (showAlert) showAlert("error", flyerErrorMessage(err, "Error al cargar flyers."));
           });
         });
@@ -447,10 +585,12 @@
     refreshAreas: function (map, sortedFn) {
       areasBySlug = map || areasBySlug;
       getAreasSorted = sortedFn || getAreasSorted;
-      populateAreaSelect();
+      if (!editingFlyerId) {
+        populateAreaSelect();
+      }
     },
     load: function (estado) {
-      return loadFlyers(estado || "pendiente");
+      return loadFlyers(estado || "publicado");
     },
   };
 })();
