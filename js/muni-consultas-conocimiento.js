@@ -148,7 +148,7 @@
       id: "turismo-colectivos-posadas",
       categoria: "turismo",
       areaSlug: "turismo",
-      titulo: "Horarios de colectivos a Posadas (lun–vie)",
+      titulo: "Horarios de colectivos a Posadas (todos los días)",
       keywords: [
         "colectivo",
         "colectivos",
@@ -163,9 +163,9 @@
         "rio uruguay",
         "crucero",
       ],
-      resumen: "Salidas lunes a viernes desde Jardín América hacia Posadas (orientativo).",
+      resumen: "Salidas todos los días desde Jardín América hacia Posadas (orientativo).",
       detalleHtml:
-        "<p>Salidas desde la terminal (frente al Cristo de la Hermandad). Horarios <strong>orientativos</strong> y sujetos a cambios de las empresas. Confirmá en boletería.</p>" +
+        "<p>Salidas desde la terminal (frente al Cristo de la Hermandad). Horarios <strong>orientativos</strong> (todos los días) y sujetos a cambios de las empresas. Confirmá en boletería.</p>" +
         '<div class="muni-consultas-table-wrap"><table class="muni-consultas-table"><thead><tr><th>Destino</th><th>Empresa</th><th>Horario</th><th>Notas</th></tr></thead><tbody>' +
         [
           ["Posadas", "Crucero del Norte", "3:30", ""],
@@ -222,11 +222,11 @@
       id: "turismo-colectivos-iguazu",
       categoria: "turismo",
       areaSlug: "turismo",
-      titulo: "Horarios de colectivos a Iguazú (lun–vie)",
+      titulo: "Horarios de colectivos a Iguazú (todos los días)",
       keywords: ["colectivo", "iguazu", "puerto iguazu", "eldorado", "andresito", "horario", "omnibus"],
-      resumen: "Salidas lunes a viernes desde Jardín América hacia Puerto Iguazú (orientativo).",
+      resumen: "Salidas todos los días desde Jardín América hacia Puerto Iguazú (orientativo).",
       detalleHtml:
-        "<p>Salidas desde la terminal (frente al Cristo de la Hermandad). Horarios <strong>orientativos</strong> y sujetos a cambios de las empresas. Confirmá en boletería.</p>" +
+        "<p>Salidas desde la terminal (frente al Cristo de la Hermandad). Horarios <strong>orientativos</strong> (todos los días) y sujetos a cambios de las empresas. Confirmá en boletería.</p>" +
         '<div class="muni-consultas-table-wrap"><table class="muni-consultas-table"><thead><tr><th>Destino</th><th>Empresa</th><th>Horario</th><th>Notas</th></tr></thead><tbody>' +
         [
           ["Puerto Iguazú", "Argentinita", "5:00", ""],
@@ -262,35 +262,32 @@
       id: "turismo-colectivos-ruta14",
       categoria: "turismo",
       areaSlug: "turismo",
-      titulo: "Horarios de colectivos por Ruta 14 (lun–vie)",
+      titulo: "Horarios de colectivos por Ruta 14 (todos los días)",
       keywords: [
         "ruta 14",
         "san vicente",
         "aristobulo",
-        "25 de mayo",
+        "san pedro",
         "el soberbio",
-        "san antonio",
-        "irigoyen",
-        "colectivo",
+        "obera",
         "oberá",
+        "colectivo",
+        "prox",
       ],
-      resumen: "Salidas lunes a viernes desde Jardín América hacia localidades por Ruta 14 (orientativo).",
+      resumen: "Salidas todos los días desde Jardín América hacia localidades por Ruta 14 (orientativo).",
       detalleHtml:
-        "<p>Salidas desde la terminal (frente al Cristo de la Hermandad). Horarios <strong>orientativos</strong> y sujetos a cambios de las empresas. Confirmá en boletería.</p>" +
+        "<p>Salidas desde la terminal (frente al Cristo de la Hermandad). Horarios <strong>orientativos</strong> (todos los días) y sujetos a cambios de las empresas. Confirmá en boletería.</p>" +
         '<div class="muni-consultas-table-wrap"><table class="muni-consultas-table"><thead><tr><th>Destino</th><th>Empresa</th><th>Horario</th><th>Notas</th></tr></thead><tbody>' +
         [
-          ["San Vicente", "Horianski", "8:00", ""],
-          ["A. del Valle", "El Misionero", "9:30", ""],
-          ["B. de Irigoyen", "Crucero del Norte", "9:30", ""],
-          ["25 de Mayo", "Horianski", "10:30", ""],
+          ["Oberá", "Aristóbulo del Valle", "7:00", ""],
+          ["San Vicente", "Horianski", "7:45", ""],
           ["El Soberbio", "Crucero del Norte", "11:10", ""],
-          ["San Vicente", "Horianski", "11:15", ""],
-          ["A. del Valle", "El Cometa", "12:30", ""],
-          ["25 de Mayo", "Horianski", "13:15", ""],
-          ["El Soberbio", "El Cometa", "16:15", ""],
-          ["A. del Valle", "Horianski", "17:00", ""],
-          ["San Antonio", "Crucero del Norte", "17:20", ""],
-          ["San Vicente", "Horianski", "19:15", ""],
+          ["San Vicente", "El Cometa", "12:30", ""],
+          ["San Pedro", "Horianski", "13:15", ""],
+          ["Oberá", "Aristóbulo del Valle", "14:00", ""],
+          ["El Soberbio", "Prox", "16:15", ""],
+          ["El Soberbio", "Horianski", "19:15", ""],
+          ["San Pedro", "Horianski", "21:00", ""],
         ]
           .map(function (r) {
             return (
