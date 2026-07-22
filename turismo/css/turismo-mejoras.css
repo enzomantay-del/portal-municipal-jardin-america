@@ -118,6 +118,73 @@
   border: 1px solid #bae6fd;
 }
 
+.tm-colec-boleterias {
+  margin: 0 0 1rem;
+  padding: 0.95rem 1.05rem;
+  border-radius: 12px;
+  border: 1px solid rgba(15, 92, 58, 0.18);
+  background: linear-gradient(135deg, #ecfdf5 0%, #f8fafc 100%);
+}
+
+.tm-colec-bolec-title {
+  margin: 0 0 0.25rem;
+  font-family: var(--f-heading, inherit);
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #0b3d28;
+}
+
+.tm-colec-bolec-hours {
+  margin: 0 0 0.7rem;
+  font-size: 0.88rem;
+  color: #334155;
+}
+
+.tm-colec-bolec-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.45rem;
+}
+
+@media (min-width: 700px) {
+  .tm-colec-bolec-list {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.45rem 1rem;
+  }
+}
+
+.tm-colec-bolec-list li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.25rem 0.75rem;
+  padding: 0.45rem 0.6rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.72);
+  font-size: 0.9rem;
+}
+
+.tm-colec-bolec-list em {
+  font-style: normal;
+  font-size: 0.78rem;
+  color: #64748b;
+}
+
+.tm-colec-bolec-list a {
+  font-weight: 800;
+  color: var(--c-primary-dark, #0f5c3a);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.tm-colec-bolec-list a:hover,
+.tm-colec-bolec-list a:focus-visible {
+  text-decoration: underline;
+}
+
 .tm-colec-tools p {
   margin: 0;
   font-size: 0.84rem;

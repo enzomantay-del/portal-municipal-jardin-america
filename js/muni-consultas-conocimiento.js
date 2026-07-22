@@ -113,6 +113,38 @@
       enlaces: [{ titulo: "Ver web de turismo", url: TURISMO_URL }],
     },
     {
+      id: "turismo-boleterias-terminal",
+      categoria: "turismo",
+      areaSlug: "turismo",
+      titulo: "Teléfonos de boleterías — terminal de ómnibus",
+      keywords: [
+        "boleteria",
+        "boleterias",
+        "terminal",
+        "omnibus",
+        "colectivo",
+        "telefono",
+        "telefonos",
+        "rio uruguay",
+        "singer",
+        "crucero del norte",
+        "20 de junio",
+        "via bariloche",
+        "pasaje",
+        "pasajes",
+      ],
+      resumen: "Contactos de boleterías en la terminal de Jardín América (08:00 a 20:00).",
+      detalleHtml:
+        "<p>Terminal de ómnibus (frente al Cristo de la Hermandad). Atención de <strong>08:00 a 20:00 hs</strong>.</p>" +
+        "<ul>" +
+        '<li><strong>Río Uruguay / Singer:</strong> <a href="tel:+543743455052">3743-455052</a></li>' +
+        '<li><strong>Crucero del Norte:</strong> <a href="tel:+543743562277">3743-562277</a></li>' +
+        '<li><strong>20 de Junio</strong> (larga distancia): <a href="tel:+543764964177">3764-964177</a></li>' +
+        '<li><strong>Vía Bariloche</strong> (larga distancia): <a href="tel:+543743440755">3743-440755</a></li>' +
+        "</ul>",
+      enlaces: [{ titulo: "Ver colectivos y boleterías en Turismo", url: TURISMO_URL + "#colectivos" }],
+    },
+    {
       id: "turismo-colectivos-posadas",
       categoria: "turismo",
       areaSlug: "turismo",

@@ -93,6 +93,8 @@
       colecLead: "Filtrá por destino o buscá una empresa. Horarios orientativos (lun–vie).",
       colecNext: "Próximos de hoy (aprox.):",
       colecNone: "No hay más salidas listadas para hoy, o es fin de semana (la tabla es lun–vie).",
+      colecBolecTitle: "Boleterías en la terminal",
+      colecBolecHours: "Atención: 08:00 a 20:00 hs.",
       festLink: "Ver agenda de eventos →",
       gastroOk: "Paradas del circuito turístico con contacto directo. Confirmá siempre horarios.",
       olalaTitle: "Paquetes y tours receptivos",
@@ -139,6 +141,8 @@
       colecLead: "Filtre por destino ou busque uma empresa. Horários orientativos (seg–sex).",
       colecNext: "Próximos de hoje (aprox.):",
       colecNone: "Não há mais saídas listadas para hoje, ou é fim de semana (tabela seg–sex).",
+      colecBolecTitle: "Bilheterias na rodoviária",
+      colecBolecHours: "Atendimento: 08:00 às 20:00.",
       festLink: "Ver agenda de eventos →",
       gastroOk: "Paradas do circuito turístico com contato direto. Confirme sempre os horários.",
       olalaTitle: "Pacotes e tours receptivos",
@@ -185,6 +189,8 @@
       colecLead: "Filter by destination or search a company. Schedules are approximate (Mon–Fri).",
       colecNext: "Next departures today (approx.):",
       colecNone: "No more listed departures for today, or it’s the weekend (table is Mon–Fri).",
+      colecBolecTitle: "Ticket offices at the bus terminal",
+      colecBolecHours: "Open: 8:00 AM to 8:00 PM.",
       festLink: "See events agenda →",
       gastroOk: "Tourism-circuit stops with direct contact. Always confirm opening hours.",
       olalaTitle: "Packages and inbound tours",
@@ -355,6 +361,20 @@
     var panel = document.getElementById("panel-colectivos");
     if (!panel || document.getElementById("tm-colec-tools")) return;
 
+    var bolec = document.createElement("div");
+    bolec.id = "tm-colec-boleterias";
+    bolec.className = "tm-colec-boleterias";
+    bolec.innerHTML =
+      '<p class="tm-colec-bolec-title" data-tm="colecBolecTitle"></p>' +
+      '<p class="tm-colec-bolec-hours" data-tm="colecBolecHours"></p>' +
+      '<ul class="tm-colec-bolec-list">' +
+      '<li><span>Río Uruguay / Singer</span> <a href="tel:+543743455052">3743-455052</a></li>' +
+      '<li><span>Crucero del Norte</span> <a href="tel:+543743562277">3743-562277</a></li>' +
+      '<li><span>20 de Junio <em>(larga distancia)</em></span> <a href="tel:+543764964177">3764-964177</a></li>' +
+      '<li><span>Vía Bariloche <em>(larga distancia)</em></span> <a href="tel:+543743440755">3743-440755</a></li>' +
+      "</ul>";
+    panel.insertBefore(bolec, panel.firstChild);
+
     var tools = document.createElement("div");
     tools.id = "tm-colec-tools";
     tools.className = "tm-colec-tools";
@@ -373,7 +393,7 @@
       "</div>" +
       '<p class="tm-colec-next" id="tm-colec-next" hidden></p>';
 
-    panel.insertBefore(tools, panel.firstChild);
+    panel.insertBefore(tools, bolec.nextSibling);
 
     var blocks = Array.prototype.slice.call(panel.querySelectorAll(".colectivos-empresa"));
     blocks.forEach(function (block, idx) {
