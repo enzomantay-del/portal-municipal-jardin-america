@@ -368,10 +368,10 @@
       '<p class="tm-colec-bolec-title" data-tm="colecBolecTitle"></p>' +
       '<p class="tm-colec-bolec-hours" data-tm="colecBolecHours"></p>' +
       '<ul class="tm-colec-bolec-list">' +
-      '<li><span>Río Uruguay / Singer</span> <a href="tel:+543743455052">3743-455052</a></li>' +
-      '<li><span>Crucero del Norte</span> <a href="tel:+543743562277">3743-562277</a></li>' +
-      '<li><span>20 de Junio <em>(larga distancia)</em></span> <a href="tel:+543764964177">3764-964177</a></li>' +
-      '<li><span>Vía Bariloche <em>(larga distancia)</em></span> <a href="tel:+543743440755">3743-440755</a></li>' +
+      '<li><span>Río Uruguay / Singer</span> <a href="https://wa.me/543743455052" target="_blank" rel="noopener noreferrer">3743-455052</a></li>' +
+      '<li><span>Crucero del Norte</span> <a href="https://wa.me/543743562277" target="_blank" rel="noopener noreferrer">3743-562277</a></li>' +
+      '<li><span>20 de Junio <em>(larga distancia)</em></span> <a href="https://wa.me/543764964177" target="_blank" rel="noopener noreferrer">3764-964177</a></li>' +
+      '<li><span>Vía Bariloche <em>(larga distancia)</em></span> <a href="https://wa.me/543743440755" target="_blank" rel="noopener noreferrer">3743-440755</a></li>' +
       "</ul>";
     panel.insertBefore(bolec, panel.firstChild);
 

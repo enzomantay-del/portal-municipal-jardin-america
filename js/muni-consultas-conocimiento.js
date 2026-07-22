@@ -137,10 +137,10 @@
       detalleHtml:
         "<p>Terminal de ómnibus (frente al Cristo de la Hermandad). Atención de <strong>08:00 a 20:00 hs</strong>.</p>" +
         "<ul>" +
-        '<li><strong>Río Uruguay / Singer:</strong> <a href="tel:+543743455052">3743-455052</a></li>' +
-        '<li><strong>Crucero del Norte:</strong> <a href="tel:+543743562277">3743-562277</a></li>' +
-        '<li><strong>20 de Junio</strong> (larga distancia): <a href="tel:+543764964177">3764-964177</a></li>' +
-        '<li><strong>Vía Bariloche</strong> (larga distancia): <a href="tel:+543743440755">3743-440755</a></li>' +
+        '<li><strong>Río Uruguay / Singer:</strong> <a href="https://wa.me/543743455052" target="_blank" rel="noopener noreferrer">3743-455052</a></li>' +
+        '<li><strong>Crucero del Norte:</strong> <a href="https://wa.me/543743562277" target="_blank" rel="noopener noreferrer">3743-562277</a></li>' +
+        '<li><strong>20 de Junio</strong> (larga distancia): <a href="https://wa.me/543764964177" target="_blank" rel="noopener noreferrer">3764-964177</a></li>' +
+        '<li><strong>Vía Bariloche</strong> (larga distancia): <a href="https://wa.me/543743440755" target="_blank" rel="noopener noreferrer">3743-440755</a></li>' +
         "</ul>",
       enlaces: [{ titulo: "Ver colectivos y boleterías en Turismo", url: TURISMO_URL + "#colectivos" }],
     },
@@ -165,40 +165,40 @@
       ],
       resumen: "Salidas todos los días desde Jardín América hacia Posadas (orientativo).",
       detalleHtml:
-        "<p>Salidas desde la terminal (frente al Cristo de la Hermandad). Horarios <strong>orientativos</strong> (todos los días) y sujetos a cambios de las empresas. Confirmá en boletería.</p>" +
-        '<div class="muni-consultas-table-wrap"><table class="muni-consultas-table"><thead><tr><th>Destino</th><th>Empresa</th><th>Horario</th><th>Notas</th></tr></thead><tbody>' +
+        "<p>Salidas desde la terminal (frente al Cristo de la Hermandad). <strong>Sujeto a modificaciones por parte de las empresas.</strong></p>" +
+        '<div class="muni-consultas-table-wrap"><table class="muni-consultas-table"><thead><tr><th>Destino</th><th>Empresa</th><th>Horario</th></tr></thead><tbody>' +
         [
-          ["Posadas", "Crucero del Norte", "3:30", ""],
-          ["Posadas", "Kruse", "5:30", ""],
-          ["Posadas", "Horianski", "6:40", ""],
-          ["Posadas", "Crucero del Norte", "6:45", ""],
-          ["Posadas", "El Cometa", "7:30", ""],
-          ["Posadas", "Horianski", "7:45", ""],
-          ["Posadas", "Crucero del Norte", "8:10", ""],
-          ["Posadas", "Oro Verde", "9:20", ""],
-          ["Posadas", "Horianski", "9:50", ""],
-          ["Posadas", "Crucero del Norte", "10:45", ""],
-          ["Posadas", "Horianski", "10:45", ""],
-          ["Posadas", "Crucero del Norte", "11:00", ""],
-          ["Posadas", "Río Uruguay", "11:35", ""],
-          ["Posadas", "Horianski", "12:00", ""],
-          ["Posadas", "Argentinita", "12:30", ""],
-          ["Posadas", "Oro Verde", "12:50", ""],
-          ["Posadas", "Horianski", "13:15", ""],
-          ["Posadas", "Crucero del Norte", "13:45", ""],
-          ["Posadas", "Horianski", "14:30", ""],
-          ["Posadas", "Horianski", "15:00", ""],
-          ["Posadas", "Río Uruguay", "15:50", ""],
-          ["Posadas", "Argentinita", "16:45", ""],
-          ["Posadas", "Crucero del Norte", "16:50", ""],
-          ["Posadas", "Río Uruguay", "17:15", ""],
-          ["Posadas", "El Cometa", "17:30", ""],
-          ["Posadas", "Águila Dorada", "17:40", ""],
-          ["Posadas", "Argentinita", "18:00", ""],
-          ["Posadas", "Kruse", "18:20", ""],
-          ["Posadas", "Crucero del Norte", "18:40", ""],
-          ["Posadas", "Crucero del Norte", "19:00", ""],
-          ["Posadas", "Crucero del Norte", "21:30", ""],
+          ["Posadas", "Crucero del Norte", "3:30"],
+          ["Posadas", "Kruse", "5:30"],
+          ["Posadas", "Horianski", "6:40"],
+          ["Posadas", "Crucero del Norte", "6:45"],
+          ["Posadas", "El Cometa", "7:30"],
+          ["Posadas", "Horianski", "7:45"],
+          ["Posadas", "Crucero del Norte", "8:10"],
+          ["Posadas", "Oro Verde", "9:20"],
+          ["Posadas", "Horianski", "9:50"],
+          ["Posadas", "Crucero del Norte", "10:45"],
+          ["Posadas", "Horianski", "10:45"],
+          ["Posadas", "Crucero del Norte", "11:00"],
+          ["Posadas", "Río Uruguay", "11:35"],
+          ["Posadas", "Horianski", "12:00"],
+          ["Posadas", "Argentinita", "12:30"],
+          ["Posadas", "Oro Verde", "12:50"],
+          ["Posadas", "Horianski", "13:15"],
+          ["Posadas", "Crucero del Norte", "13:45"],
+          ["Posadas", "Horianski", "14:30"],
+          ["Posadas", "Horianski", "15:00"],
+          ["Posadas", "Río Uruguay", "15:50"],
+          ["Posadas", "Argentinita", "16:45"],
+          ["Posadas", "Crucero del Norte", "16:50"],
+          ["Posadas", "Río Uruguay", "17:15"],
+          ["Posadas", "El Cometa", "17:30"],
+          ["Posadas", "Águila Dorada", "17:40"],
+          ["Posadas", "Argentinita", "18:00"],
+          ["Posadas", "Kruse", "18:20"],
+          ["Posadas", "Crucero del Norte", "18:40"],
+          ["Posadas", "Crucero del Norte", "19:00"],
+          ["Posadas", "Crucero del Norte", "21:30"],
         ]
           .map(function (r) {
             return (
@@ -208,9 +208,7 @@
               r[1] +
               "</td><td>" +
               r[2] +
-              " hs</td><td>" +
-              (r[3] || "—") +
-              "</td></tr>"
+              " hs</td></tr>"
             );
           })
           .join("") +
@@ -226,19 +224,19 @@
       keywords: ["colectivo", "iguazu", "puerto iguazu", "eldorado", "andresito", "horario", "omnibus"],
       resumen: "Salidas todos los días desde Jardín América hacia Puerto Iguazú (orientativo).",
       detalleHtml:
-        "<p>Salidas desde la terminal (frente al Cristo de la Hermandad). Horarios <strong>orientativos</strong> (todos los días) y sujetos a cambios de las empresas. Confirmá en boletería.</p>" +
-        '<div class="muni-consultas-table-wrap"><table class="muni-consultas-table"><thead><tr><th>Destino</th><th>Empresa</th><th>Horario</th><th>Notas</th></tr></thead><tbody>' +
+        "<p>Salidas desde la terminal (frente al Cristo de la Hermandad). <strong>Sujeto a modificaciones por parte de las empresas.</strong></p>" +
+        '<div class="muni-consultas-table-wrap"><table class="muni-consultas-table"><thead><tr><th>Destino</th><th>Empresa</th><th>Horario</th></tr></thead><tbody>' +
         [
-          ["Puerto Iguazú", "Argentinita", "5:00", ""],
-          ["Puerto Iguazú", "Argentinita", "6:00", ""],
-          ["Puerto Iguazú", "Horianski", "7:00", ""],
-          ["Puerto Iguazú", "Río Uruguay", "7:15", ""],
-          ["Puerto Iguazú", "Crucero del Norte", "8:10", ""],
-          ["Puerto Iguazú", "Río Uruguay", "9:15", ""],
-          ["Puerto Iguazú", "Crucero del Norte", "11:45", ""],
-          ["Puerto Iguazú", "Crucero del Norte", "13:15", ""],
-          ["Puerto Iguazú", "Crucero del Norte", "15:40", ""],
-          ["Puerto Iguazú", "Crucero del Norte", "21:55", ""],
+          ["Puerto Iguazú", "Argentinita", "5:00"],
+          ["Puerto Iguazú", "Argentinita", "6:00"],
+          ["Puerto Iguazú", "Horianski", "7:00"],
+          ["Puerto Iguazú", "Río Uruguay", "7:15"],
+          ["Puerto Iguazú", "Crucero del Norte", "8:10"],
+          ["Puerto Iguazú", "Río Uruguay", "9:15"],
+          ["Puerto Iguazú", "Crucero del Norte", "11:45"],
+          ["Puerto Iguazú", "Crucero del Norte", "13:15"],
+          ["Puerto Iguazú", "Crucero del Norte", "15:40"],
+          ["Puerto Iguazú", "Crucero del Norte", "21:55"],
         ]
           .map(function (r) {
             return (
@@ -248,9 +246,7 @@
               r[1] +
               "</td><td>" +
               r[2] +
-              " hs</td><td>" +
-              (r[3] || "—") +
-              "</td></tr>"
+              " hs</td></tr>"
             );
           })
           .join("") +
@@ -276,18 +272,18 @@
       ],
       resumen: "Salidas todos los días desde Jardín América hacia localidades por Ruta 14 (orientativo).",
       detalleHtml:
-        "<p>Salidas desde la terminal (frente al Cristo de la Hermandad). Horarios <strong>orientativos</strong> (todos los días) y sujetos a cambios de las empresas. Confirmá en boletería.</p>" +
-        '<div class="muni-consultas-table-wrap"><table class="muni-consultas-table"><thead><tr><th>Destino</th><th>Empresa</th><th>Horario</th><th>Notas</th></tr></thead><tbody>' +
+        "<p>Salidas desde la terminal (frente al Cristo de la Hermandad). <strong>Sujeto a modificaciones por parte de las empresas.</strong></p>" +
+        '<div class="muni-consultas-table-wrap"><table class="muni-consultas-table"><thead><tr><th>Destino</th><th>Empresa</th><th>Horario</th></tr></thead><tbody>' +
         [
-          ["Oberá", "Aristóbulo del Valle", "7:00", ""],
-          ["San Vicente", "Horianski", "7:45", ""],
-          ["El Soberbio", "Crucero del Norte", "11:10", ""],
-          ["San Vicente", "El Cometa", "12:30", ""],
-          ["San Pedro", "Horianski", "13:15", ""],
-          ["Oberá", "Aristóbulo del Valle", "14:00", ""],
-          ["El Soberbio", "Prox", "16:15", ""],
-          ["El Soberbio", "Horianski", "19:15", ""],
-          ["San Pedro", "Horianski", "21:00", ""],
+          ["Oberá", "Aristóbulo del Valle", "7:00"],
+          ["San Vicente", "Horianski", "7:45"],
+          ["El Soberbio", "Crucero del Norte", "11:10"],
+          ["San Vicente", "El Cometa", "12:30"],
+          ["San Pedro", "Horianski", "13:15"],
+          ["Oberá", "Aristóbulo del Valle", "14:00"],
+          ["El Soberbio", "Prox", "16:15"],
+          ["El Soberbio", "Horianski", "19:15"],
+          ["San Pedro", "Horianski", "21:00"],
         ]
           .map(function (r) {
             return (
@@ -297,9 +293,7 @@
               r[1] +
               "</td><td>" +
               r[2] +
-              " hs</td><td>" +
-              (r[3] || "—") +
-              "</td></tr>"
+              " hs</td></tr>"
             );
           })
           .join("") +

@@ -172,11 +172,14 @@
         '"><span aria-hidden="true">📞</span> Llamar ' +
         esc(a.t) +
         "</a>";
-    if (a.mapsUrl)
+    if (a.mapsUrl) {
+      var mapHref = a.mapsUrl;
+      if (mapHref.indexOf("http") !== 0) mapHref = "https://" + mapHref;
       acc +=
         '<a class="aloj-detalle-btn aloj-detalle-btn--map" href="' +
-        esc(a.mapsUrl) +
+        esc(mapHref) +
         '" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">📍</span> Ver en mapa</a>';
+    }
     if (acc)
       body += '<div class="aloj-detalle-acciones">' + acc + "</div>";
     document.getElementById("aloj-detalle-body").innerHTML = body;
@@ -263,10 +266,22 @@
 
   window.inicializarCatalogoAloj = function () {
     ensureModal();
-    if (!window.ALOJ) return;
-    window.ALOJ = window.ALOJ.map(function (a) {
-      return window.normalizeAlojItem(a);
+    if (!window.ALOJ || !window.ALOJ.length) {
+      if (window.ALOJ_EMBEDDED && window.ALOJ_EMBEDDED.length) {
+        window.ALOJ = window.ALOJ_EMBEDDED.slice();
+      } else {
+        return;
+      }
+    }
+    var normalized = [];
+    window.ALOJ.forEach(function (a) {
+      try {
+        normalized.push(window.normalizeAlojItem(a));
+      } catch (err) {
+        console.warn("Aloj omitido en init", a && a.n, err);
+      }
     });
+    window.ALOJ = normalized;
     window.ALOJ.sort(function (a, b) {
       return a.n.localeCompare(b.n, "es");
     });
