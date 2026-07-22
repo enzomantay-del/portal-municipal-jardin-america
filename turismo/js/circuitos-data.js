@@ -30,8 +30,8 @@ window.TURISMO_CIRCUITOS = [
         orden: 1,
         nombre: "Cooperativa Flor de Jardín",
         tiempo: "40 min",
-        lat: -27.0529,
-        lng: -55.2268,
+        lat: -27.0502945,
+        lng: -55.2468406,
         mapsUrl:
           "https://www.google.com/maps/search/?api=1&query=Cooperativa+Flor+de+Jard%C3%ADn+Ruta+12+Jard%C3%ADn+Am%C3%A9rica",
         imagen: "img/cooperativa-flor.webp",
@@ -58,8 +58,8 @@ window.TURISMO_CIRCUITOS = [
         orden: 3,
         nombre: "Plaza Colón",
         tiempo: "15 min",
-        lat: -27.0431,
-        lng: -55.2269,
+        lat: -27.0431348,
+        lng: -55.2271373,
         mapsUrl:
           "https://www.google.com/maps/search/?api=1&query=Plaza+Col%C3%B3n+Jard%C3%ADn+Am%C3%A9rica+Misiones",
         imagen: "img/plaza-colon.webp",
