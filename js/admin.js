@@ -32,6 +32,7 @@
   var cancelEditBtn = document.getElementById("admin-cancel-edit");
   var newTrabajoBtn = document.getElementById("admin-new-trabajo");
   var areaSelect = document.getElementById("admin-area-slug");
+  var areaCheckboxes = document.getElementById("admin-area-slugs");
   var userAreaSelect = document.getElementById("user-area");
   var estadoPubWrap = document.getElementById("admin-estado-pub-wrap");
   var estadoPubSelect = document.getElementById("admin-estado-publicacion");
@@ -146,11 +147,15 @@
 
     previewId = id;
     var d = row.data;
-    var areaName = areasBySlug.get(d.areaSlug) || d.areaSlug || "—";
-    var img = d.imagenUrl || "";
+    var areaName = trabajoAreaNames(d) || "—";
+    var img = window.MuniNoticiaImagenes ? window.MuniNoticiaImagenes.coverUrl(d) : d.imagenUrl || "";
     var imgBlock = img
       ? '<figure class="muni-article-cover"><img src="' + escapeHtml(img) + '" alt="' + escapeHtml(d.titulo) + '"></figure>'
       : "";
+    var bodyHtml =
+      window.MuniNoticiaImagenes && window.MuniNoticiaImagenes.renderBodyHtml
+        ? window.MuniNoticiaImagenes.renderBodyHtml(d.cuerpo, d.imagenes || d, escapeHtml)
+        : d.cuerpo || "<p>—</p>";
 
     previewContent.innerHTML =
       '<article class="muni-article">' +
@@ -169,7 +174,7 @@
       "<div><dt>Estado del trabajo</dt><dd>" + escapeHtml(estadoObraLabel(d.estadoObra)) + "</dd></div>" +
       "<div><dt>Fecha</dt><dd>" + escapeHtml(formatDateLabel(d.fechaPublicacion)) + "</dd></div>" +
       "</dl>" +
-      '<div class="muni-article-body">' + (d.cuerpo || "<p>—</p>") + "</div>" +
+      '<div class="muni-article-body">' + bodyHtml + "</div>" +
       "</article>";
 
     if (previewActions) {
@@ -354,8 +359,72 @@
     return options.join("");
   }
 
+  function trabajoAreaSlugs(data) {
+    if (window.MuniApi && window.MuniApi.normalizeTrabajoAreaSlugs) {
+      return window.MuniApi.normalizeTrabajoAreaSlugs(data);
+    }
+    var slugs = Array.isArray(data && data.areaSlugs) ? data.areaSlugs.slice() : [];
+    if (data && data.areaSlug && slugs.indexOf(data.areaSlug) === -1) slugs.unshift(data.areaSlug);
+    return slugs.filter(Boolean);
+  }
+
+  function trabajoAreaNames(data) {
+    return trabajoAreaSlugs(data)
+      .map(function (slug) {
+        return areasBySlug.get(slug) || slug;
+      })
+      .filter(Boolean)
+      .join(" · ");
+  }
+
+  function getSelectedAreaSlugs() {
+    if (!areaCheckboxes) return [];
+    return Array.prototype.slice
+      .call(areaCheckboxes.querySelectorAll('input[name="areaSlugs"]:checked'))
+      .map(function (input) {
+        return String(input.value || "").trim();
+      })
+      .filter(Boolean);
+  }
+
+  function setSelectedAreaSlugs(slugs) {
+    if (!areaCheckboxes) return;
+    var selected = {};
+    (slugs || []).forEach(function (slug) {
+      selected[slug] = true;
+    });
+    areaCheckboxes.querySelectorAll('input[name="areaSlugs"]').forEach(function (input) {
+      input.checked = !!selected[input.value];
+    });
+  }
+
+  function populateAreaCheckboxes() {
+    if (!areaCheckboxes) return;
+    var prev = getSelectedAreaSlugs();
+    if (!areasSorted.length) {
+      areaCheckboxes.innerHTML =
+        '<p class="muni-field-hint">Importá las áreas municipales primero.</p>';
+      return;
+    }
+    areaCheckboxes.innerHTML = areasSorted
+      .map(function (area) {
+        return (
+          '<label class="muni-check-row muni-area-check">' +
+          '<input type="checkbox" name="areaSlugs" value="' +
+          escapeHtml(area.slug) +
+          '">' +
+          "<span>" +
+          escapeHtml(area.nombre) +
+          "</span></label>"
+        );
+      })
+      .join("");
+    if (prev.length) setSelectedAreaSlugs(prev);
+  }
+
   function populateAreaSelects() {
     if (areaSelect) areaSelect.innerHTML = buildAreaOptions(false);
+    populateAreaCheckboxes();
     if (userAreaSelect) userAreaSelect.innerHTML = buildAreaOptions(true);
     populateTrabajosAreaFilter();
     populateAreasList();
@@ -432,9 +501,9 @@
     if (filters.obra !== "todos" && d.estadoObra !== filters.obra) return false;
     if (filters.destacada === "si" && !d.destacada) return false;
     if (filters.destacada === "no" && d.destacada) return false;
-    if (filters.area !== "todas" && d.areaSlug !== filters.area) return false;
-    if (filters.imagen === "con" && !d.imagenUrl) return false;
-    if (filters.imagen === "sin" && d.imagenUrl) return false;
+    if (filters.area !== "todas" && trabajoAreaSlugs(d).indexOf(filters.area) === -1) return false;
+    if (filters.imagen === "con" && !(window.MuniNoticiaImagenes ? window.MuniNoticiaImagenes.coverUrl(d) : d.imagenUrl)) return false;
+    if (filters.imagen === "sin" && (window.MuniNoticiaImagenes ? window.MuniNoticiaImagenes.coverUrl(d) : d.imagenUrl)) return false;
 
     if (filters.periodo !== "todas") {
       var fecha = String(d.fechaPublicacion || "").slice(0, 10);
@@ -451,7 +520,7 @@
     }
 
     if (filters.q) {
-      var areaName = areasBySlug.get(d.areaSlug) || d.areaSlug || "";
+      var areaName = trabajoAreaNames(d);
       var haystack = [d.titulo, d.bajada, d.cuerpo, d.barrio, d.ubicacion, areaName]
         .filter(Boolean)
         .join(" ")
@@ -507,7 +576,7 @@
 
   function renderTrabajoItem(row) {
     var d = row.data;
-    var areaName = areasBySlug.get(d.areaSlug) || d.areaSlug || "—";
+    var areaName = trabajoAreaNames(d) || "—";
     var pubEstado = d.estadoPublicacion || "borrador";
     return (
       '<article class="muni-panel-item muni-panel-item--admin">' +
@@ -528,7 +597,7 @@
       (d.fechaPublicacion
         ? ' · <span class="muni-panel-item-date">' + escapeHtml(formatDateLabel(d.fechaPublicacion)) + "</span>"
         : "") +
-      (!d.imagenUrl ? ' · <span class="muni-panel-item-tag">Sin imagen</span>' : "") +
+      (!(window.MuniNoticiaImagenes ? window.MuniNoticiaImagenes.coverUrl(d) : d.imagenUrl) ? ' · <span class="muni-panel-item-tag">Sin imagen</span>' : "") +
       "</p>" +
       "</div>" +
       '<div class="muni-panel-item-actions muni-panel-item-actions--stack">' +
@@ -715,6 +784,7 @@
   function resetEditForm() {
     editingId = null;
     if (editForm) editForm.reset();
+    if (window.AdminTrabajoImagenes) window.AdminTrabajoImagenes.clearSlots();
     if (editCard) editCard.hidden = true;
     updateTrabajoFormMode();
   }
@@ -724,11 +794,13 @@
     editingId = null;
     if (editCard) editCard.hidden = false;
     editForm.reset();
+    if (window.AdminTrabajoImagenes) window.AdminTrabajoImagenes.clearSlots();
     updateTrabajoFormMode();
     if (estadoPubSelect) estadoPubSelect.value = "pendiente";
     var today = new Date().toISOString().slice(0, 10);
     if (editForm.fecha_publicacion) editForm.fecha_publicacion.value = today;
     if (editForm.estado_obra) editForm.estado_obra.value = "en_curso";
+    setSelectedAreaSlugs([]);
     var target = document.getElementById("seccion-novedades") || editCard;
     if (target && target.scrollIntoView) {
       target.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -752,9 +824,11 @@
     editForm.barrio.value = t.barrio || "";
     editForm.estado_obra.value = t.estadoObra || "en_curso";
     editForm.fecha_publicacion.value = t.fechaPublicacion || "";
-    editForm.imagen_url.value = t.imagenUrl || "";
     if (areaSelect) areaSelect.value = t.areaSlug || "";
-    if (editForm.imagen_archivo) editForm.imagen_archivo.value = "";
+    setSelectedAreaSlugs(trabajoAreaSlugs(t));
+    if (window.AdminTrabajoImagenes && window.MuniNoticiaImagenes) {
+      window.AdminTrabajoImagenes.fillSlots(window.MuniNoticiaImagenes.normalizeImagenes(t));
+    }
 
     if (editCard && editCard.scrollIntoView) {
       editCard.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -794,16 +868,17 @@
     setSubmitLoading(true, isNew ? "Guardando novedad…" : "Guardando cambios…");
 
     var fd = new FormData(editForm);
+    var areaSlugs = getSelectedAreaSlugs();
     var payload = {
       titulo: String(fd.get("titulo") || "").trim(),
       bajada: String(fd.get("bajada") || "").trim(),
       cuerpo: buildCuerpoHtml(String(fd.get("cuerpo") || "").trim()),
-      areaSlug: String(fd.get("areaSlug") || "").trim(),
+      areaSlug: areaSlugs[0] || "",
+      areaSlugs: areaSlugs,
       ubicacion: String(fd.get("ubicacion") || "").trim(),
       barrio: String(fd.get("barrio") || "").trim(),
       estadoObra: fd.get("estado_obra"),
       fechaPublicacion: fd.get("fecha_publicacion"),
-      imagenUrl: String(fd.get("imagen_url") || "").trim() || null,
       updatedAt: window.MuniFirebase.serverTimestamp(),
       editedByAdmin: currentUser.uid,
     };
@@ -814,21 +889,25 @@
       return;
     }
 
-    if (!payload.areaSlug) {
-      showAlert("error", "Seleccioná un área. Si no hay áreas, usá «Importar áreas municipales».");
+    if (!areaSlugs.length) {
+      showAlert("error", "Seleccioná al menos un área. Si no hay áreas, usá «Importar áreas municipales».");
       setSubmitLoading(false);
       return;
     }
 
-    var file = fd.get("imagen_archivo");
-    if (file && file.size > 0) {
-      try {
-        payload.imagenUrl = await uploadImage(file);
-      } catch (err) {
-        showAlert("error", formatFirestoreError(err, "Error al subir la imagen."));
-        setSubmitLoading(false);
-        return;
+    try {
+      if (window.AdminTrabajoImagenes) {
+        var imageResult = await window.AdminTrabajoImagenes.collectImagenes(uploadImage);
+        payload.imagenes = imageResult.imagenes;
+        payload.imagenUrl = imageResult.imagenUrl;
+      } else {
+        payload.imagenUrl = null;
+        payload.imagenes = [];
       }
+    } catch (err) {
+      showAlert("error", formatFirestoreError(err, "Error al subir las imágenes."));
+      setSubmitLoading(false);
+      return;
     }
 
     var estadoPub = "pendiente";
@@ -1063,6 +1142,31 @@
         await window.AdminMapa.load("publicado");
       } catch (mapaErr) {
         console.warn("AdminMapa.load", mapaErr);
+      }
+    }
+
+    if (token !== sessionToken) return;
+
+    if (window.AdminFlyers) {
+      window.AdminFlyers.refreshAreas(areasBySlug, function () {
+        return areasSorted;
+      });
+      try {
+        await window.AdminFlyers.load("publicado");
+      } catch (flyersErr) {
+        console.warn("AdminFlyers.load", flyersErr);
+      }
+    }
+
+    if (token !== sessionToken) return;
+
+    if (window.AdminEncuesta) {
+      try {
+        if (window.AdminEncuesta.loadSummary) {
+          await window.AdminEncuesta.loadSummary();
+        }
+      } catch (encuestaErr) {
+        console.warn("AdminEncuesta.loadSummary", encuestaErr);
       }
     }
   }
@@ -1303,6 +1407,45 @@
       getStorage: function () {
         return storage;
       },
+    });
+  }
+
+  if (window.AdminFlyers) {
+    window.AdminFlyers.bind({
+      showAlert: showAlert,
+      escapeHtml: escapeHtml,
+      estadoPubLabel: estadoPubLabel,
+      formatError: formatFirestoreError,
+      getCurrentUser: function () {
+        return currentUser;
+      },
+      getDb: function () {
+        return db;
+      },
+      getStorage: function () {
+        return storage;
+      },
+      getAreasSorted: function () {
+        return areasSorted;
+      },
+      areasBySlug: areasBySlug,
+    });
+  }
+
+  if (window.AdminEncuesta) {
+    window.AdminEncuesta.bind({
+      showAlert: showAlert,
+      escapeHtml: escapeHtml,
+      getDb: function () {
+        return db;
+      },
+    });
+  }
+
+  if (window.AdminTrabajoImagenes) {
+    window.AdminTrabajoImagenes.bind({
+      hostId: "admin-trabajo-imagenes-list",
+      formId: "admin-trabajo-form",
     });
   }
 })();

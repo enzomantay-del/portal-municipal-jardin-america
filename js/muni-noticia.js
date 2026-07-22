@@ -43,19 +43,44 @@
     }
 
     var area = M.getArea(noticia.areaSlug);
+    var areaSlugs = M.getNoticiaAreaSlugs ? M.getNoticiaAreaSlugs(noticia) : [noticia.areaSlug].filter(Boolean);
+    var tagsHtml = M.renderNoticiaAreaTags ? M.renderNoticiaAreaTags(noticia) : "";
+    var areaNames = M.formatNoticiaAreaNames ? M.formatNoticiaAreaNames(noticia) : (area ? area.nombre : "");
     document.title = noticia.titulo + " | Municipalidad de Jardín América";
 
     var metaDesc = document.querySelector('meta[name="description"]');
     if (metaDesc) metaDesc.setAttribute("content", noticia.bajada);
 
-    var img = noticia.imagen || M.placeholderImage(area);
+    var img =
+      (window.MuniNoticiaImagenes && window.MuniNoticiaImagenes.coverFromNoticia(noticia)) ||
+      noticia.imagen ||
+      M.placeholderImage(area);
+    var imagenesList =
+      noticia.imagenes && noticia.imagenes.length
+        ? noticia.imagenes
+        : window.MuniNoticiaImagenes
+          ? window.MuniNoticiaImagenes.normalizeImagenes({ imagenUrl: noticia.imagen })
+          : [];
+    var coverCaption = window.MuniNoticiaImagenes
+      ? window.MuniNoticiaImagenes.coverCaption(imagenesList)
+      : "";
+    var bodyHtml = window.MuniNoticiaImagenes
+      ? window.MuniNoticiaImagenes.renderBodyHtml(noticia.cuerpo, imagenesList, M.escapeHtml)
+      : noticia.cuerpo;
     if (window.MuniShare) {
       window.MuniShare.setNoticiaSocialMeta(noticia);
     }
 
-    var related = M.getNoticiasByArea(noticia.areaSlug)
-      .filter(function (n) { return n.id !== noticia.id; })
-      .slice(0, 4);
+    var relatedMap = {};
+    var related = [];
+    areaSlugs.forEach(function (slug) {
+      M.getNoticiasByArea(slug).forEach(function (n) {
+        if (n.id === noticia.id || relatedMap[n.id]) return;
+        relatedMap[n.id] = true;
+        related.push(n);
+      });
+    });
+    related = related.slice(0, 4);
 
     if (main) {
       main.innerHTML =
@@ -65,29 +90,37 @@
           ? '<p class="muni-back-link"><a href="' + M.areaUrl(area) + '">← ' + M.escapeHtml(area.nombre) + "</a></p>"
           : '<p class="muni-back-link"><a href="index.html">← Volver al portal</a></p>') +
         '<header class="muni-article-header">' +
-        (area
-          ? '<a class="muni-card-tag ' + M.areaTagClass(area.slug) + '" href="' + M.areaUrl(area) + '">' +
-            M.escapeHtml(area.nombre) + "</a>"
-          : "") +
+        (tagsHtml ? '<div class="muni-card-tags">' + tagsHtml + "</div>" : "") +
         "<h1 class=\"muni-article-title\">" + M.escapeHtml(noticia.titulo) + "</h1>" +
         '<p class="muni-article-lead">' + M.escapeHtml(noticia.bajada) + "</p>" +
         M.renderMeta(noticia, area) +
         "</header>" +
-        '<figure class="muni-article-cover"><img src="' + M.escapeHtml(img) + '" alt="' + M.escapeHtml(noticia.titulo) + '" fetchpriority="high" decoding="async"></figure>' +
+        '<figure class="muni-article-cover"><img src="' +
+        M.escapeHtml(img) +
+        '" alt="' +
+        M.escapeHtml(noticia.titulo) +
+        '" fetchpriority="high" decoding="async">' +
+        (coverCaption
+          ? '<figcaption class="muni-article-figcaption">' + M.escapeHtml(coverCaption) + "</figcaption>"
+          : "") +
+        "</figure>" +
         '<dl class="muni-article-info">' +
         "<div><dt>Ubicación</dt><dd>" + M.escapeHtml(noticia.ubicacion) + "</dd></div>" +
         "<div><dt>Barrio</dt><dd>" + M.escapeHtml(noticia.barrio) + "</dd></div>" +
         "<div><dt>Estado</dt><dd>" + M.escapeHtml(M.estadoLabel(noticia.estadoObra)) + "</dd></div>" +
         "<div><dt>Publicado</dt><dd>" + M.escapeHtml(M.formatDate(noticia.fechaPublicacion)) + "</dd></div>" +
         "</dl>" +
-        '<div class="muni-article-body">' + noticia.cuerpo + "</div>" +
+        '<div class="muni-article-body">' + bodyHtml + "</div>" +
         (window.MuniEngagement ? window.MuniEngagement.renderLikeButton(noticia) : "") +
         '<div data-share-article-footer></div>' +
         "</article>" +
         '<aside class="muni-sidebar">' +
         (related.length
-          ? '<div class="muni-sidebar-block"><h3>Más de ' + M.escapeHtml(area ? area.nombre : "esta área") + "</h3>" +
-            M.renderSidebarList(related, 4) + "</div>"
+          ? '<div class="muni-sidebar-block"><h3>Más de ' +
+            M.escapeHtml(areaNames || (area ? area.nombre : "esta área")) +
+            "</h3>" +
+            M.renderSidebarList(related, 4) +
+            "</div>"
           : "") +
         '<div class="muni-sidebar-block"><h3>Más leídas</h3>' +
         M.renderSidebarList(M.getTopNoticiasByViews(5, noticia.id), 5, {

@@ -75,12 +75,58 @@
     return av > bv ? -1 : 1;
   }
 
+  function getNoticiaAreaSlugs(noticia) {
+    if (window.MuniApi && window.MuniApi.normalizeTrabajoAreaSlugs) {
+      return window.MuniApi.normalizeTrabajoAreaSlugs(noticia);
+    }
+    var slugs = Array.isArray(noticia && noticia.areaSlugs) ? noticia.areaSlugs.slice() : [];
+    if (noticia && noticia.areaSlug && slugs.indexOf(noticia.areaSlug) === -1) {
+      slugs.unshift(noticia.areaSlug);
+    }
+    return slugs.filter(Boolean);
+  }
+
+  function noticiaMatchesArea(noticia, areaSlug) {
+    if (window.MuniApi && window.MuniApi.trabajoMatchesArea) {
+      return window.MuniApi.trabajoMatchesArea(noticia, areaSlug);
+    }
+    return getNoticiaAreaSlugs(noticia).indexOf(areaSlug) !== -1;
+  }
+
   function getNoticiasByArea(areaSlug) {
     return (DATA.noticias || [])
       .filter(function (n) {
-        return n.areaSlug === areaSlug;
+        return noticiaMatchesArea(n, areaSlug);
       })
       .sort(byObraThenDateDesc);
+  }
+
+  function formatNoticiaAreaNames(noticia) {
+    return getNoticiaAreaSlugs(noticia)
+      .map(function (slug) {
+        var area = getArea(slug);
+        return area ? area.nombre : slug;
+      })
+      .filter(Boolean)
+      .join(" · ");
+  }
+
+  function renderNoticiaAreaTags(noticia) {
+    return getNoticiaAreaSlugs(noticia)
+      .map(function (slug) {
+        var area = getArea(slug);
+        if (!area) return "";
+        return (
+          '<a class="muni-card-tag ' +
+          areaTagClass(area.slug) +
+          '" href="' +
+          areaUrl(area) +
+          '">' +
+          escapeHtml(area.nombre) +
+          "</a>"
+        );
+      })
+      .join("");
   }
 
   function getAllNoticiasSorted() {
@@ -289,6 +335,7 @@
     var area = getArea(noticia.areaSlug);
     var img = noticiaCover(noticia);
     var cardClass = "muni-card" + (options.compact ? " muni-card--compact" : "");
+    var tagsHtml = renderNoticiaAreaTags(noticia);
     return (
       '<article class="' +
       cardClass +
@@ -300,15 +347,7 @@
       escapeHtml(img) +
       '" alt="" loading="lazy" decoding="async" width="480" height="300">' +
       "</a>" +
-      (area
-        ? '<a class="muni-card-tag ' +
-          areaTagClass(area.slug) +
-          '" href="' +
-          areaUrl(area) +
-          '">' +
-          escapeHtml(area.nombre) +
-          "</a>"
-        : "") +
+      (tagsHtml ? '<div class="muni-card-tags">' + tagsHtml + "</div>" : "") +
       '<h3 class="muni-card-title"><a href="' +
       noticiaUrl(noticia) +
       '">' +
@@ -326,17 +365,10 @@
     if (!noticia) return "";
     var area = getArea(noticia.areaSlug);
     var img = noticiaCover(noticia);
+    var tagsHtml = renderNoticiaAreaTags(noticia);
     return (
       '<article class="muni-tapa-lead">' +
-      (area
-        ? '<a class="muni-card-tag ' +
-          areaTagClass(area.slug) +
-          '" href="' +
-          areaUrl(area) +
-          '">' +
-          escapeHtml(area.nombre) +
-          "</a>"
-        : "") +
+      (tagsHtml ? '<div class="muni-card-tags">' + tagsHtml + "</div>" : "") +
       '<h3 class="muni-tapa-lead-title"><a href="' +
       noticiaUrl(noticia) +
       '">' +
@@ -361,6 +393,7 @@
     if (!noticia) return "";
     var area = getArea(noticia.areaSlug);
     var img = noticiaCover(noticia);
+    var tagsHtml = renderNoticiaAreaTags(noticia);
     return (
       '<article class="muni-tapa-side">' +
       '<a href="' +
@@ -370,15 +403,7 @@
       escapeHtml(img) +
       '" alt="" loading="lazy" decoding="async" width="480" height="300">' +
       "</a>" +
-      (area
-        ? '<a class="muni-card-tag ' +
-          areaTagClass(area.slug) +
-          '" href="' +
-          areaUrl(area) +
-          '">' +
-          escapeHtml(area.nombre) +
-          "</a>"
-        : "") +
+      (tagsHtml ? '<div class="muni-card-tags">' + tagsHtml + "</div>" : "") +
       '<h3 class="muni-tapa-side-title"><a href="' +
       noticiaUrl(noticia) +
       '">' +
@@ -1008,6 +1033,10 @@
     getArea: getArea,
     getNoticia: getNoticia,
     getNoticiasByArea: getNoticiasByArea,
+    getNoticiaAreaSlugs: getNoticiaAreaSlugs,
+    noticiaMatchesArea: noticiaMatchesArea,
+    formatNoticiaAreaNames: formatNoticiaAreaNames,
+    renderNoticiaAreaTags: renderNoticiaAreaTags,
     getAllNoticiasSorted: getAllNoticiasSorted,
     splitNoticiasByRecency: splitNoticiasByRecency,
     mountNoticiasGridWithOlderCollapse: mountNoticiasGridWithOlderCollapse,

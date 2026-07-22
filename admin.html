@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
-  <link rel="stylesheet" href="css/muni-portal.css?v=20260702">
+  <link rel="stylesheet" href="css/muni-portal.css?v=20260722areas">
 </head>
 <body class="muni-panel-page muni-enc-page">
   <a class="muni-skip" href="#contenido-panel">Saltar al contenido</a>
@@ -340,9 +340,10 @@
                   <textarea id="admin-cuerpo" name="cuerpo" required minlength="20" rows="6"></textarea>
                   <p class="muni-field-hint">Para insertar imágenes 2 a 5 dentro del texto, escribí <code>[imagen:2]</code>, <code>[imagen:3]</code>, etc. Las que no insertes aparecerán al final del artículo.</p>
                 </div>
-                <div class="muni-field">
-                  <label for="admin-area-slug">Área</label>
-                  <select id="admin-area-slug" name="areaSlug" required></select>
+                <div class="muni-field muni-field--full">
+                  <span class="muni-field-label" id="admin-area-slugs-label">Áreas</span>
+                  <div id="admin-area-slugs" class="muni-area-checkboxes" role="group" aria-labelledby="admin-area-slugs-label"></div>
+                  <p class="muni-field-hint">Podés marcar más de una si el trabajo es conjunto entre áreas.</p>
                 </div>
                 <div class="muni-field" id="admin-estado-pub-wrap">
                   <label for="admin-estado-publicacion">Estado de publicación</label>
@@ -662,10 +663,10 @@
   <script src="js/firebase-init.js"></script>
   <script src="js/firebase-seed-areas.js?v=20260623d"></script>
   <script src="js/muni-data.js"></script>
-  <script src="js/muni-common.js?v=20260623"></script>
+  <script src="js/muni-common.js?v=20260722areas"></script>
   <script src="js/muni-noticia-imagenes.js?v=20260702"></script>
   <script src="js/admin-trabajo-imagenes.js?v=20260702"></script>
-  <script src="js/muni-api.js?v=20260702"></script>
+  <script src="js/muni-api.js?v=20260722areas"></script>
   <script src="js/muni-image-compress.js"></script>
   <script src="vendor/leaflet/leaflet.js"></script>
   <script src="js/admin-anuncio.js?v=20260521"></script>
@@ -678,6 +679,6 @@
   <script src="js/muni-staff-notify.js?v=20260623b"></script>
   <script src="js/agenda-interna.js?v=20260521f"></script>
   <script src="js/muni-panel-nav.js?v=20260611"></script>
-  <script src="js/admin.js?v=20260702"></script>
+  <script src="js/admin.js?v=20260722areas"></script>
 </body>
 </html>

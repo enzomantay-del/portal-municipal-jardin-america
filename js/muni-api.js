@@ -101,6 +101,34 @@
     });
   }
 
+  function uniqueSlugs(list) {
+    var out = [];
+    (list || []).forEach(function (slug) {
+      var s = String(slug || "").trim();
+      if (!s || out.indexOf(s) !== -1) return;
+      out.push(s);
+    });
+    return out;
+  }
+
+  function normalizeTrabajoAreaSlugs(data) {
+    data = data || {};
+    var fromArray = Array.isArray(data.areaSlugs) ? data.areaSlugs : [];
+    var slugs = uniqueSlugs(fromArray);
+    if (data.areaSlug) {
+      var primary = String(data.areaSlug).trim();
+      if (primary) {
+        slugs = uniqueSlugs([primary].concat(slugs));
+      }
+    }
+    return slugs;
+  }
+
+  function trabajoMatchesArea(trabajo, areaSlug) {
+    if (!areaSlug) return true;
+    return normalizeTrabajoAreaSlugs(trabajo).indexOf(areaSlug) !== -1;
+  }
+
   function mapTrabajo(id, data) {
     data = data || {};
     var imagenes = window.MuniNoticiaImagenes
@@ -109,10 +137,12 @@
     var cover = window.MuniNoticiaImagenes
       ? window.MuniNoticiaImagenes.coverUrl(data)
       : data.imagenUrl || "";
+    var areaSlugs = normalizeTrabajoAreaSlugs(data);
     return {
       id: id,
       slug: data.slug || id,
-      areaSlug: data.areaSlug || "",
+      areaSlug: areaSlugs[0] || data.areaSlug || "",
+      areaSlugs: areaSlugs,
       titulo: data.titulo,
       bajada: data.bajada,
       cuerpo: data.cuerpo,
@@ -1087,6 +1117,8 @@
   window.MuniApi = {
     mapArea: mapArea,
     mapTrabajo: mapTrabajo,
+    normalizeTrabajoAreaSlugs: normalizeTrabajoAreaSlugs,
+    trabajoMatchesArea: trabajoMatchesArea,
     mapEventoFlyer: mapEventoFlyer,
     mapAgendaEventoPublic: mapAgendaEventoPublic,
     mapMapaPunto: mapMapaPunto,

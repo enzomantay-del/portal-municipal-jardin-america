@@ -642,7 +642,8 @@
       noticias =
         (window.MuniPortal && window.MuniPortal.DATA && window.MuniPortal.DATA.noticias) || [];
       noticias = noticias.filter(function (n) {
-        return n.areaSlug === OBRAS_PUBLICAS_SLUG;
+        return n.areaSlug === OBRAS_PUBLICAS_SLUG ||
+          (Array.isArray(n.areaSlugs) && n.areaSlugs.indexOf(OBRAS_PUBLICAS_SLUG) !== -1);
       });
     }
     return noticias.filter(function (n) {

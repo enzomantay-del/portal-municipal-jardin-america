@@ -2011,6 +2011,38 @@ body.muni-lightbox-open {
   width: fit-content;
 }
 
+.muni-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-bottom: 0.5rem;
+}
+
+.muni-card-tags .muni-card-tag {
+  margin-bottom: 0;
+}
+
+.muni-area-checkboxes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11.5rem, 1fr));
+  gap: 0.35rem 0.75rem;
+  max-height: 14rem;
+  overflow: auto;
+  padding: 0.75rem 0.85rem;
+  border: 1px solid var(--muni-border, #d7e0e8);
+  border-radius: 10px;
+  background: #fff;
+}
+
+.muni-area-check {
+  margin: 0;
+  align-items: flex-start;
+}
+
+.muni-area-check span {
+  line-height: 1.3;
+}
+
 .muni-card-tag--intendencia { background: rgba(27, 163, 212, 0.18); color: var(--muni-blue-dark); }
 .muni-card-tag--obras { background: rgba(107, 192, 75, 0.15); color: var(--muni-green-dark); }
 .muni-card-tag--salud { background: rgba(27, 163, 212, 0.12); color: var(--muni-blue-dark); }
@@ -3894,7 +3926,8 @@ body.muni-lightbox-open {
   grid-column: 1 / -1;
 }
 
-.muni-field label {
+.muni-field label,
+.muni-field .muni-field-label {
   display: block;
   font-size: 0.8125rem;
   font-weight: 700;
