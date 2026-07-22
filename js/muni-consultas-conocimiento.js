@@ -165,14 +165,16 @@
       ],
       resumen: "Salidas lunes a viernes desde Jardín América hacia Posadas (orientativo).",
       detalleHtml:
-        "<p>Salidas desde la terminal (frente al Cristo de la Hermandad). Horarios <strong>orientativos</strong>: confirmá en terminal o con la empresa.</p>" +
+        "<p>Salidas desde la terminal (frente al Cristo de la Hermandad). Horarios <strong>orientativos</strong> y sujetos a cambios de las empresas. Confirmá en boletería.</p>" +
         '<div class="muni-consultas-table-wrap"><table class="muni-consultas-table"><thead><tr><th>Destino</th><th>Empresa</th><th>Horario</th><th>Notas</th></tr></thead><tbody>' +
         [
+          ["Posadas", "Crucero del Norte", "3:30", ""],
           ["Posadas", "Kruse", "5:30", ""],
           ["Posadas", "Horianski", "6:40", ""],
+          ["Posadas", "Crucero del Norte", "6:45", ""],
           ["Posadas", "El Cometa", "7:30", ""],
           ["Posadas", "Horianski", "7:45", ""],
-          ["Posadas", "Crucero del Norte", "8:15", ""],
+          ["Posadas", "Crucero del Norte", "8:10", ""],
           ["Posadas", "Oro Verde", "9:20", ""],
           ["Posadas", "Horianski", "9:50", ""],
           ["Posadas", "Crucero del Norte", "10:45", ""],
@@ -183,7 +185,7 @@
           ["Posadas", "Argentinita", "12:30", ""],
           ["Posadas", "Oro Verde", "12:50", ""],
           ["Posadas", "Horianski", "13:15", ""],
-          ["Posadas", "Crucero del Norte", "13:40", ""],
+          ["Posadas", "Crucero del Norte", "13:45", ""],
           ["Posadas", "Horianski", "14:30", ""],
           ["Posadas", "Horianski", "15:00", ""],
           ["Posadas", "Río Uruguay", "15:50", ""],
@@ -194,6 +196,9 @@
           ["Posadas", "Águila Dorada", "17:40", ""],
           ["Posadas", "Argentinita", "18:00", ""],
           ["Posadas", "Kruse", "18:20", ""],
+          ["Posadas", "Crucero del Norte", "18:40", ""],
+          ["Posadas", "Crucero del Norte", "19:00", ""],
+          ["Posadas", "Crucero del Norte", "21:30", ""],
         ]
           .map(function (r) {
             return (
@@ -210,7 +215,7 @@
           })
           .join("") +
         "</tbody></table></div>" +
-        "<p><em>Fuente: Municipalidad de Jardín América · Web de Turismo.</em></p>",
+        "<p><em>Fuente: Terminal de ómnibus · Municipalidad de Jardín América.</em></p>",
       enlaces: [{ titulo: "Ver horarios completos en Turismo", url: TURISMO_URL + "#colectivos" }],
     },
     {
@@ -221,31 +226,19 @@
       keywords: ["colectivo", "iguazu", "puerto iguazu", "eldorado", "andresito", "horario", "omnibus"],
       resumen: "Salidas lunes a viernes desde Jardín América hacia Puerto Iguazú (orientativo).",
       detalleHtml:
-        "<p>Salidas desde la terminal (frente al Cristo de la Hermandad). Horarios <strong>orientativos</strong>: confirmá en terminal o con la empresa.</p>" +
+        "<p>Salidas desde la terminal (frente al Cristo de la Hermandad). Horarios <strong>orientativos</strong> y sujetos a cambios de las empresas. Confirmá en boletería.</p>" +
         '<div class="muni-consultas-table-wrap"><table class="muni-consultas-table"><thead><tr><th>Destino</th><th>Empresa</th><th>Horario</th><th>Notas</th></tr></thead><tbody>' +
         [
           ["Puerto Iguazú", "Argentinita", "5:00", ""],
           ["Puerto Iguazú", "Argentinita", "6:00", ""],
           ["Puerto Iguazú", "Horianski", "7:00", ""],
           ["Puerto Iguazú", "Río Uruguay", "7:15", ""],
-          ["Puerto Iguazú", "Crucero del Norte", "8:15", ""],
+          ["Puerto Iguazú", "Crucero del Norte", "8:10", ""],
           ["Puerto Iguazú", "Río Uruguay", "9:15", ""],
-          ["Puerto Iguazú", "Crucero del Norte", "9:40", "Hasta Eldorado; por Ruta 17 a B. de Irigoyen"],
-          ["Puerto Iguazú", "Argentinita", "10:00", ""],
-          ["Puerto Iguazú", "Horianski", "10:00", ""],
-          ["Puerto Iguazú", "Río Uruguay", "11:00", ""],
-          ["Puerto Iguazú", "Crucero del Norte", "11:20", ""],
-          ["Puerto Iguazú", "Argentinita", "11:30", ""],
-          ["Puerto Iguazú", "Crucero del Norte", "11:50", ""],
-          ["Puerto Iguazú", "Río Uruguay", "12:40", ""],
+          ["Puerto Iguazú", "Crucero del Norte", "11:45", ""],
           ["Puerto Iguazú", "Crucero del Norte", "13:15", ""],
-          ["Puerto Iguazú", "Horianski", "13:20", ""],
-          ["Puerto Iguazú", "Horianski", "15:00", ""],
-          ["Andresito", "Kruse", "15:00", "Directo"],
-          ["Puerto Iguazú", "El Cometa", "16:00", ""],
-          ["Puerto Iguazú", "Horianski", "16:30", ""],
-          ["Puerto Iguazú", "Argentinita", "17:00", ""],
-          ["San Antonio", "Crucero del Norte", "17:20", "Directo"],
+          ["Puerto Iguazú", "Crucero del Norte", "15:40", ""],
+          ["Puerto Iguazú", "Crucero del Norte", "21:55", ""],
         ]
           .map(function (r) {
             return (
@@ -262,7 +255,7 @@
           })
           .join("") +
         "</tbody></table></div>" +
-        "<p><em>Fuente: Municipalidad de Jardín América · Web de Turismo.</em></p>",
+        "<p><em>Fuente: Terminal de ómnibus · Municipalidad de Jardín América.</em></p>",
       enlaces: [{ titulo: "Ver horarios completos en Turismo", url: TURISMO_URL + "#colectivos" }],
     },
     {
@@ -270,20 +263,33 @@
       categoria: "turismo",
       areaSlug: "turismo",
       titulo: "Horarios de colectivos por Ruta 14 (lun–vie)",
-      keywords: ["ruta 14", "san vicente", "aristobulo", "25 de mayo", "el soberbio", "colectivo", "oberá"],
+      keywords: [
+        "ruta 14",
+        "san vicente",
+        "aristobulo",
+        "25 de mayo",
+        "el soberbio",
+        "san antonio",
+        "irigoyen",
+        "colectivo",
+        "oberá",
+      ],
       resumen: "Salidas lunes a viernes desde Jardín América hacia localidades por Ruta 14 (orientativo).",
       detalleHtml:
-        "<p>Salidas desde la terminal (frente al Cristo de la Hermandad). Horarios <strong>orientativos</strong>: confirmá en terminal o con la empresa.</p>" +
+        "<p>Salidas desde la terminal (frente al Cristo de la Hermandad). Horarios <strong>orientativos</strong> y sujetos a cambios de las empresas. Confirmá en boletería.</p>" +
         '<div class="muni-consultas-table-wrap"><table class="muni-consultas-table"><thead><tr><th>Destino</th><th>Empresa</th><th>Horario</th><th>Notas</th></tr></thead><tbody>' +
         [
           ["San Vicente", "Horianski", "8:00", ""],
           ["A. del Valle", "El Misionero", "9:30", ""],
+          ["B. de Irigoyen", "Crucero del Norte", "9:30", ""],
           ["25 de Mayo", "Horianski", "10:30", ""],
+          ["El Soberbio", "Crucero del Norte", "11:10", ""],
           ["San Vicente", "Horianski", "11:15", ""],
           ["A. del Valle", "El Cometa", "12:30", ""],
           ["25 de Mayo", "Horianski", "13:15", ""],
           ["El Soberbio", "El Cometa", "16:15", ""],
           ["A. del Valle", "Horianski", "17:00", ""],
+          ["San Antonio", "Crucero del Norte", "17:20", ""],
           ["San Vicente", "Horianski", "19:15", ""],
         ]
           .map(function (r) {
@@ -301,7 +307,7 @@
           })
           .join("") +
         "</tbody></table></div>" +
-        "<p><em>Fuente: Municipalidad de Jardín América · Web de Turismo.</em></p>",
+        "<p><em>Fuente: Terminal de ómnibus · Municipalidad de Jardín América.</em></p>",
       enlaces: [{ titulo: "Ver horarios completos en Turismo", url: TURISMO_URL + "#colectivos" }],
     },
     {
