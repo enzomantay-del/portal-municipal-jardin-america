@@ -1,20 +1,18 @@
 # Cache del sitio — PC y celular deben ver lo mismo tras cada publicación.
 # HTML, JS y CSS: sin caché larga en el navegador.
+# NO usar Clear-Site-Data: rompe Chrome normal en algunos dispositivos.
 
 /
   Cache-Control: no-cache, no-store, must-revalidate
   Pragma: no-cache
-  Clear-Site-Data: "cache"
 
 /*.html
   Cache-Control: no-cache, no-store, must-revalidate
   Pragma: no-cache
-  Clear-Site-Data: "cache"
 
 /turismo/
   Cache-Control: no-cache, no-store, must-revalidate
   Pragma: no-cache
-  Clear-Site-Data: "cache"
 
 /turismo/*
   Cache-Control: no-cache, no-store, must-revalidate
