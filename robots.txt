@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://jardinamerica.gob.ar/sitemap.xml
