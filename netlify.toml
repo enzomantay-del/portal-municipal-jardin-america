@@ -39,18 +39,21 @@
   [headers.values]
     Cache-Control = "no-cache, no-store, must-revalidate"
     Pragma = "no-cache"
+    Clear-Site-Data = "\"cache\""
 
 [[headers]]
   for = "/*.html"
   [headers.values]
     Cache-Control = "no-cache, no-store, must-revalidate"
     Pragma = "no-cache"
+    Clear-Site-Data = "\"cache\""
 
 [[headers]]
   for = "/turismo/"
   [headers.values]
     Cache-Control = "no-cache, no-store, must-revalidate"
     Pragma = "no-cache"
+    Clear-Site-Data = "\"cache\""
 
 [[headers]]
   for = "/turismo/*"

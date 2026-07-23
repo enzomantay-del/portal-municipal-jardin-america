@@ -4,14 +4,17 @@
 /
   Cache-Control: no-cache, no-store, must-revalidate
   Pragma: no-cache
+  Clear-Site-Data: "cache"
 
 /*.html
   Cache-Control: no-cache, no-store, must-revalidate
   Pragma: no-cache
+  Clear-Site-Data: "cache"
 
 /turismo/
   Cache-Control: no-cache, no-store, must-revalidate
   Pragma: no-cache
+  Clear-Site-Data: "cache"
 
 /turismo/*
   Cache-Control: no-cache, no-store, must-revalidate
