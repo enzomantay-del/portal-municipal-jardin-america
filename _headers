@@ -1,11 +1,44 @@
+# Cache del sitio — PC y celular deben ver lo mismo tras cada publicación.
+# HTML, JS y CSS: sin caché larga en el navegador.
+
+/
+  Cache-Control: no-cache, no-store, must-revalidate
+  Pragma: no-cache
+
 /*.html
-  Cache-Control: public, max-age=0, must-revalidate
+  Cache-Control: no-cache, no-store, must-revalidate
+  Pragma: no-cache
 
-/js/firebase-seed-areas.js
-  Cache-Control: public, max-age=0, must-revalidate
+/turismo/
+  Cache-Control: no-cache, no-store, must-revalidate
+  Pragma: no-cache
 
-/js/muni-api.js
-  Cache-Control: public, max-age=0, must-revalidate
+/turismo/*
+  Cache-Control: no-cache, no-store, must-revalidate
 
-/js/muni-common.js
-  Cache-Control: public, max-age=0, must-revalidate
+/js/*
+  Cache-Control: no-cache, no-store, must-revalidate
+  Pragma: no-cache
+  CDN-Cache-Control: no-cache, no-store, must-revalidate
+  Netlify-CDN-Cache-Control: no-cache, no-store, must-revalidate
+
+/css/*
+  Cache-Control: no-cache, no-store, must-revalidate
+  Pragma: no-cache
+  CDN-Cache-Control: no-cache, no-store, must-revalidate
+  Netlify-CDN-Cache-Control: no-cache, no-store, must-revalidate
+
+/turismo/js/*
+  Cache-Control: no-cache, no-store, must-revalidate
+  Pragma: no-cache
+  CDN-Cache-Control: no-cache, no-store, must-revalidate
+  Netlify-CDN-Cache-Control: no-cache, no-store, must-revalidate
+
+/turismo/css/*
+  Cache-Control: no-cache, no-store, must-revalidate
+  Pragma: no-cache
+  CDN-Cache-Control: no-cache, no-store, must-revalidate
+  Netlify-CDN-Cache-Control: no-cache, no-store, must-revalidate
+
+/assets/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800

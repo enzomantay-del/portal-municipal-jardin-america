@@ -33,43 +33,63 @@
     Cache-Control = "public, max-age=86400"
     Access-Control-Allow-Origin = "*"
 
+# HTML y scripts: sin caché larga (así el celular ve los mismos cambios que la PC).
+[[headers]]
+  for = "/"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    Pragma = "no-cache"
+
 [[headers]]
   for = "/*.html"
   [headers.values]
-    Cache-Control = "public, max-age=0, must-revalidate"
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    Pragma = "no-cache"
+
+[[headers]]
+  for = "/turismo/"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    Pragma = "no-cache"
+
+[[headers]]
+  for = "/turismo/*"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+
+[[headers]]
+  for = "/js/*"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    Pragma = "no-cache"
+    CDN-Cache-Control = "no-cache, no-store, must-revalidate"
+    Netlify-CDN-Cache-Control = "no-cache, no-store, must-revalidate"
+
+[[headers]]
+  for = "/css/*"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    Pragma = "no-cache"
+    CDN-Cache-Control = "no-cache, no-store, must-revalidate"
+    Netlify-CDN-Cache-Control = "no-cache, no-store, must-revalidate"
+
+[[headers]]
+  for = "/turismo/js/*"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    Pragma = "no-cache"
+    CDN-Cache-Control = "no-cache, no-store, must-revalidate"
+    Netlify-CDN-Cache-Control = "no-cache, no-store, must-revalidate"
+
+[[headers]]
+  for = "/turismo/css/*"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    Pragma = "no-cache"
+    CDN-Cache-Control = "no-cache, no-store, must-revalidate"
+    Netlify-CDN-Cache-Control = "no-cache, no-store, must-revalidate"
 
 [[headers]]
   for = "/assets/*"
   [headers.values]
     Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"
-
-[[headers]]
-  for = "/css/*"
-  [headers.values]
-    Cache-Control = "public, max-age=604800, stale-while-revalidate=86400"
-
-[[headers]]
-  for = "/js/*"
-  [headers.values]
-    Cache-Control = "public, max-age=604800, stale-while-revalidate=86400"
-
-[[headers]]
-  for = "/turismo/img/*"
-  [headers.values]
-    Cache-Control = "public, max-age=604800, stale-while-revalidate=86400"
-
-[[headers]]
-  for = "/turismo/css/*"
-  [headers.values]
-    Cache-Control = "public, max-age=604800, stale-while-revalidate=86400"
-
-[[headers]]
-  for = "/turismo/js/*"
-  [headers.values]
-    Cache-Control = "public, max-age=604800, stale-while-revalidate=86400"
-
-[[headers]]
-  for = "/turismo/favicon.png"
-  [headers.values]
-    Cache-Control = "public, max-age=604800, stale-while-revalidate=86400"
-
