@@ -193,8 +193,11 @@
           (d.destacada ? "1" : "0") +
           '">' +
           (d.destacada ? "Quitar destacada" : "Marcar destacada") +
-          "</button>";
+          "</button>" +
+          '<button type="button" class="muni-btn muni-btn--ghost" data-preview-action="dejar-pendiente">Dejar pendiente</button>';
       }
+      actionsHtml +=
+        '<button type="button" class="muni-btn muni-btn--danger" data-preview-action="eliminar">Eliminar</button>';
       previewActions.innerHTML = actionsHtml;
 
       previewActions.querySelectorAll("[data-preview-action]").forEach(function (btn) {
@@ -608,10 +611,20 @@
           '<button type="button" class="muni-btn muni-btn--danger" data-action="rechazar" data-id="' + row.id + '">Rechazar</button>'
         : "") +
       (pubEstado === "publicado"
-        ? '<button type="button" class="muni-btn muni-btn--ghost" data-action="destacar" data-id="' + row.id + '" data-destacada="' + (d.destacada ? "1" : "0") + '">' +
+        ? '<button type="button" class="muni-btn muni-btn--ghost" data-action="destacar" data-id="' +
+          row.id +
+          '" data-destacada="' +
+          (d.destacada ? "1" : "0") +
+          '">' +
           (d.destacada ? "Quitar destacada" : "Marcar destacada") +
-          "</button>"
+          "</button>" +
+          '<button type="button" class="muni-btn muni-btn--ghost" data-action="dejar-pendiente" data-id="' +
+          row.id +
+          '">Dejar pendiente</button>'
         : "") +
+      '<button type="button" class="muni-btn muni-btn--danger" data-action="eliminar" data-id="' +
+      row.id +
+      '">Eliminar</button>' +
       "</div>" +
       "</article>"
     );
@@ -826,8 +839,22 @@
     editForm.fecha_publicacion.value = t.fechaPublicacion || "";
     if (areaSelect) areaSelect.value = t.areaSlug || "";
     setSelectedAreaSlugs(trabajoAreaSlugs(t));
-    if (window.AdminTrabajoImagenes && window.MuniNoticiaImagenes) {
-      window.AdminTrabajoImagenes.fillSlots(window.MuniNoticiaImagenes.normalizeImagenes(t));
+    if (window.AdminTrabajoImagenes) {
+      try {
+        if (window.AdminTrabajoImagenes.ensureReady) {
+          window.AdminTrabajoImagenes.ensureReady();
+        }
+        var imgs = window.MuniNoticiaImagenes
+          ? window.MuniNoticiaImagenes.normalizeImagenes(t)
+          : [];
+        window.AdminTrabajoImagenes.fillSlots(imgs);
+      } catch (imgErr) {
+        console.warn("No se pudieron cargar las imágenes de la novedad", imgErr);
+        showAlert(
+          "warn",
+          "Se abrió la novedad, pero falló la carga de imágenes. Probá recargar el admin."
+        );
+      }
     }
 
     if (editCard && editCard.scrollIntoView) {
@@ -959,7 +986,13 @@
   }
 
   async function uploadImage(file) {
-    if (!file || !storage || !currentUser) return null;
+    if (!file) return null;
+    if (!storage) {
+      throw new Error("Storage no está disponible. Recargá la página e ingresá de nuevo.");
+    }
+    if (!currentUser) {
+      throw new Error("Tu sesión no está activa. Cerrá sesión e ingresá de nuevo.");
+    }
     if (window.MuniImageCompress) {
       try {
         file = await window.MuniImageCompress.compressImageFile(file);
@@ -968,7 +1001,16 @@
       }
     }
     var ext = (file.name.split(".").pop() || "jpg").toLowerCase();
-    var path = "municipal-images/" + currentUser.uid + "/" + Date.now() + "." + ext;
+    if (!/^[a-z0-9]+$/i.test(ext)) ext = "jpg";
+    var path =
+      "municipal-images/" +
+      currentUser.uid +
+      "/" +
+      Date.now() +
+      "-" +
+      Math.random().toString(36).slice(2, 8) +
+      "." +
+      ext;
     var ref = storage.ref(path);
     await ref.put(file, {
       contentType: file.type || "image/jpeg",
@@ -1206,12 +1248,40 @@
   async function handleAction(action, id, isDestacada) {
     if (!db || !id) return;
 
+    if (action === "eliminar") {
+      var rowDel = trabajosById.get(id);
+      var tituloDel =
+        rowDel && rowDel.data && rowDel.data.titulo ? rowDel.data.titulo : "esta novedad";
+      if (
+        !window.confirm(
+          '¿Eliminar permanentemente "' +
+            tituloDel +
+            '"?\n\nEsta acción no se puede deshacer.'
+        )
+      ) {
+        return;
+      }
+      try {
+        await db.collection("trabajos").doc(id).delete();
+        if (editingId === id) resetEditForm();
+        if (previewId === id) closePreview();
+        showAlert("ok", "Novedad eliminada.");
+        await loadTrabajos({ source: "server" });
+      } catch (err) {
+        showAlert("error", formatFirestoreError(err, "No se pudo eliminar la novedad."));
+      }
+      return;
+    }
+
     var patch = { updatedAt: window.MuniFirebase.serverTimestamp() };
     if (action === "aprobar") {
       patch.estadoPublicacion = "publicado";
       patch.publishedAt = window.MuniFirebase.serverTimestamp();
     } else if (action === "rechazar") {
       patch.estadoPublicacion = "rechazado";
+    } else if (action === "dejar-pendiente") {
+      patch.estadoPublicacion = "pendiente";
+      patch.destacada = false;
     } else if (action === "destacar") {
       patch.destacada = !isDestacada;
     } else {
@@ -1220,7 +1290,15 @@
 
     try {
       await db.collection("trabajos").doc(id).update(patch);
-      showAlert("ok", "Actualizado correctamente.");
+      showAlert(
+        "ok",
+        action === "dejar-pendiente"
+          ? "La novedad quedó pendiente y ya no se muestra en el portal."
+          : "Actualizado correctamente."
+      );
+      if (action === "dejar-pendiente" && estadoFilter) {
+        estadoFilter.value = "pendiente";
+      }
       await loadTrabajos({ source: "server" });
     } catch (err) {
       showAlert("error", err.message || "No se pudo actualizar.");
