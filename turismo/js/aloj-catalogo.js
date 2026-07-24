@@ -303,6 +303,15 @@
     }
   };
 
+  function embedByName() {
+    var map = {};
+    (window.ALOJ_EMBEDDED || []).forEach(function (x) {
+      if (!x || !x.n) return;
+      map[String(x.n).trim().toLowerCase()] = x;
+    });
+    return map;
+  }
+
   window.mergeAlojDesdeFirebase = function (listasAloj) {
     if (!listasAloj || !window.ALOJ) return;
     var raw =
@@ -315,11 +324,26 @@
     if (!clean.length) return;
 
     var backup = window.ALOJ.slice();
+    var localByName = embedByName();
     var next = [];
     try {
       clean.forEach(function (x) {
         try {
           var o = window.normalizeAlojItem(x);
+          // Si Firebase trae solo data-URI enormes, conservar fotos locales del embed.
+          var local = localByName[String(o.n || "").trim().toLowerCase()];
+          if (local && (!o.imagenes || !o.imagenes.length)) {
+            var localMedia = parseImagenes(local);
+            if (localMedia.imagenes && localMedia.imagenes.length) {
+              o.img = localMedia.img || o.img;
+              o.imagenes = localMedia.imagenes;
+            }
+            ["desc", "servicios", "instalaciones", "capacidad", "ubicacion", "mapsUrl"].forEach(
+              function (k) {
+                if (!o[k] && local[k]) o[k] = local[k];
+              }
+            );
+          }
           if (o.activo !== false) next.push(o);
         } catch (itemErr) {
           console.warn("Aloj item omitido", x && x.n, itemErr);
