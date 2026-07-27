@@ -7623,16 +7623,16 @@ body.muni-lightbox-open {
 
 .muni-map-popup {
   min-width: 160px;
-  max-width: 280px;
+  max-width: 260px;
 }
 
 .muni-map-popup-img {
   display: block;
   width: 100%;
-  max-height: 140px;
+  max-height: 96px;
   object-fit: cover;
   border-radius: 6px;
-  margin: 0 0 0.45rem;
+  margin: 0 0 0.35rem;
   background: var(--muni-surface-soft, #f0f0f0);
 }
 
@@ -7652,8 +7652,9 @@ body.muni-lightbox-open {
 
 .muni-map-popup strong {
   display: block;
-  margin-bottom: 0.25rem;
-  font-size: 0.9375rem;
+  margin-bottom: 0.2rem;
+  font-size: 0.8125rem;
+  line-height: 1.3;
 }
 
 .muni-map-popup p {
@@ -7662,9 +7663,18 @@ body.muni-lightbox-open {
   line-height: 1.4;
 }
 
+.muni-map-popup-desc {
+  font-size: 0.6875rem !important;
+  line-height: 1.35 !important;
+  color: var(--muni-text-muted);
+  max-height: 5.4em;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 .muni-map-popup-meta {
   color: var(--muni-text-muted);
-  font-size: 0.75rem !important;
+  font-size: 0.6875rem !important;
 }
 
 .muni-map-popup-link {

@@ -131,7 +131,7 @@
     }
     html += "<strong>" + escapeHtml(punto.titulo) + "</strong>";
     if (punto.descripcion) {
-      html += "<p>" + escapeHtml(punto.descripcion) + "</p>";
+      html += '<p class="muni-map-popup-desc">' + escapeHtml(punto.descripcion) + "</p>";
     }
     var meta = [];
     if (punto.barrio) meta.push(escapeHtml(punto.barrio));
