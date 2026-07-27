@@ -1,7 +1,9 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <link rel="icon" href="/favicon.png?v=20260709" type="image/png">
+  <link rel="apple-touch-icon" href="/favicon.png?v=20260709">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#0d7aa8">
   <meta name="description" content="Panel privado para encargados de área — agenda interna y publicación de eventos.">
@@ -9,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/muni-portal.css?v=20260521d">
+  <link rel="stylesheet" href="css/muni-portal.css?v=20260727nav">
   <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
 </head>
 <body class="muni-panel-page muni-enc-page">
@@ -106,6 +108,7 @@
         <div class="muni-panel-zone-body">
           <div id="agenda-stats" class="muni-agenda-stats" hidden aria-live="polite"></div>
           <div id="agenda-reminders" class="muni-agenda-reminders" hidden aria-label="Recordatorios"></div>
+          <div id="agenda-feedback" class="muni-agenda-feedback" hidden role="status" aria-live="polite"></div>
 
           <div class="muni-panel-zone-block">
             <div class="muni-agenda-list-head">
@@ -286,7 +289,7 @@
   <script>window.MUNI_AGENDA_EMBED = true;</script>
   <script src="js/campana-config.js?v=20260529" onerror="window.CAMPANA_CONFIG=window.CAMPANA_CONFIG||{}"></script>
   <script src="js/muni-staff-notify.js?v=20260623b"></script>
-  <script src="js/agenda-interna.js?v=20260521d"></script>
+  <script src="js/agenda-interna.js?v=20260521f"></script>
   <script src="js/muni-panel-nav.js?v=20260611"></script>
   <script src="vendor/leaflet/leaflet.js"></script>
   <script src="js/muni-mapa-core.js?v=20260627"></script>

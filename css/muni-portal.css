@@ -430,6 +430,10 @@ a:hover {
     top: calc(100% - 2px);
     left: 0;
     z-index: 120;
+    max-height: min(70vh, 520px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
   }
 }
 
