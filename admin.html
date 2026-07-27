@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
-  <link rel="stylesheet" href="css/muni-portal.css?v=20260727nav">
+  <link rel="stylesheet" href="css/muni-portal.css?v=20260727obras">
 </head>
 <body class="muni-panel-page muni-enc-page">
   <a class="muni-skip" href="#contenido-panel">Saltar al contenido</a>
@@ -372,6 +372,19 @@
                   <label for="admin-fecha-publicacion">Fecha</label>
                   <input id="admin-fecha-publicacion" type="date" name="fecha_publicacion" required>
                 </div>
+                <div class="muni-field muni-field--full" id="admin-trabajo-mapa-wrap" hidden>
+                  <span class="muni-field-label">Ubicación en el mapa de obras</span>
+                  <label class="muni-check-row">
+                    <input type="checkbox" id="admin-mostrar-en-mapa" name="mostrar_en_mapa" value="1">
+                    <span>Mostrar esta obra en el mapa público</span>
+                  </label>
+                  <p class="muni-field-hint">Hacé clic en el mapa para marcar el punto. Se muestra mientras la novedad esté publicada y el trabajo no esté finalizado.</p>
+                  <input type="hidden" id="admin-trabajo-lat" name="lat" value="">
+                  <input type="hidden" id="admin-trabajo-lng" name="lng" value="">
+                  <div id="admin-trabajo-mapa-picker-block" class="muni-trabajo-mapa-picker-block" hidden>
+                    <div id="admin-trabajo-mapa-picker" class="muni-mapa-picker"></div>
+                  </div>
+                </div>
                 <div class="muni-field muni-field--full muni-trabajo-imagenes-wrap">
                   <h4 class="muni-trabajo-imagenes-title">Imágenes (1 a 5)</h4>
                   <p class="muni-field-hint">Elegí cuál es la <strong>portada</strong> (se ve en el listado del portal). Podés agregar leyenda debajo de cada imagen.</p>
@@ -666,12 +679,12 @@
   <script src="js/muni-common.js?v=20260722areas"></script>
   <script src="js/muni-noticia-imagenes.js?v=20260702"></script>
   <script src="js/admin-trabajo-imagenes.js?v=20260724admin"></script>
-  <script src="js/muni-api.js?v=20260722areas"></script>
+  <script src="js/muni-api.js?v=20260727obras"></script>
   <script src="js/muni-image-compress.js"></script>
   <script src="vendor/leaflet/leaflet.js"></script>
   <script src="js/admin-anuncio.js?v=20260521"></script>
   <script src="js/admin-flyers.js?v=20260722flyers"></script>
-  <script src="js/muni-mapa-core.js?v=20260615"></script>
+  <script src="js/muni-mapa-core.js?v=20260727obras"></script>
   <script src="js/admin-mapa.js?v=20260617"></script>
   <script src="js/admin-encuesta.js?v=20260523"></script>
   <script>window.MUNI_AGENDA_EMBED = true;</script>
@@ -679,6 +692,6 @@
   <script src="js/muni-staff-notify.js?v=20260623b"></script>
   <script src="js/agenda-interna.js?v=20260521f"></script>
   <script src="js/muni-panel-nav.js?v=20260611"></script>
-  <script src="js/admin.js?v=20260724admin"></script>
+  <script src="js/admin.js?v=20260727obras"></script>
 </body>
 </html>

@@ -41,6 +41,8 @@
       fechaInicio: data.fechaInicio || "",
       fechaFin: data.fechaFin || "",
       enlaceUrl: data.enlaceUrl || "",
+      imagenUrl: data.imagenUrl || "",
+      trabajoId: data.trabajoId || "",
       estadoPublicacion: String(data.estadoPublicacion || "pendiente").trim(),
       createdBy: data.createdBy || "",
     };
@@ -89,6 +91,7 @@
 
   function isPuntoVisibleEnMapaPublico(punto) {
     if (!punto || punto.tipoMapa === "barrio") return false;
+    if (punto.tipoMapa === "obra" && punto.estadoObra === "finalizado") return false;
     return isActividadVigenteEnMapa(punto);
   }
 
@@ -119,10 +122,14 @@
       info.icon +
       " " +
       escapeHtml(info.label) +
-      "</span>" +
-      "<strong>" +
-      escapeHtml(punto.titulo) +
-      "</strong>";
+      "</span>";
+    if (punto.imagenUrl) {
+      html +=
+        '<img class="muni-map-popup-img" src="' +
+        escapeHtml(punto.imagenUrl) +
+        '" alt="" loading="lazy">';
+    }
+    html += "<strong>" + escapeHtml(punto.titulo) + "</strong>";
     if (punto.descripcion) {
       html += "<p>" + escapeHtml(punto.descripcion) + "</p>";
     }

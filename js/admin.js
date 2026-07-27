@@ -37,6 +37,14 @@
   var estadoPubWrap = document.getElementById("admin-estado-pub-wrap");
   var estadoPubSelect = document.getElementById("admin-estado-publicacion");
   var submitTrabajoBtn = document.getElementById("admin-trabajo-submit");
+  var trabajoMapaWrap = document.getElementById("admin-trabajo-mapa-wrap");
+  var mostrarEnMapaCheck = document.getElementById("admin-mostrar-en-mapa");
+  var trabajoLatInput = document.getElementById("admin-trabajo-lat");
+  var trabajoLngInput = document.getElementById("admin-trabajo-lng");
+  var trabajoMapaPickerBlock = document.getElementById("admin-trabajo-mapa-picker-block");
+  var trabajoMapaPickerEl = document.getElementById("admin-trabajo-mapa-picker");
+
+  var trabajoMapaPicker = null;
 
   var previewModal = document.getElementById("admin-preview");
   var previewBackdrop = document.getElementById("admin-preview-backdrop");
@@ -399,6 +407,184 @@
     areaCheckboxes.querySelectorAll('input[name="areaSlugs"]').forEach(function (input) {
       input.checked = !!selected[input.value];
     });
+    updateTrabajoMapaUi();
+  }
+
+  function selectedObrasAreaSlug(slugs) {
+    var list = slugs || getSelectedAreaSlugs();
+    if (list.indexOf("obras-publicas") !== -1) return "obras-publicas";
+    if (list.indexOf("obras-privadas") !== -1) return "obras-privadas";
+    return null;
+  }
+
+  function hasObrasAreaSelected(slugs) {
+    return !!selectedObrasAreaSlug(slugs);
+  }
+
+  function parseCoordInput(value) {
+    if (window.MuniMapa && window.MuniMapa.isValidCoord) {
+      var n = value == null || value === "" ? null : Number(String(value).replace(",", "."));
+      return n != null && !isNaN(n) ? n : null;
+    }
+    if (value == null || value === "") return null;
+    var parsed = parseFloat(String(value).replace(",", ".").trim());
+    return isNaN(parsed) ? null : parsed;
+  }
+
+  function getTrabajoFormCoords() {
+    var lat = parseCoordInput(trabajoLatInput && trabajoLatInput.value);
+    var lng = parseCoordInput(trabajoLngInput && trabajoLngInput.value);
+    if (window.MuniMapa && window.MuniMapa.isValidCoord) {
+      if (!window.MuniMapa.isValidCoord(lat, lng)) return { lat: null, lng: null };
+    } else if (lat == null || lng == null) {
+      return { lat: null, lng: null };
+    }
+    return { lat: lat, lng: lng };
+  }
+
+  function setTrabajoFormCoords(lat, lng) {
+    if (trabajoLatInput) trabajoLatInput.value = lat != null ? String(lat) : "";
+    if (trabajoLngInput) trabajoLngInput.value = lng != null ? String(lng) : "";
+  }
+
+  function destroyTrabajoMapaPicker() {
+    if (trabajoMapaPickerEl && trabajoMapaPickerEl._leaflet_map) {
+      try {
+        trabajoMapaPickerEl._leaflet_map.remove();
+      } catch (_err) {}
+      trabajoMapaPickerEl._leaflet_map = null;
+    }
+    if (trabajoMapaPickerEl) trabajoMapaPickerEl.innerHTML = "";
+    trabajoMapaPicker = null;
+  }
+
+  function initTrabajoMapaPicker() {
+    if (!trabajoMapaPickerEl || !window.MuniMapa || !window.L) return;
+    if (trabajoMapaPicker && trabajoMapaPicker.map) {
+      window.MuniMapa.fixMapSize(trabajoMapaPicker.map, trabajoMapaPickerEl);
+      return;
+    }
+    destroyTrabajoMapaPicker();
+    var coords = getTrabajoFormCoords();
+    trabajoMapaPicker = window.MuniMapa.initPicker(trabajoMapaPickerEl, {
+      tipo: "obra",
+      lat: coords.lat,
+      lng: coords.lng,
+      zoom: 15,
+      onChange: function (lat, lng) {
+        setTrabajoFormCoords(lat, lng);
+      },
+    });
+  }
+
+  function updateTrabajoMapaUi() {
+    var isObras = hasObrasAreaSelected();
+    if (trabajoMapaWrap) trabajoMapaWrap.hidden = !isObras;
+    if (!isObras) {
+      if (mostrarEnMapaCheck) mostrarEnMapaCheck.checked = false;
+      if (trabajoMapaPickerBlock) trabajoMapaPickerBlock.hidden = true;
+      destroyTrabajoMapaPicker();
+      return;
+    }
+    var showPicker = !!(mostrarEnMapaCheck && mostrarEnMapaCheck.checked);
+    if (trabajoMapaPickerBlock) trabajoMapaPickerBlock.hidden = !showPicker;
+    if (!showPicker) {
+      destroyTrabajoMapaPicker();
+      return;
+    }
+    setTimeout(function () {
+      if (!window.MuniMapa) return;
+      if (window.MuniMapa.watchWhenVisible) {
+        window.MuniMapa.watchWhenVisible(trabajoMapaPickerEl, initTrabajoMapaPicker);
+      } else {
+        initTrabajoMapaPicker();
+      }
+    }, 40);
+  }
+
+  function mapaPuntoIdForTrabajo(trabajoId) {
+    return "trabajo_" + String(trabajoId || "");
+  }
+
+  function coverUrlFromPayload(payload) {
+    if (window.MuniNoticiaImagenes && window.MuniNoticiaImagenes.coverUrl) {
+      return window.MuniNoticiaImagenes.coverUrl(payload) || "";
+    }
+    return (payload && payload.imagenUrl) || "";
+  }
+
+  function shouldPublicarEnMapa(data, estadoPub) {
+    if (!data || !data.mostrarEnMapa) return false;
+    if (estadoPub !== "publicado") return false;
+    if (data.estadoObra === "finalizado") return false;
+    if (!selectedObrasAreaSlug(data.areaSlugs || [])) return false;
+    if (window.MuniMapa && window.MuniMapa.isValidCoord) {
+      return window.MuniMapa.isValidCoord(data.lat, data.lng);
+    }
+    return data.lat != null && data.lng != null;
+  }
+
+  async function syncTrabajoMapaPunto(trabajoId, data, estadoPub) {
+    if (!db || !trabajoId) return null;
+    var puntoId = data.mapaPuntoId || mapaPuntoIdForTrabajo(trabajoId);
+    var obrasSlug = selectedObrasAreaSlug(data.areaSlugs || []);
+    var visible = shouldPublicarEnMapa(data, estadoPub);
+    var ref = db.collection("mapa_puntos").doc(puntoId);
+
+    if (visible) {
+      var areaNombre = areasBySlug.get(obrasSlug) || obrasSlug;
+      var puntoPayload = {
+        tipoMapa: "obra",
+        titulo: data.titulo || "",
+        descripcion: data.bajada || "",
+        lat: data.lat,
+        lng: data.lng,
+        barrio: data.barrio || "",
+        areaSlug: obrasSlug,
+        areaNombre: areaNombre,
+        estadoObra: data.estadoObra || "en_curso",
+        estadoPublicacion: "publicado",
+        enlaceUrl: "noticia.html?id=" + encodeURIComponent(trabajoId),
+        imagenUrl: coverUrlFromPayload(data) || "",
+        trabajoId: trabajoId,
+        fuente: "trabajo",
+        updatedAt: window.MuniFirebase.serverTimestamp(),
+      };
+      var existing = await ref.get();
+      if (!existing.exists) {
+        puntoPayload.createdAt = window.MuniFirebase.serverTimestamp();
+        puntoPayload.createdBy = (currentUser && currentUser.uid) || "";
+      }
+      await ref.set(puntoPayload, { merge: true });
+      return puntoId;
+    }
+
+    var snap = await ref.get();
+    if (snap.exists) {
+      await ref.set(
+        {
+          estadoPublicacion: "rechazado",
+          estadoObra: data.estadoObra || snap.data().estadoObra || "",
+          titulo: data.titulo || snap.data().titulo || "",
+          descripcion: data.bajada || snap.data().descripcion || "",
+          imagenUrl: coverUrlFromPayload(data) || snap.data().imagenUrl || "",
+          updatedAt: window.MuniFirebase.serverTimestamp(),
+        },
+        { merge: true }
+      );
+      return puntoId;
+    }
+    return null;
+  }
+
+  async function removeTrabajoMapaPunto(trabajoId, mapaPuntoId) {
+    if (!db || !trabajoId) return;
+    var puntoId = mapaPuntoId || mapaPuntoIdForTrabajo(trabajoId);
+    try {
+      await db.collection("mapa_puntos").doc(puntoId).delete();
+    } catch (_err) {
+      /* ignore missing point */
+    }
   }
 
   function populateAreaCheckboxes() {
@@ -423,6 +609,7 @@
       })
       .join("");
     if (prev.length) setSelectedAreaSlugs(prev);
+    else updateTrabajoMapaUi();
   }
 
   function populateAreaSelects() {
@@ -798,8 +985,12 @@
     editingId = null;
     if (editForm) editForm.reset();
     if (window.AdminTrabajoImagenes) window.AdminTrabajoImagenes.clearSlots();
+    setTrabajoFormCoords(null, null);
+    if (mostrarEnMapaCheck) mostrarEnMapaCheck.checked = false;
+    destroyTrabajoMapaPicker();
     if (editCard) editCard.hidden = true;
     updateTrabajoFormMode();
+    updateTrabajoMapaUi();
   }
 
   function startNewTrabajo() {
@@ -814,6 +1005,9 @@
     if (editForm.fecha_publicacion) editForm.fecha_publicacion.value = today;
     if (editForm.estado_obra) editForm.estado_obra.value = "en_curso";
     setSelectedAreaSlugs([]);
+    setTrabajoFormCoords(null, null);
+    if (mostrarEnMapaCheck) mostrarEnMapaCheck.checked = false;
+    updateTrabajoMapaUi();
     var target = document.getElementById("seccion-novedades") || editCard;
     if (target && target.scrollIntoView) {
       target.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -839,6 +1033,11 @@
     editForm.fecha_publicacion.value = t.fechaPublicacion || "";
     if (areaSelect) areaSelect.value = t.areaSlug || "";
     setSelectedAreaSlugs(trabajoAreaSlugs(t));
+    setTrabajoFormCoords(t.lat, t.lng);
+    if (mostrarEnMapaCheck) {
+      mostrarEnMapaCheck.checked = !!t.mostrarEnMapa && hasObrasAreaSelected(trabajoAreaSlugs(t));
+    }
+    updateTrabajoMapaUi();
     if (window.AdminTrabajoImagenes) {
       try {
         if (window.AdminTrabajoImagenes.ensureReady) {
@@ -896,6 +1095,15 @@
 
     var fd = new FormData(editForm);
     var areaSlugs = getSelectedAreaSlugs();
+    var coords = getTrabajoFormCoords();
+    var mostrarEnMapa =
+      hasObrasAreaSelected(areaSlugs) && !!(mostrarEnMapaCheck && mostrarEnMapaCheck.checked);
+    if (mostrarEnMapa && (coords.lat == null || coords.lng == null)) {
+      showAlert("error", "Marcá la ubicación en el mapa o desmarcá «Mostrar esta obra en el mapa público».");
+      setSubmitLoading(false);
+      return;
+    }
+
     var payload = {
       titulo: String(fd.get("titulo") || "").trim(),
       bajada: String(fd.get("bajada") || "").trim(),
@@ -906,6 +1114,9 @@
       barrio: String(fd.get("barrio") || "").trim(),
       estadoObra: fd.get("estado_obra"),
       fechaPublicacion: fd.get("fecha_publicacion"),
+      mostrarEnMapa: mostrarEnMapa,
+      lat: mostrarEnMapa ? coords.lat : null,
+      lng: mostrarEnMapa ? coords.lng : null,
       updatedAt: window.MuniFirebase.serverTimestamp(),
       editedByAdmin: currentUser.uid,
     };
@@ -953,7 +1164,11 @@
         if (estadoPub === "publicado") {
           payload.publishedAt = window.MuniFirebase.serverTimestamp();
         }
-        await db.collection("trabajos").add(payload);
+        var newRef = await db.collection("trabajos").add(payload);
+        var mapaPuntoId = await syncTrabajoMapaPunto(newRef.id, payload, estadoPub);
+        if (mapaPuntoId) {
+          await newRef.update({ mapaPuntoId: mapaPuntoId });
+        }
         if (estadoFilter) estadoFilter.value = estadoPub;
         resetEditForm();
         showAlert(
@@ -963,13 +1178,32 @@
             : "Listo: la novedad quedó pendiente de aprobación."
         );
       } else {
+        var existingRow = trabajosById.get(editingId);
+        var existingData = (existingRow && existingRow.data) || {};
+        var estadoPubActual = String(existingData.estadoPublicacion || "pendiente").trim();
+        if (existingData.mapaPuntoId) {
+          payload.mapaPuntoId = existingData.mapaPuntoId;
+        }
         await db.collection("trabajos").doc(editingId).update(payload);
+        var syncedId = await syncTrabajoMapaPunto(
+          editingId,
+          Object.assign({}, existingData, payload),
+          estadoPubActual
+        );
+        if (syncedId && syncedId !== existingData.mapaPuntoId) {
+          await db.collection("trabajos").doc(editingId).update({ mapaPuntoId: syncedId });
+        }
         resetEditForm();
         showAlert("ok", "Listo: la novedad se actualizó correctamente.");
       }
 
       try {
         await loadTrabajos({ source: "server" });
+        if (window.AdminMapa && window.AdminMapa.load) {
+          try {
+            await window.AdminMapa.load();
+          } catch (_mapaRefreshErr) {}
+        }
         if (listEl) listEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
       } catch (loadErr) {
         showAlert(
@@ -1262,11 +1496,20 @@
         return;
       }
       try {
+        await removeTrabajoMapaPunto(
+          id,
+          rowDel && rowDel.data ? rowDel.data.mapaPuntoId : null
+        );
         await db.collection("trabajos").doc(id).delete();
         if (editingId === id) resetEditForm();
         if (previewId === id) closePreview();
         showAlert("ok", "Novedad eliminada.");
         await loadTrabajos({ source: "server" });
+        if (window.AdminMapa && window.AdminMapa.load) {
+          try {
+            await window.AdminMapa.load();
+          } catch (_mapaErr) {}
+        }
       } catch (err) {
         showAlert("error", formatFirestoreError(err, "No se pudo eliminar la novedad."));
       }
@@ -1290,6 +1533,11 @@
 
     try {
       await db.collection("trabajos").doc(id).update(patch);
+      var row = trabajosById.get(id);
+      if (row && row.data && action !== "destacar") {
+        var merged = Object.assign({}, row.data, patch);
+        await syncTrabajoMapaPunto(id, merged, patch.estadoPublicacion || merged.estadoPublicacion);
+      }
       showAlert(
         "ok",
         action === "dejar-pendiente"
@@ -1300,6 +1548,11 @@
         estadoFilter.value = "pendiente";
       }
       await loadTrabajos({ source: "server" });
+      if (window.AdminMapa && window.AdminMapa.load && action !== "destacar") {
+        try {
+          await window.AdminMapa.load();
+        } catch (_mapaErr2) {}
+      }
     } catch (err) {
       showAlert("error", err.message || "No se pudo actualizar.");
     }
@@ -1432,6 +1685,18 @@
 
   if (editForm) {
     editForm.addEventListener("submit", saveTrabajoForm);
+  }
+
+  if (areaCheckboxes) {
+    areaCheckboxes.addEventListener("change", function () {
+      updateTrabajoMapaUi();
+    });
+  }
+
+  if (mostrarEnMapaCheck) {
+    mostrarEnMapaCheck.addEventListener("change", function () {
+      updateTrabajoMapaUi();
+    });
   }
 
   if (cancelEditBtn) {

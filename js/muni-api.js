@@ -346,6 +346,8 @@
       fechaInicio: data.fechaInicio || "",
       fechaFin: data.fechaFin || "",
       enlaceUrl: data.enlaceUrl || "",
+      imagenUrl: data.imagenUrl || "",
+      trabajoId: data.trabajoId || "",
       estadoPublicacion: String(data.estadoPublicacion || "pendiente").trim(),
       createdBy: data.createdBy || "",
     };
