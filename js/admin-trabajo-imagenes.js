@@ -52,7 +52,7 @@
       n +
       '" name="imagen_archivo_' +
       n +
-      '" type="file" accept="image/*" capture="environment">' +
+      '" type="file" accept="image/*">' +
       "</div>" +
       '<div class="muni-field muni-field--full">' +
       '<label for="admin-imagen-leyenda-' +
