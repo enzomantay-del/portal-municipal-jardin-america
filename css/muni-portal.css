@@ -2099,6 +2099,22 @@ body.muni-lightbox-open {
   overflow: hidden;
 }
 
+.muni-card-mapa-link {
+  margin: 0.35rem 0 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.muni-card-mapa-link a {
+  color: var(--muni-blue-dark);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.muni-card-mapa-link a:hover {
+  color: var(--muni-blue, #1ba3d4);
+}
+
 .muni-status {
   display: inline-flex;
   align-items: center;

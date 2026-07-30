@@ -157,6 +157,10 @@
       destacada: !!data.destacada,
       likesCount: data.likesCount != null ? Number(data.likesCount) || 0 : 0,
       viewsCount: data.viewsCount != null ? Number(data.viewsCount) || 0 : 0,
+      mostrarEnMapa: !!data.mostrarEnMapa,
+      mapaPuntoId: data.mapaPuntoId || "",
+      lat: data.lat != null && data.lat !== "" ? Number(data.lat) : null,
+      lng: data.lng != null && data.lng !== "" ? Number(data.lng) : null,
     };
   }
 

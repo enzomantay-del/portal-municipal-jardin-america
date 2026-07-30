@@ -10,16 +10,34 @@
   var activeBarrio = "";
   var soloObrasEnCurso = false;
   var userMarker = null;
+  var focusTrabajoId = "";
+  var focusPuntoId = "";
 
   function applyObrasCursoFromUrl() {
     try {
       var params = new URLSearchParams(window.location.search || "");
       var hash = String(window.location.hash || "").replace(/^#/, "");
+      focusTrabajoId = String(params.get("trabajo") || "").trim();
+      focusPuntoId = String(params.get("punto") || "").trim();
       if (params.get("obras") === "curso" || hash === "obras-curso" || hash === "obras") {
         soloObrasEnCurso = true;
         activeTipos = new Set(["obra"]);
       }
+      if (focusTrabajoId || focusPuntoId) {
+        activeTipos.add("obra");
+      }
     } catch (_e) {}
+  }
+
+  function findFocusPunto() {
+    if (!focusTrabajoId && !focusPuntoId) return null;
+    var expectedId = focusTrabajoId ? "trabajo_" + focusTrabajoId : "";
+    for (var i = 0; i < allPuntos.length; i++) {
+      var p = allPuntos[i];
+      if (focusPuntoId && p.id === focusPuntoId) return p;
+      if (focusTrabajoId && (p.trabajoId === focusTrabajoId || p.id === expectedId)) return p;
+    }
+    return null;
   }
 
   function $(id) {
@@ -144,7 +162,15 @@
     markersLayer.clearLayers();
     circlesLayer.clearLayers();
 
+    var focusPunto = findFocusPunto();
     var visible = allPuntos.filter(matchesFilters);
+    if (
+      focusPunto &&
+      visible.indexOf(focusPunto) === -1 &&
+      window.MuniMapa.isPuntoVisibleEnMapaPublico(focusPunto)
+    ) {
+      visible = visible.concat([focusPunto]);
+    }
 
     var countEl = $("mapa-public-count");
     if (countEl) {
@@ -156,9 +182,23 @@
             : visible.length + " puntos en el mapa";
     }
 
+    var focusMarker = null;
     visible.forEach(function (p) {
-      window.MuniMapa.addPuntoToMap(map, markersLayer, window.L, p, circlesLayer);
+      var marker = window.MuniMapa.addPuntoToMap(map, markersLayer, window.L, p, circlesLayer);
+      if (focusPunto && marker && p.id === focusPunto.id) {
+        focusMarker = marker;
+      }
     });
+
+    if (focusPunto && window.MuniMapa.isValidCoord(focusPunto.lat, focusPunto.lng)) {
+      map.setView([focusPunto.lat, focusPunto.lng], 16);
+      if (focusMarker && focusMarker.openPopup) {
+        setTimeout(function () {
+          focusMarker.openPopup();
+        }, 250);
+      }
+      return;
+    }
 
     if (visible.length === 1 && !userMarker) {
       map.setView([visible[0].lat, visible[0].lng], 15);

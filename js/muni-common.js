@@ -274,6 +274,29 @@
     return "noticia.html?id=" + encodeURIComponent(noticia.id);
   }
 
+  function noticiaTieneUbicacionEnMapa(noticia) {
+    if (!noticia || noticia.estadoObra !== "en_curso") return false;
+    if (!noticia.mostrarEnMapa) return false;
+    if (noticia.mapaPuntoId) return true;
+    var lat = noticia.lat != null ? Number(noticia.lat) : NaN;
+    var lng = noticia.lng != null ? Number(noticia.lng) : NaN;
+    return !isNaN(lat) && !isNaN(lng);
+  }
+
+  function noticiaMapaUrl(noticia) {
+    if (!noticia || !noticia.id) return "mapa.html";
+    return "mapa.html?trabajo=" + encodeURIComponent(noticia.id);
+  }
+
+  function renderMapaObraLink(noticia) {
+    if (!noticiaTieneUbicacionEnMapa(noticia)) return "";
+    return (
+      '<p class="muni-card-mapa-link"><a href="' +
+      noticiaMapaUrl(noticia) +
+      '">Ver ubicación en el mapa</a></p>'
+    );
+  }
+
   function areaUrl(area) {
     return "area.html?area=" + encodeURIComponent(area.slug);
   }
@@ -357,6 +380,7 @@
         ? ""
         : '<p class="muni-card-excerpt">' + escapeHtml(noticia.bajada) + "</p>") +
       renderMeta(noticia, area) +
+      renderMapaObraLink(noticia) +
       "</article>"
     );
   }
@@ -378,6 +402,7 @@
       escapeHtml(noticia.bajada) +
       "</p>" +
       renderMeta(noticia, area) +
+      renderMapaObraLink(noticia) +
       '<a href="' +
       noticiaUrl(noticia) +
       '" class="muni-tapa-lead-media" tabindex="-1" aria-hidden="true">' +
@@ -413,6 +438,7 @@
       escapeHtml(noticia.bajada) +
       "</p>" +
       renderMeta(noticia, area) +
+      renderMapaObraLink(noticia) +
       "</article>"
     );
   }
@@ -1048,6 +1074,8 @@
     areaTagClass: areaTagClass,
     placeholderImage: placeholderImage,
     noticiaUrl: noticiaUrl,
+    noticiaMapaUrl: noticiaMapaUrl,
+    noticiaTieneUbicacionEnMapa: noticiaTieneUbicacionEnMapa,
     areaUrl: areaUrl,
     renderCard: renderCard,
     renderHero: renderHero,
