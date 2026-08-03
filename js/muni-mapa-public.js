@@ -6,7 +6,7 @@
   var circlesLayer = null;
   var userLayer = null;
   var allPuntos = [];
-  var activeTipos = new Set(["obra", "contenedor", "actividad"]);
+  var activeTipos = new Set(["obra"]);
   var activeBarrio = "";
   var soloObrasEnCurso = false;
   var userMarker = null;
@@ -88,10 +88,15 @@
     wrap.innerHTML = Object.keys(window.MuniMapa.TIPO_MAPA)
       .map(function (key) {
         var info = window.MuniMapa.tipoInfo(key);
+        var on = activeTipos.has(key);
         return (
-          '<button type="button" class="muni-mapa-filter is-active" data-tipo="' +
+          '<button type="button" class="muni-mapa-filter' +
+          (on ? " is-active" : "") +
+          '" data-tipo="' +
           key +
-          '" aria-pressed="true">' +
+          '" aria-pressed="' +
+          (on ? "true" : "false") +
+          '">' +
           info.icon +
           " " +
           window.MuniMapa.escapeHtml(info.label) +
