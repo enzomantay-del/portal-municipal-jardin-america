@@ -5,7 +5,7 @@ AmiBot puede responder en lenguaje natural usando **Gemini**, siempre con la inf
 ## Activar (obligatorio)
 
 1. Creá una API key en [Google AI Studio](https://aistudio.google.com/apikey)  
-   (botón **Create API key**). La clave suele empezar con `AIza…`.
+   (botón **Create API key**). La clave puede empezar con `AIza…` o con `AQ.…`.
 2. En Netlify → **Site configuration** → **Environment variables**:
    - Nombre exacto: `GEMINI_API_KEY`
    - Valor: pegá la clave **sin comillas** y **sin espacios**

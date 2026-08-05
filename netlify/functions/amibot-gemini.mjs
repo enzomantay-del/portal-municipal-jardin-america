@@ -225,14 +225,18 @@ export default async function handler(req) {
     );
   }
 
-  if (apiKey.length < 20 || apiKey.indexOf("AIza") !== 0) {
+  // AI Studio: formato clásico AIza… o nuevo AQ.…
+  var looksLikeGeminiKey =
+    apiKey.length >= 20 &&
+    (apiKey.indexOf("AIza") === 0 || apiKey.indexOf("AQ.") === 0);
+  if (!looksLikeGeminiKey) {
     return jsonResponse(
       503,
       {
         ok: false,
         unavailable: true,
         error:
-          "La clave GEMINI_API_KEY no parece válida. Tiene que ser una API key de Google AI Studio (suele empezar con AIza…). No uses la clave de Firebase.",
+          "La clave GEMINI_API_KEY no parece válida. Usá una API key de Google AI Studio (puede empezar con AIza… o AQ.…). No uses la clave de Firebase.",
       },
       corsHeaders(origin)
     );
