@@ -25,6 +25,18 @@ Causas más comunes:
 
 **Qué hacer:** creá una clave nueva en AI Studio, reemplazá `GEMINI_API_KEY` en Netlify, redeploy, y probá de nuevo.
 
+## Error: “prepayment credits are depleted” / sin créditos
+
+La clave está bien, pero el proyecto de Google se quedó **sin crédito**.
+
+1. Entrá a https://ai.studio/projects
+2. Abrí el proyecto de la clave (ej. Portal Municipal).
+3. Andá a facturación / créditos / billing.
+4. Cargá crédito prepago o vinculá una forma de pago, según lo que ofrezca Google.
+5. Esperá unos minutos y probá AmiBot de nuevo.
+
+Mientras tanto, AmiBot sigue mostrando las opciones del buscador local.
+
 ## Cómo se usa
 
 1. Abrí AmiBot en el portal.

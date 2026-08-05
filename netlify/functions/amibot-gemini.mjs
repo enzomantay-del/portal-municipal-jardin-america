@@ -49,6 +49,17 @@ function isInvalidApiKeyError(message) {
   );
 }
 
+function isBillingDepletedError(message) {
+  var msg = String(message || "").toLowerCase();
+  return (
+    msg.indexOf("prepayment credits are depleted") !== -1 ||
+    msg.indexOf("credits are depleted") !== -1 ||
+    (msg.indexOf("billing") !== -1 && msg.indexOf("prepay") !== -1) ||
+    (msg.indexOf("insufficient") !== -1 && msg.indexOf("credit") !== -1) ||
+    (msg.indexOf("quota") !== -1 && msg.indexOf("exceed") !== -1)
+  );
+}
+
 function sanitizeUrl(value) {
   var url = sanitizeText(value, 300);
   if (!url) return "";
@@ -307,6 +318,19 @@ export default async function handler(req) {
         unavailable: true,
         error:
           "Google rechazó la API key. En Netlify cargá una clave nueva de https://aistudio.google.com/apikey como GEMINI_API_KEY (sin comillas), scopes Production, y hacé Redeploy. No uses la clave de Firebase.",
+      },
+      corsHeaders(origin)
+    );
+  }
+
+  if (isBillingDepletedError(failMsg)) {
+    return jsonResponse(
+      402,
+      {
+        ok: false,
+        unavailable: true,
+        error:
+          "Se acabaron los créditos de Gemini en Google AI Studio. Entrá a https://ai.studio/projects, abrí el proyecto, cargá crédito o activá facturación, y volvé a probar. Mientras tanto AmiBot sigue con la búsqueda local de abajo.",
       },
       corsHeaders(origin)
     );
