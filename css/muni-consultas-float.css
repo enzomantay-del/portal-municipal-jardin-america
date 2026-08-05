@@ -260,6 +260,12 @@ body.muni-consultas-open .muni-consultas-fab {
   padding: 0.85rem 1.15rem 0.5rem;
 }
 
+.muni-consultas-ask-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: stretch;
+}
+
 .muni-consultas-panel-search input {
   width: 100%;
   min-height: 2.75rem;
@@ -268,12 +274,70 @@ body.muni-consultas-open .muni-consultas-fab {
   border-radius: var(--muni-radius);
   font: inherit;
   font-size: 1rem;
+  flex: 1 1 auto;
+}
+
+.muni-consultas-ask-btn {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  min-height: 2.75rem;
+}
+
+.muni-consultas-ask-hint {
+  margin: 0.45rem 0 0;
+  font-size: 0.75rem;
+  color: var(--muni-text-muted);
+  line-height: 1.35;
 }
 
 .muni-consultas-panel-search input:focus {
   outline: none;
   box-shadow: var(--muni-focus);
   border-color: var(--muni-blue);
+}
+
+.muni-consultas-ai {
+  margin: 0 0 0.9rem;
+  padding: 0.85rem 0.95rem;
+  border: 1px solid rgba(13, 122, 168, 0.22);
+  border-radius: var(--muni-radius);
+  background: linear-gradient(180deg, rgba(27, 163, 212, 0.08), rgba(255, 255, 255, 0.9));
+}
+
+.muni-consultas-ai--loading,
+.muni-consultas-ai--error {
+  background: var(--muni-surface-soft, #f4f7fa);
+}
+
+.muni-consultas-ai--error {
+  border-color: rgba(180, 80, 60, 0.25);
+}
+
+.muni-consultas-ai-label {
+  margin: 0 0 0.35rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muni-blue-dark, #0d7aa8);
+}
+
+.muni-consultas-ai-body {
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  color: var(--muni-text);
+}
+
+.muni-consultas-ai-body p {
+  margin: 0 0 0.55rem;
+}
+
+.muni-consultas-ai-body p:last-child {
+  margin-bottom: 0;
+}
+
+.muni-consultas-ai .muni-consultas-links {
+  margin-top: 0.65rem;
 }
 
 .muni-consultas-sr {

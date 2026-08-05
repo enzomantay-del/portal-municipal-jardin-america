@@ -8,7 +8,14 @@
     category: "todas",
     selectedId: null,
     areaSlug: "",
+    aiLoading: false,
+    aiAnswer: null,
+    aiError: null,
+    aiSugerencias: [],
   };
+
+  var AMIBOT_AI_URL = "/.netlify/functions/amibot-gemini";
+  var aiRequestToken = 0;
 
   var CATEGORY_ORDER = ["tramite", "obras", "turismo", "area", "contacto"];
   var CATEGORY_LABELS = {
@@ -193,6 +200,197 @@
     );
   }
 
+  function stripHtmlLite(html) {
+    return String(html || "")
+      .replace(/<script[\s\S]*?<\/script>/gi, " ")
+      .replace(/<style[\s\S]*?<\/style>/gi, " ")
+      .replace(/<[^>]+>/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function formatAiAnswerHtml(text) {
+    var safe = escapeHtml(text);
+    var blocks = safe
+      .split(/\n{2,}/)
+      .map(function (block) {
+        return block.trim();
+      })
+      .filter(Boolean);
+    if (!blocks.length) return "";
+    return blocks
+      .map(function (block) {
+        return "<p>" + block.replace(/\n/g, "<br>") + "</p>";
+      })
+      .join("");
+  }
+
+  function clearAiState() {
+    state.aiLoading = false;
+    state.aiAnswer = null;
+    state.aiError = null;
+    state.aiSugerencias = [];
+  }
+
+  function buildAiContext(query) {
+    var matches = search(query, {
+      areaSlug: state.areaSlug,
+      category: "todas",
+      limit: 10,
+    });
+    var extras = getEntries().filter(function (entry) {
+      return (
+        entry.id === "contacto-municipal" ||
+        entry.id === "obras-en-curso-resumen" ||
+        entry.id === "obras-privadas-contacto"
+      );
+    });
+    var seen = {};
+    var combined = [];
+    matches.concat(extras).forEach(function (entry) {
+      if (!entry || !entry.id || seen[entry.id]) return;
+      seen[entry.id] = true;
+      combined.push(entry);
+    });
+
+    return combined.slice(0, 12).map(function (entry) {
+      return {
+        id: entry.id,
+        titulo: entry.titulo || "",
+        categoria: entry.categoria || "",
+        resumen: entry.resumen || "",
+        texto: stripHtmlLite(entry.detalleHtml || entry.searchText || "").slice(0, 1000),
+        enlaces: (entry.enlaces || []).slice(0, 4).map(function (link) {
+          return {
+            titulo: link.titulo || "",
+            url: link.url || "",
+          };
+        }),
+      };
+    });
+  }
+
+  async function askAmiBotAi() {
+    var question = String(state.query || "").trim();
+    if (question.length < 3) {
+      state.aiError = "Escribí una pregunta un poco más completa (por ejemplo: colectivo a Posadas).";
+      state.aiAnswer = null;
+      state.aiLoading = false;
+      renderBody();
+      return;
+    }
+
+    var token = ++aiRequestToken;
+    state.aiLoading = true;
+    state.aiAnswer = null;
+    state.aiError = null;
+    state.aiSugerencias = [];
+    state.selectedId = null;
+    renderBody();
+
+    try {
+      if (window.MuniConsultasKnowledge && window.MuniConsultasKnowledge.refreshLiveObras) {
+        await window.MuniConsultasKnowledge.refreshLiveObras(false);
+      }
+    } catch (_err) {}
+
+    if (token !== aiRequestToken) return;
+
+    try {
+      var res = await fetch(AMIBOT_AI_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          question: question,
+          context: buildAiContext(question),
+        }),
+      });
+      var data = null;
+      try {
+        data = await res.json();
+      } catch (_parseErr) {
+        data = null;
+      }
+      if (token !== aiRequestToken) return;
+
+      if (data && data.ok && data.answer) {
+        state.aiAnswer = data.answer;
+        state.aiSugerencias = Array.isArray(data.sugerencias) ? data.sugerencias : [];
+        state.aiError = null;
+      } else if (data && data.unavailable) {
+        state.aiError =
+          data.error ||
+          "AmiBot con IA todavía no está activado en el servidor. Mientras tanto usá las opciones de abajo.";
+      } else {
+        state.aiError =
+          (data && data.error) ||
+          "No pude responder ahora. Probá de nuevo o elegí una opción de la lista.";
+      }
+    } catch (_err) {
+      if (token !== aiRequestToken) return;
+      state.aiError =
+        "No pude conectar con AmiBot IA. Revisá tu conexión o usá las coincidencias de abajo.";
+    } finally {
+      if (token === aiRequestToken) {
+        state.aiLoading = false;
+        renderBody();
+      }
+    }
+  }
+
+  function renderAiBlock() {
+    if (!state.aiLoading && !state.aiAnswer && !state.aiError) return "";
+
+    if (state.aiLoading) {
+      return (
+        '<div class="muni-consultas-ai muni-consultas-ai--loading" role="status">' +
+        "<p>AmiBot está pensando con la información del portal…</p>" +
+        "</div>"
+      );
+    }
+
+    if (state.aiError && !state.aiAnswer) {
+      return (
+        '<div class="muni-consultas-ai muni-consultas-ai--error" role="status">' +
+        "<p>" +
+        escapeHtml(state.aiError) +
+        "</p>" +
+        "</div>"
+      );
+    }
+
+    var linksHtml = "";
+    if (state.aiSugerencias && state.aiSugerencias.length) {
+      linksHtml =
+        '<div class="muni-consultas-links">' +
+        state.aiSugerencias
+          .map(function (link) {
+            return (
+              '<a class="muni-btn muni-btn--ghost" href="' +
+              escapeHtml(link.url) +
+              '">' +
+              escapeHtml(link.titulo || "Ver más") +
+              "</a>"
+            );
+          })
+          .join("") +
+        "</div>";
+    }
+
+    return (
+      '<div class="muni-consultas-ai" role="status">' +
+      '<p class="muni-consultas-ai-label">Respuesta de AmiBot</p>' +
+      '<div class="muni-consultas-ai-body">' +
+      formatAiAnswerHtml(state.aiAnswer) +
+      "</div>" +
+      linksHtml +
+      "</div>"
+    );
+  }
+
   function ensurePanel() {
     if (panelRoot) return panelRoot;
 
@@ -207,13 +405,17 @@
       "<div>" +
       '<p class="muni-consultas-panel-kicker">Asistente del portal</p>' +
       '<h2 id="muni-consultas-panel-title">Hola, soy AmiBot</h2>' +
-      '<p class="muni-consultas-panel-sub">Te ayudo con trámites, documentos, obras en curso, turismo y más.</p>' +
+      '<p class="muni-consultas-panel-sub">Preguntame en tus palabras: trámites, obras, turismo, contactos y más.</p>' +
       "</div></div>" +
       '<button type="button" class="muni-consultas-panel-close" data-consultas-close aria-label="Cerrar">×</button>' +
       "</header>" +
       '<div class="muni-consultas-panel-search">' +
       '<label class="muni-consultas-sr" for="muni-consultas-panel-input">Preguntale a AmiBot</label>' +
-      '<input id="muni-consultas-panel-input" type="search" placeholder="Ej: planos, colectivo a Posadas, loteo…" autocomplete="off" enterkeyhint="search">' +
+      '<div class="muni-consultas-ask-row">' +
+      '<input id="muni-consultas-panel-input" type="search" placeholder="Ej: ¿cuándo pasa el colectivo a Posadas?" autocomplete="off" enterkeyhint="send">' +
+      '<button type="button" class="muni-btn muni-btn--primary muni-consultas-ask-btn" id="muni-consultas-ask-ai">Preguntar</button>' +
+      "</div>" +
+      '<p class="muni-consultas-ask-hint">Escribí y tocá Preguntar (o Enter). También podés filtrar las opciones de abajo.</p>' +
       "</div>" +
       '<div class="muni-consultas-panel-filters" id="muni-consultas-panel-filters" role="tablist" aria-label="Filtrar por tipo"></div>' +
       '<div class="muni-consultas-panel-body" id="muni-consultas-panel-body" aria-live="polite"></div>' +
@@ -243,20 +445,37 @@
       if (e.target.closest("[data-consultas-back]")) {
         state.selectedId = null;
         renderBody();
-        var input = document.getElementById("muni-consultas-panel-input");
-        if (input) input.focus();
+        var inputBack = document.getElementById("muni-consultas-panel-input");
+        if (inputBack) inputBack.focus();
       }
     });
+
+    var askBtn = document.getElementById("muni-consultas-ask-ai");
+    if (askBtn) {
+      askBtn.addEventListener("click", function () {
+        askAmiBotAi();
+      });
+    }
 
     var input = document.getElementById("muni-consultas-panel-input");
     if (input) {
       input.addEventListener("input", function () {
         state.query = input.value;
         state.selectedId = null;
+        if (!state.aiLoading) {
+          clearAiState();
+        }
         renderBody();
       });
       input.addEventListener("keydown", function (e) {
-        if (e.key === "Escape") closePanel();
+        if (e.key === "Escape") {
+          closePanel();
+          return;
+        }
+        if (e.key === "Enter") {
+          e.preventDefault();
+          askAmiBotAi();
+        }
       });
     }
 
@@ -339,13 +558,18 @@
       limit: 30,
     });
 
+    var aiHtml = renderAiBlock();
+
     if (!list.length) {
       body.innerHTML =
+        aiHtml +
         '<div class="muni-consultas-empty">' +
-        "<p>No hay coincidencias para <strong>" +
-        escapeHtml(state.query || "tu búsqueda") +
-        "</strong>.</p>" +
-        "<p>Probá con <em>planos</em>, <em>colectivo</em>, <em>loteo</em> o <em>horario</em>.</p>" +
+        (state.aiAnswer
+          ? "<p>Si necesitás más detalle, también podés escribir a Mesa de entrada.</p>"
+          : "<p>No hay coincidencias para <strong>" +
+            escapeHtml(state.query || "tu búsqueda") +
+            "</strong>.</p>" +
+            "<p>Probá preguntarle a AmiBot con Enter, o buscá <em>planos</em>, <em>colectivo</em>, <em>loteo</em> o <em>horario</em>.</p>") +
         (window.MuniWhatsApp
           ? '<p><a class="muni-btn muni-btn--primary" href="' +
             escapeHtml(window.MuniWhatsApp.url("Hola, quiero consultar un trámite municipal.")) +
@@ -357,10 +581,11 @@
 
     var groups = groupByCategory(list);
     var hint = state.query
-      ? '<p class="muni-consultas-panel-hint">Elegí una opción:</p>'
-      : '<p class="muni-consultas-panel-hint">Escribí para filtrar, o elegí una opción:</p>';
+      ? '<p class="muni-consultas-panel-hint">Temas relacionados:</p>'
+      : '<p class="muni-consultas-panel-hint">Escribí tu pregunta y tocá Preguntar, o elegí una opción:</p>';
 
     body.innerHTML =
+      aiHtml +
       hint +
       groups
         .map(function (group) {
@@ -400,6 +625,7 @@
     state.category = options.category || "todas";
     state.selectedId = options.selectedId || null;
     state.query = options.query != null ? String(options.query) : state.query;
+    clearAiState();
 
     var overlay = panelRoot.querySelector(".muni-consultas-overlay");
     var panel = document.getElementById("muni-consultas-panel");
@@ -426,6 +652,8 @@
     if (!panelRoot) return;
     state.open = false;
     state.selectedId = null;
+    clearAiState();
+    aiRequestToken += 1;
     var overlay = panelRoot.querySelector(".muni-consultas-overlay");
     var panel = document.getElementById("muni-consultas-panel");
     if (overlay) overlay.hidden = true;
@@ -438,7 +666,7 @@
     name: "AmiBot",
     avatar: "assets/consultas/amibot-avatar.png",
     bubble:
-      "Hola, soy AmiBot. Estoy acá para ayudarte con trámites, documentos, ordenanzas, información turística o lo que necesites dentro del sitio.",
+      "Hola, soy AmiBot. Preguntame en tus palabras sobre trámites, obras, turismo o contactos del municipio.",
   };
 
   var bubbleTimer = null;
@@ -587,6 +815,7 @@
     search: search,
     open: openPanel,
     close: closePanel,
+    ask: askAmiBotAi,
     normalize: normalize,
   };
 })();

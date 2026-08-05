@@ -1,6 +1,7 @@
 /**
- * Base de consultas municipales (sin IA, sin costo de API).
+ * Base de consultas municipales para AmiBot.
  * Incluye trámites del portal + info turística / colectivos.
+ * La respuesta con Gemini (IA) usa estas fichas como contexto oficial.
  */
 (function () {
   "use strict";
