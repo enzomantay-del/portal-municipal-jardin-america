@@ -4,13 +4,26 @@ AmiBot puede responder en lenguaje natural usando **Gemini**, siempre con la inf
 
 ## Activar (obligatorio)
 
-1. Creá una API key en [Google AI Studio](https://aistudio.google.com/apikey).
+1. Creá una API key en [Google AI Studio](https://aistudio.google.com/apikey)  
+   (botón **Create API key**). La clave suele empezar con `AIza…`.
 2. En Netlify → **Site configuration** → **Environment variables**:
-   - `GEMINI_API_KEY` = tu clave
-   - (opcional) `GEMINI_MODEL` = `gemini-2.5-flash` (por defecto)
-3. Hacé un **redeploy** del sitio para que la función tome la variable.
+   - Nombre exacto: `GEMINI_API_KEY`
+   - Valor: pegá la clave **sin comillas** y **sin espacios**
+   - Scopes: **Production** (y Preview si querés probar deploys de prueba)
+   - (opcional) `GEMINI_MODEL` = `gemini-2.5-flash`
+3. En Netlify → **Deploys** → **Trigger deploy** → **Clear cache and deploy site**.  
+   Sin redeploy, la función no ve la clave nueva.
 
-Sin `GEMINI_API_KEY`, AmiBot sigue funcionando con la búsqueda local; al preguntar con IA muestra un aviso de que falta configurar.
+## Error: “API key not valid”
+
+Causas más comunes:
+
+1. Se pegó la clave de **Firebase** (`FIREBASE_API_KEY`) en lugar de la de **AI Studio**.
+2. La clave tiene comillas (`"AIza..."`) o un espacio al final.
+3. Se guardó la variable pero **no** se hizo redeploy.
+4. La clave se borró o se restringió mal en Google Cloud.
+
+**Qué hacer:** creá una clave nueva en AI Studio, reemplazá `GEMINI_API_KEY` en Netlify, redeploy, y probá de nuevo.
 
 ## Cómo se usa
 

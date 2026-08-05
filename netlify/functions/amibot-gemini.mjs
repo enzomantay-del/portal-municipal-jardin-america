@@ -28,6 +28,27 @@ function sanitizeText(value, maxLen) {
     .slice(0, maxLen);
 }
 
+/** Limpia comillas/espacios que a veces quedan al pegar la clave en Netlify. */
+function sanitizeApiKey(value) {
+  return String(value || "")
+    .replace(/^\uFEFF/, "")
+    .replace(/[\u0000-\u001f\u007f]/g, "")
+    .trim()
+    .replace(/^['"]+|['"]+$/g, "")
+    .trim();
+}
+
+function isInvalidApiKeyError(message) {
+  var msg = String(message || "").toLowerCase();
+  return (
+    msg.indexOf("api key not valid") !== -1 ||
+    msg.indexOf("api_key_invalid") !== -1 ||
+    msg.indexOf("invalid api key") !== -1 ||
+    msg.indexOf("api key expired") !== -1 ||
+    (msg.indexOf("permission denied") !== -1 && msg.indexOf("api key") !== -1)
+  );
+}
+
 function sanitizeUrl(value) {
   var url = sanitizeText(value, 300);
   if (!url) return "";
@@ -120,13 +141,13 @@ async function callGemini(apiKey, model, prompt) {
   var url =
     "https://generativelanguage.googleapis.com/v1beta/models/" +
     encodeURIComponent(model) +
-    ":generateContent";
+    ":generateContent?key=" +
+    encodeURIComponent(apiKey);
 
   var res = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "x-goog-api-key": apiKey,
     },
     body: JSON.stringify({
       systemInstruction: {
@@ -189,7 +210,8 @@ export default async function handler(req) {
     return jsonResponse(405, { ok: false, error: "Método no permitido." }, corsHeaders(origin));
   }
 
-  var apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || "";
+  // Solo GEMINI_API_KEY (no usar FIREBASE_API_KEY / GOOGLE_API_KEY: son otras claves).
+  var apiKey = sanitizeApiKey(process.env.GEMINI_API_KEY || "");
   if (!apiKey) {
     return jsonResponse(
       503,
@@ -197,7 +219,20 @@ export default async function handler(req) {
         ok: false,
         unavailable: true,
         error:
-          "AmiBot con IA todavía no está configurado. Pedile al administrador que cargue GEMINI_API_KEY en Netlify.",
+          "AmiBot con IA todavía no está configurado. Cargá GEMINI_API_KEY en Netlify (clave de Google AI Studio) y volvé a publicar el sitio.",
+      },
+      corsHeaders(origin)
+    );
+  }
+
+  if (apiKey.length < 20 || apiKey.indexOf("AIza") !== 0) {
+    return jsonResponse(
+      503,
+      {
+        ok: false,
+        unavailable: true,
+        error:
+          "La clave GEMINI_API_KEY no parece válida. Tiene que ser una API key de Google AI Studio (suele empezar con AIza…). No uses la clave de Firebase.",
       },
       corsHeaders(origin)
     );
@@ -256,13 +291,28 @@ export default async function handler(req) {
     }
   }
 
+  var failMsg =
+    (lastError && lastError.message) ||
+    "No se pudo consultar Gemini. Probá de nuevo en unos minutos.";
+
+  if (isInvalidApiKeyError(failMsg)) {
+    return jsonResponse(
+      401,
+      {
+        ok: false,
+        unavailable: true,
+        error:
+          "Google rechazó la API key. En Netlify cargá una clave nueva de https://aistudio.google.com/apikey como GEMINI_API_KEY (sin comillas), scopes Production, y hacé Redeploy. No uses la clave de Firebase.",
+      },
+      corsHeaders(origin)
+    );
+  }
+
   return jsonResponse(
     502,
     {
       ok: false,
-      error:
-        (lastError && lastError.message) ||
-        "No se pudo consultar Gemini. Probá de nuevo en unos minutos.",
+      error: failMsg,
     },
     corsHeaders(origin)
   );
