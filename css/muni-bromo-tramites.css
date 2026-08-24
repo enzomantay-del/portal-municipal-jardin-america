@@ -35,11 +35,25 @@
 
 .bromo-how {
   margin: 0 0 1rem;
-  padding: 0.85rem 0.85rem 0.85rem 1.6rem;
+  padding: 0.85rem 1.1rem 0.85rem 1.6rem;
   background: #f0fafb;
   border: 1px solid rgba(0, 131, 143, 0.25);
   border-radius: 10px;
   max-width: none;
+}
+
+@media (min-width: 880px) {
+  .bromo-how {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.35rem 1rem;
+    padding-left: 1.1rem;
+    list-style-position: inside;
+  }
+
+  .bromo-how li {
+    margin: 0;
+  }
 }
 
 .bromo-how li {
@@ -108,33 +122,45 @@
   color: #555;
 }
 
-/* Formulario: usa el ancho del contenedor (márgenes laterales del portal) */
+/* Formulario a todo el ancho del contenedor */
 .bromo-form-wrap {
+  display: block;
   width: 100%;
   max-width: none;
   margin-bottom: 2.5rem;
 }
 
 .bromo-form-wrap h1 {
-  margin: 0 0 0.4rem;
+  margin: 0 0 0.35rem;
   font-family: var(--muni-font-display, "Source Serif 4", Georgia, serif);
   font-size: clamp(1.45rem, 3.5vw, 1.9rem);
 }
 
 .bromo-form-wrap > p {
-  margin: 0 0 0.75rem;
-  max-width: 48rem;
+  margin: 0 0 0.85rem;
+  max-width: none;
   color: var(--muni-text-muted, #556);
   line-height: 1.45;
 }
 
+/* “Cómo hacerlo” fijo arriba, ancho completo — no columna lateral */
 .bromo-steps,
 .bromo-reqs {
-  margin: 0 0 1.25rem;
-  padding: 0.85rem 1rem;
+  display: block;
+  width: 100%;
+  max-width: none;
+  margin: 0 0 1.15rem;
+  padding: 0.9rem 1.1rem;
   background: #f7fafc;
   border-radius: 10px;
   border: 1px solid var(--muni-border, #d7e0e8);
+  position: static;
+}
+
+.bromo-steps ol,
+.bromo-reqs ul {
+  margin: 0.35rem 0 0;
+  padding-left: 1.25rem;
 }
 
 .bromo-steps h2,
@@ -144,13 +170,53 @@
   font-size: 1rem;
 }
 
+@media (min-width: 880px) {
+  .bromo-steps ol {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.35rem 1.5rem;
+    padding-left: 1.25rem;
+  }
+
+  .bromo-steps ol li {
+    margin: 0.2rem 0;
+  }
+}
+
+@media (min-width: 1100px) {
+  .bromo-steps ol {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
 .bromo-aviso {
+  display: block;
+  width: 100%;
   padding: 0.75rem 0.9rem;
   background: #fff8e7;
   border: 1px solid #f0d9a0;
   border-radius: 8px;
   font-size: 0.9rem;
   margin: 0 0 1rem;
+}
+
+#bromo-form.muni-form-grid {
+  display: grid;
+  width: 100%;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 720px) {
+  #bromo-form.muni-form-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (min-width: 1100px) {
+  #bromo-form.muni-form-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
 .bromo-doc input[type="file"] {
@@ -206,50 +272,6 @@
   margin-top: 1rem;
 }
 
-/* Escritorio: guía a la izquierda, formulario a la derecha */
-@media (min-width: 900px) {
-  .bromo-form-wrap {
-    display: grid;
-    grid-template-columns: minmax(240px, 320px) minmax(0, 1fr);
-    column-gap: 1.75rem;
-    row-gap: 0.85rem;
-    align-items: start;
-  }
-
-  .bromo-form-wrap > h1,
-  .bromo-form-wrap > p,
-  .bromo-form-wrap > .bromo-aviso {
-    grid-column: 1 / -1;
-  }
-
-  .bromo-form-wrap > .bromo-steps,
-  .bromo-form-wrap > .bromo-reqs {
-    grid-column: 1;
-    margin-bottom: 0;
-    position: sticky;
-    top: 0.75rem;
-  }
-
-  .bromo-form-wrap > form {
-    grid-column: 2;
-  }
-
-  #bromo-form.muni-form-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-@media (min-width: 1180px) {
-  .bromo-form-wrap {
-    grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
-    column-gap: 2.25rem;
-  }
-
-  #bromo-form.muni-form-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
 @media (max-width: 640px) {
   .bromo-card {
     flex-direction: column;
@@ -257,6 +279,10 @@
 
   .bromo-tramites-page .muni-content-band {
     padding: 0.75rem 0 1.5rem;
+  }
+
+  .bromo-how {
+    display: block;
   }
 }
 
