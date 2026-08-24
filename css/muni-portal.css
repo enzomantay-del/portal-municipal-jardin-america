@@ -7758,6 +7758,26 @@ body.muni-lightbox-open {
   background: linear-gradient(135deg, #1565c0 0%, #42a5f5 100%);
 }
 
+.muni-panel-zone--bromo .muni-panel-zone-head {
+  background: linear-gradient(135deg, #006064 0%, #00838f 55%, #26a69a 100%);
+  color: #fff;
+}
+
+.muni-panel-zone--bromo .muni-panel-zone-head h2,
+.muni-panel-zone--bromo .muni-panel-zone-head p {
+  color: #fff;
+}
+
+.muni-panel-nav-link--bromo.is-active {
+  border-color: #00838f;
+  background: rgba(0, 131, 143, 0.12);
+  color: #006064;
+}
+
+.muni-panel-zone--bromo .muni-panel-zone-block-sub {
+  color: #44555c;
+}
+
 .muni-panel-nav-link--mapa.is-active {
   border-color: #1565c0;
   background: rgba(21, 101, 192, 0.1);
