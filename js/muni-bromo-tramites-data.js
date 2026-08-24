@@ -72,7 +72,7 @@
       icono: "🎉",
       pasos: [
         "Completá organizador, tipo de evento, lugar y horarios.",
-        "Adjuntá los contratos pedidos.",
+        "Si tenés contratos (club/local o animador), podés adjuntarlos; no son obligatorios.",
         "Enviá la solicitud e imprimí la nota.",
         "Policía Adicional y Bomberos intervienen después (no se reemplazan por el sitio).",
       ],
@@ -87,7 +87,7 @@
         { name: "domicilio", label: "Domicilio del solicitante", type: "text", required: true, maxlength: 200 },
       ],
       documentos: [
-        { key: "contratoSalon", label: "Contrato con el club y/o propietario del salón", required: true },
+        { key: "contratoSalon", label: "Contrato con el club y/o propietario del salón", required: false },
         { key: "contratoAnimador", label: "Contrato con el grupo animador", required: false },
       ],
       notaIntro:
