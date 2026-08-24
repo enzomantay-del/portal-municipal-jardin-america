@@ -206,8 +206,12 @@ service cloud.firestore {
 
     // Solicitudes de trámites de Bromatología (creación vía Admin SDK / Netlify).
     match /bromatologia_tramites/{tramiteId} {
-      allow read: if isAdmin()
-        || (isEncargado() && encargadoAreaSlug() == 'bromatologia');
+      // Lectura: admin o encargado de Bromatología.
+      // El filtro areaSlug en la consulta debe coincidir con esta condición.
+      allow get, list: if isAdmin()
+        || (isEncargado()
+          && encargadoAreaSlug() == 'bromatologia'
+          && resource.data.areaSlug == 'bromatologia');
 
       allow create: if false;
 
@@ -215,7 +219,7 @@ service cloud.firestore {
         || (isEncargado()
           && encargadoAreaSlug() == 'bromatologia'
           && resource.data.areaSlug == 'bromatologia'
-          && request.resource.data.areaSlug == resource.data.areaSlug
+          && request.resource.data.areaSlug == 'bromatologia'
           && request.resource.data.numero == resource.data.numero
           && request.resource.data.tipoId == resource.data.tipoId
           && request.resource.data.createdAt == resource.data.createdAt

@@ -393,11 +393,17 @@
       console.error(err);
       if (showAlert) {
         showAlert(
-          "error",
-          "No se pudieron cargar las solicitudes. Publicá las reglas de Firestore actualizadas. " +
+          "warn",
+          "Todavía no se pueden listar las solicitudes. En Firebase Console → Firestore → Rules tenés que publicar el archivo firestore.rules (buscá que diga bromatologia_tramites). Luego recargá con Ctrl+F5. Detalle: " +
             (err.message || "")
         );
       }
+      if (emptyEl) {
+        emptyEl.hidden = false;
+        emptyEl.textContent =
+          "No se pudieron cargar (permisos). Publicá las reglas de Firestore e intentá de nuevo.";
+      }
+      if (listEl) listEl.innerHTML = "";
     }
   }
 
