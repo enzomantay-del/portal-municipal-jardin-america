@@ -1,3 +1,24 @@
+/* Página pública de trámites Bromatología */
+
+.bromo-tramites-page .muni-content-band {
+  padding: 1rem 0 2rem;
+}
+
+.bromo-tramites-page .muni-container > .muni-back-link {
+  margin-bottom: 0.35rem;
+  min-height: auto;
+}
+
+#bromo-tramites-root > .muni-back-link {
+  margin-bottom: 0.85rem;
+  min-height: auto;
+}
+
+.bromo-intro {
+  width: 100%;
+  max-width: none;
+}
+
 .bromo-intro h1 {
   margin: 0 0 0.5rem;
   font-family: var(--muni-font-display, "Source Serif 4", Georgia, serif);
@@ -8,7 +29,7 @@
 .bromo-intro > p {
   margin: 0 0 1rem;
   color: var(--muni-text-muted, #556);
-  max-width: 42rem;
+  max-width: 52rem;
   line-height: 1.5;
 }
 
@@ -18,7 +39,7 @@
   background: #f0fafb;
   border: 1px solid rgba(0, 131, 143, 0.25);
   border-radius: 10px;
-  max-width: 40rem;
+  max-width: none;
 }
 
 .bromo-how li {
@@ -32,7 +53,7 @@
 
 .bromo-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
   gap: 1rem;
   margin: 1.25rem 0 2rem;
 }
@@ -45,6 +66,7 @@
   border-radius: 12px;
   background: #fff;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  height: 100%;
 }
 
 .bromo-card h2 {
@@ -86,8 +108,10 @@
   color: #555;
 }
 
+/* Formulario: usa el ancho del contenedor (márgenes laterales del portal) */
 .bromo-form-wrap {
-  max-width: 720px;
+  width: 100%;
+  max-width: none;
   margin-bottom: 2.5rem;
 }
 
@@ -97,9 +121,16 @@
   font-size: clamp(1.45rem, 3.5vw, 1.9rem);
 }
 
+.bromo-form-wrap > p {
+  margin: 0 0 0.75rem;
+  max-width: 48rem;
+  color: var(--muni-text-muted, #556);
+  line-height: 1.45;
+}
+
 .bromo-steps,
 .bromo-reqs {
-  margin: 1rem 0 1.25rem;
+  margin: 0 0 1.25rem;
   padding: 0.85rem 1rem;
   background: #f7fafc;
   border-radius: 10px;
@@ -119,6 +150,7 @@
   border: 1px solid #f0d9a0;
   border-radius: 8px;
   font-size: 0.9rem;
+  margin: 0 0 1rem;
 }
 
 .bromo-doc input[type="file"] {
@@ -154,8 +186,9 @@
 }
 
 .bromo-exito {
-  max-width: 560px;
-  padding: 1.25rem 0 2rem;
+  width: 100%;
+  max-width: 40rem;
+  padding: 0.5rem 0 2rem;
 }
 
 .bromo-exito h1 {
@@ -173,9 +206,57 @@
   margin-top: 1rem;
 }
 
+/* Escritorio: guía a la izquierda, formulario a la derecha */
+@media (min-width: 900px) {
+  .bromo-form-wrap {
+    display: grid;
+    grid-template-columns: minmax(240px, 320px) minmax(0, 1fr);
+    column-gap: 1.75rem;
+    row-gap: 0.85rem;
+    align-items: start;
+  }
+
+  .bromo-form-wrap > h1,
+  .bromo-form-wrap > p,
+  .bromo-form-wrap > .bromo-aviso {
+    grid-column: 1 / -1;
+  }
+
+  .bromo-form-wrap > .bromo-steps,
+  .bromo-form-wrap > .bromo-reqs {
+    grid-column: 1;
+    margin-bottom: 0;
+    position: sticky;
+    top: 0.75rem;
+  }
+
+  .bromo-form-wrap > form {
+    grid-column: 2;
+  }
+
+  #bromo-form.muni-form-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (min-width: 1180px) {
+  .bromo-form-wrap {
+    grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
+    column-gap: 2.25rem;
+  }
+
+  #bromo-form.muni-form-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 640px) {
   .bromo-card {
     flex-direction: column;
+  }
+
+  .bromo-tramites-page .muni-content-band {
+    padding: 0.75rem 0 1.5rem;
   }
 }
 
