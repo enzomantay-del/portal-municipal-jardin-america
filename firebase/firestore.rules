@@ -195,5 +195,34 @@ service cloud.firestore {
         && request.resource.data.createdBy == request.auth.uid
         && request.resource.data.estadoPublicacion == 'pendiente';
     }
+
+    match /encuesta_gestion/{responseId} {
+      allow read: if isAdmin();
+    }
+
+    match /encuesta_fingerprints/{fpId} {
+      allow read, delete: if isAdmin();
+    }
+
+    // Solicitudes de trámites de Bromatología (creación vía Admin SDK / Netlify).
+    match /bromatologia_tramites/{tramiteId} {
+      allow read: if isAdmin()
+        || (isEncargado() && encargadoAreaSlug() == 'bromatologia');
+
+      allow create: if false;
+
+      allow update: if isAdmin()
+        || (isEncargado()
+          && encargadoAreaSlug() == 'bromatologia'
+          && resource.data.areaSlug == 'bromatologia'
+          && request.resource.data.areaSlug == resource.data.areaSlug
+          && request.resource.data.numero == resource.data.numero
+          && request.resource.data.tipoId == resource.data.tipoId
+          && request.resource.data.createdAt == resource.data.createdAt
+          && request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['estado', 'notasInternas', 'updatedAt', 'reviewedBy']));
+
+      allow delete: if isAdmin();
+    }
   }
 }

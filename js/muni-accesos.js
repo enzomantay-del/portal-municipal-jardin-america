@@ -58,8 +58,8 @@
     {
       icon: "🧪",
       titulo: "Bromatología",
-      desc: "Habilitaciones comerciales y control sanitario",
-      href: "area.html?area=bromatologia",
+      desc: "Iniciá habilitaciones y trámites online con nota municipal",
+      href: "tramites-bromatologia.html",
     },
     {
       icon: "🗺️",

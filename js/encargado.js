@@ -18,9 +18,14 @@
   var mapSectionEl = document.getElementById("seccion-mapa");
   var mapNavLink = document.getElementById("encargado-nav-mapa");
   var mapHeroStep = document.getElementById("encargado-hero-step-mapa");
+  var bromoSectionEl = document.getElementById("seccion-bromo");
+  var bromoNavLink = document.getElementById("encargado-nav-bromo");
+  var bromoHeroStep = document.getElementById("encargado-hero-step-bromo");
 
   var MAP_MANAGER_AREAS = ["obras-publicas", "obras-privadas"];
+  var BROMO_MANAGER_AREAS = ["bromatologia"];
   var encargadoMapaBound = false;
+  var encargadoBromoBound = false;
 
   var AREA_ICONS = {
     "obras-publicas": "🏗️",
@@ -81,10 +86,20 @@
     return MAP_MANAGER_AREAS.indexOf(areaSlug) !== -1;
   }
 
+  function canManageBromo(areaSlug) {
+    return BROMO_MANAGER_AREAS.indexOf(areaSlug) !== -1;
+  }
+
   function setMapaPanelVisible(visible) {
     if (mapNavLink) mapNavLink.hidden = !visible;
     if (mapSectionEl) mapSectionEl.hidden = !visible;
     if (mapHeroStep) mapHeroStep.hidden = !visible;
+  }
+
+  function setBromoPanelVisible(visible) {
+    if (bromoNavLink) bromoNavLink.hidden = !visible;
+    if (bromoSectionEl) bromoSectionEl.hidden = !visible;
+    if (bromoHeroStep) bromoHeroStep.hidden = !visible;
   }
 
   function bindEncargadoMapaOnce() {
@@ -102,11 +117,34 @@
     });
   }
 
+  function bindEncargadoBromoOnce() {
+    if (encargadoBromoBound || !window.EncargadoBromo) return;
+    encargadoBromoBound = true;
+    window.EncargadoBromo.bind({
+      showAlert: showAlert,
+      getSession: function () {
+        return {
+          user: currentUser,
+          profile: userProfile,
+          area: userArea,
+        };
+      },
+    });
+  }
+
   function refreshEncargadoMapa() {
     if (!currentUser || !userArea || !canManageMapa(userArea.slug)) return;
     bindEncargadoMapaOnce();
     if (window.EncargadoMapa) {
       window.EncargadoMapa.refresh(currentUser.uid, userArea.slug);
+    }
+  }
+
+  function refreshEncargadoBromo() {
+    if (!currentUser || !userArea || !canManageBromo(userArea.slug)) return;
+    bindEncargadoBromoOnce();
+    if (window.EncargadoBromo) {
+      window.EncargadoBromo.refresh();
     }
   }
 
@@ -312,6 +350,11 @@
     if (canManageMapa(userArea.slug)) {
       refreshEncargadoMapa();
     }
+
+    setBromoPanelVisible(canManageBromo(userArea.slug));
+    if (canManageBromo(userArea.slug)) {
+      refreshEncargadoBromo();
+    }
   }
 
   function syncAgendaDeactivate() {
@@ -328,13 +371,22 @@
     if (heroAreaEl) heroAreaEl.textContent = area.nombre;
     if (heroIconEl) heroIconEl.textContent = AREA_ICONS[area.slug] || "🏛️";
     if (heroLeadEl) {
-      heroLeadEl.textContent = canManageMapa(area.slug)
-        ? "Bienvenido al panel de " +
+      if (canManageBromo(area.slug)) {
+        heroLeadEl.textContent =
+          "Bienvenido al panel de " +
           area.nombre +
-          ". Gestioná la agenda interna, solicitá publicar eventos y cargá puntos en el mapa de obras; el administrador aprueba antes de que sean visibles."
-        : "Bienvenido al panel de " +
+          ". Atendé las solicitudes de trámites online, gestioná la agenda interna y solicitá publicar eventos; el administrador aprueba antes de que sean visibles.";
+      } else if (canManageMapa(area.slug)) {
+        heroLeadEl.textContent =
+          "Bienvenido al panel de " +
+          area.nombre +
+          ". Gestioná la agenda interna, solicitá publicar eventos y cargá puntos en el mapa de obras; el administrador aprueba antes de que sean visibles.";
+      } else {
+        heroLeadEl.textContent =
+          "Bienvenido al panel de " +
           area.nombre +
           ". Gestioná la agenda interna y solicitá publicar eventos en el portal; el administrador aprueba antes de que sean visibles.";
+      }
     }
     var hero = document.getElementById("encargado-hero");
     if (hero && area.color) {
@@ -373,6 +425,7 @@
       if (auth) await auth.signOut();
       syncAgendaDeactivate();
       setMapaPanelVisible(false);
+      setBromoPanelVisible(false);
       currentUser = null;
       userProfile = null;
       userArea = null;

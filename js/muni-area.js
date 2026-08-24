@@ -73,6 +73,22 @@
     );
   }
 
+  /** Acceso claro a trámites online de Bromatología. */
+  function renderBromoTramitesCta(M, area) {
+    if (area.slug !== "bromatologia") return "";
+    return (
+      '<div class="muni-area-bromo-cta" role="region" aria-label="Trámites de Bromatología">' +
+      '<p class="muni-area-bromo-cta-kicker">Trámites online</p>' +
+      "<p>Iniciá habilitaciones, eventos, transporte de alimentos y más desde el sitio. " +
+      "Vas a poder imprimir la nota con membrete municipal.</p>" +
+      '<div class="muni-area-bromo-cta-actions">' +
+      '<a class="muni-btn muni-btn--primary" href="tramites-bromatologia.html">Ver trámites e iniciar</a>' +
+      '<a class="muni-btn muni-btn--ghost" href="https://wa.me/543743668062" target="_blank" rel="noopener noreferrer">WhatsApp Bromatología</a>' +
+      "</div>" +
+      "</div>"
+    );
+  }
+
   function mapIconSvg() {
     return (
       '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">' +
@@ -451,6 +467,7 @@
         '<p class="muni-area-hero-desc">' + M.escapeHtml(area.descripcion) + "</p>" +
         renderEncargadoBlock(M, area) +
         renderEmergenciaCta(M, area) +
+        renderBromoTramitesCta(M, area) +
         "</div>" +
         "</div>";
     }

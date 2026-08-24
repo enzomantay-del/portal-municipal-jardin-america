@@ -11,7 +11,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/muni-portal.css?v=20260727nav">
+  <link rel="stylesheet" href="css/muni-portal.css?v=20260824bromo">
+  <link rel="stylesheet" href="css/muni-bromo-tramites.css?v=20260824bromo">
   <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
 </head>
 <body class="muni-panel-page muni-enc-page">
@@ -40,6 +41,7 @@
           <li><span class="muni-enc-step-n">1</span> Agenda interna</li>
           <li><span class="muni-enc-step-n">2</span> Solicitar publicación en el portal</li>
           <li id="encargado-hero-step-mapa" hidden><span class="muni-enc-step-n">3</span> Mapa de obras y puntos</li>
+          <li id="encargado-hero-step-bromo" hidden><span class="muni-enc-step-n">3</span> Trámites de Bromatología</li>
         </ol>
       </div>
       <div class="muni-enc-hero-badge" id="encargado-hero-badge" hidden aria-hidden="true">
@@ -95,6 +97,7 @@
       <nav class="muni-panel-nav" data-panel-nav aria-label="Secciones del panel">
         <a href="#seccion-agenda" class="muni-panel-nav-link muni-panel-nav-link--agenda is-active" aria-current="true">📅 Agenda</a>
         <a href="#seccion-mapa" class="muni-panel-nav-link muni-panel-nav-link--mapa" id="encargado-nav-mapa" hidden>🗺️ Mapa</a>
+        <a href="#seccion-bromo" class="muni-panel-nav-link" id="encargado-nav-bromo" hidden>🧪 Trámites</a>
       </nav>
 
       <section id="seccion-agenda" class="muni-panel-zone muni-panel-zone--agenda">
@@ -273,6 +276,50 @@
           </div>
         </div>
       </section>
+
+      <section id="seccion-bromo" class="muni-panel-zone muni-panel-zone--bromo" hidden>
+        <header class="muni-panel-zone-head">
+          <span class="muni-panel-zone-icon" aria-hidden="true">🧪</span>
+          <div>
+            <h2>Trámites de Bromatología</h2>
+            <p>Recibí y atendé las solicitudes iniciadas online desde el portal. Podés cambiar el estado, dejar notas e imprimir la nota con membrete.</p>
+          </div>
+        </header>
+        <div class="muni-panel-zone-body">
+          <div id="encargado-bromo-stats" class="muni-panel-zone-block" aria-live="polite"></div>
+          <div class="muni-panel-zone-block">
+            <div class="muni-agenda-list-head">
+              <div>
+                <h3 class="muni-panel-zone-block-title">Solicitudes recibidas</h3>
+                <p class="muni-panel-zone-block-sub">Las inicia el vecino en <a href="tramites-bromatologia.html" target="_blank" rel="noopener">trámites de Bromatología</a>.</p>
+              </div>
+              <div class="muni-agenda-list-actions">
+                <label class="muni-field" style="margin:0">
+                  <span class="visually-hidden">Filtrar por estado</span>
+                  <select id="encargado-bromo-filter" aria-label="Filtrar por estado">
+                    <option value="todas">Todas</option>
+                    <option value="recibida">Nuevas (recibidas)</option>
+                    <option value="en_revision">En revisión</option>
+                    <option value="pendiente_docs">Falta documentación</option>
+                    <option value="aprobada">Aprobadas</option>
+                    <option value="rechazada">Rechazadas</option>
+                    <option value="archivada">Archivadas</option>
+                  </select>
+                </label>
+                <button type="button" class="muni-btn muni-btn--ghost" id="encargado-bromo-refresh">Actualizar</button>
+              </div>
+            </div>
+            <p id="encargado-bromo-empty" class="muni-empty">Todavía no hay solicitudes online.</p>
+            <div id="encargado-bromo-list" class="bromo-enc-list"></div>
+          </div>
+          <div class="muni-panel-zone-block">
+            <h3 class="muni-panel-zone-block-title">Detalle</h3>
+            <div id="encargado-bromo-detail">
+              <p class="muni-empty">Elegí una solicitud de la lista para ver el detalle.</p>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   </main>
 
@@ -294,6 +341,9 @@
   <script src="vendor/leaflet/leaflet.js"></script>
   <script src="js/muni-mapa-core.js?v=20260627"></script>
   <script src="js/encargado-mapa.js?v=20260630"></script>
-  <script src="js/encargado.js?v=20260622n"></script>
+  <script src="js/muni-bromo-tramites-data.js?v=20260824bromo"></script>
+  <script src="js/muni-bromo-pdf.js?v=20260824bromo"></script>
+  <script src="js/encargado-bromo.js?v=20260824bromo"></script>
+  <script src="js/encargado.js?v=20260824bromo"></script>
 </body>
 </html>
