@@ -253,8 +253,6 @@
       "#que-visitar-local": "navLocal",
       "#que-visitar-provincia": "navProv",
       "#festividades": "navFest",
-      "#eventos": "navEv",
-      "#promociones": "navPromo",
       "#informacion": "navInfo",
     };
     document.querySelectorAll("#nav-menu a.nav-link").forEach(function (a) {
@@ -570,15 +568,11 @@
   }
 
   function enhanceFestividades() {
-    var section = document.getElementById("festividades");
-    if (!section || document.getElementById("tm-fest-meta")) return;
-    var header = section.querySelector(".section-header") || section.querySelector("header");
-    if (!header) return;
-    var meta = document.createElement("div");
-    meta.id = "tm-fest-meta";
-    meta.className = "tm-fest-meta";
-    meta.innerHTML = '<a href="#eventos" data-tm="festLink"></a>';
-    header.appendChild(meta);
+    // Sin enlace a la sección de eventos (retirada del sitio).
+  }
+
+  function softEmptyStates() {
+    // Secciones de eventos y promociones retiradas.
   }
 
   function injectOlalaReceptivos() {
@@ -626,30 +620,6 @@
       '<a href="https://xdebdesarrollos.github.io/caminohistoricocultural/" target="_blank" rel="noopener noreferrer">Camino histórico</a>';
     var inner = footer.querySelector(".container, .footer-grid, .footer-content") || footer;
     inner.appendChild(box);
-  }
-
-  function softEmptyStates() {
-    setTimeout(function () {
-      var grid = document.getElementById("eventos-grid");
-      if (grid && /Cargando eventos/i.test(grid.textContent || "")) {
-        grid.innerHTML =
-          '<div class="ev-empty"><p>No pudimos cargar la agenda ahora.</p>' +
-          '<p><a href="#festividades">Ver calendario anual</a></p></div>';
-      }
-      var promos = document.getElementById("promos-web-grid");
-      if (promos && /Cargando promociones/i.test(promos.textContent || "")) {
-        promos.innerHTML =
-          '<p style="text-align:center;color:#64748b">No hay promociones cargadas. Mirá <a href="#informacion" id="tm-goto-aloj">alojamientos registrados</a>.</p>';
-        var go = document.getElementById("tm-goto-aloj");
-        if (go) {
-          go.addEventListener("click", function () {
-            setTimeout(function () {
-              openInfoTab("alojamientos");
-            }, 40);
-          });
-        }
-      }
-    }, 12000);
   }
 
   function forceAlojRegistrados() {
