@@ -345,6 +345,211 @@
         "<p>Podés enviar un reporte desde el portal con ubicación, barrio y descripción. El equipo municipal lo recibe para seguimiento.</p>",
       enlaces: [{ titulo: "Abrir formulario de reporte", url: "reportar-problema.html" }],
     },
+    {
+      id: "bromatologia-tramites",
+      categoria: "tramite",
+      areaSlug: "bromatologia",
+      titulo: "Trámites de Bromatología (online)",
+      keywords: [
+        "bromatologia",
+        "bromatología",
+        "tramite",
+        "tramites",
+        "habilitacion",
+        "habilitación",
+        "negocio",
+        "comercio",
+        "local comercial",
+        "inspeccion",
+        "sanitario",
+        "alimentos",
+      ],
+      resumen: "Iniciá habilitaciones, eventos, transporte de alimentos y más desde el portal.",
+      detalleHtml:
+        "<p>Desde el sitio podés iniciar varios trámites de Bromatología. Completás los datos, podés adjuntar documentación y generar una nota con membrete municipal.</p>" +
+        "<ul>" +
+        "<li>Habilitación de negocio</li>" +
+        "<li>Autorización de evento público</li>" +
+        "<li>Transporte de sustancias alimenticias</li>" +
+        "<li>Remis, radio, taxis y transporte escolar</li>" +
+        "<li>Cambio de domicilio de comercio</li>" +
+        "<li>Libreta sanitaria (requisitos; se completa en la oficina)</li>" +
+        "</ul>" +
+        "<p><strong>WhatsApp Bromatología:</strong> 3743-668062</p>",
+      enlaces: [
+        { titulo: "Ver trámites e iniciar", url: "tramites-bromatologia.html" },
+        { titulo: "Ir al área Bromatología", url: "area.html?area=bromatologia" },
+        {
+          titulo: "WhatsApp Bromatología",
+          url: "https://wa.me/543743668062",
+          externo: true,
+        },
+      ],
+    },
+    {
+      id: "bromatologia-habilitacion-negocio",
+      categoria: "tramite",
+      areaSlug: "bromatologia",
+      titulo: "Habilitación de negocio — Bromatología",
+      keywords: [
+        "habilitacion de negocio",
+        "habilitación de negocio",
+        "habilitar local",
+        "abrir comercio",
+        "abrir local",
+        "permiso comercial",
+        "bromatologia",
+      ],
+      resumen: "Solicitud online de habilitación municipal de un local comercial.",
+      detalleHtml:
+        "<p>Completá los datos del negocio y del titular. Podés adjuntar documentación; lo que no subas figura como pendiente de entrega en la nota PDF.</p>" +
+        "<p>Bromatología recibe la solicitud en su panel y te contacta para inspección y pasos siguientes.</p>",
+      enlaces: [
+        {
+          titulo: "Iniciar habilitación de negocio",
+          url: "tramites-bromatologia.html?tramite=habilitacion-negocio",
+        },
+        { titulo: "Ver todos los trámites", url: "tramites-bromatologia.html" },
+      ],
+    },
+    {
+      id: "bromatologia-libreta-sanitaria",
+      categoria: "tramite",
+      areaSlug: "bromatologia",
+      titulo: "Libreta sanitaria — requisitos",
+      keywords: [
+        "libreta sanitaria",
+        "libreta",
+        "carnet sanitario",
+        "examen medico",
+        "serologia",
+        "bcg",
+        "bromatologia",
+      ],
+      resumen: "Requisitos para sacar o renovar la libreta sanitaria (trámite presencial).",
+      detalleHtml:
+        "<p>Este trámite se completa en la oficina de Bromatología. En el portal consultás los requisitos:</p>" +
+        "<ul>" +
+        "<li>Foto 4 x 4 (dos)</li>" +
+        "<li>Fotocopia de DNI (1.ª y 2.ª hoja)</li>" +
+        "<li>Examen de clínica general</li>" +
+        "<li>Prueba de serología (V.D.R.L.)</li>" +
+        "<li>Certificado de la B.C.G.</li>" +
+        "</ul>" +
+        "<p>Renovación: cada año.</p>",
+      enlaces: [
+        {
+          titulo: "Ver requisitos de libreta sanitaria",
+          url: "tramites-bromatologia.html?tramite=libreta-sanitaria",
+        },
+        {
+          titulo: "WhatsApp Bromatología",
+          url: "https://wa.me/543743668062?text=" + encodeURIComponent("Hola, consulto por libreta sanitaria."),
+          externo: true,
+        },
+      ],
+    },
+    {
+      id: "bromatologia-evento-publico",
+      categoria: "tramite",
+      areaSlug: "bromatologia",
+      titulo: "Autorización de evento público — Bromatología",
+      keywords: [
+        "evento",
+        "evento publico",
+        "evento público",
+        "fiesta",
+        "baile",
+        "autorizacion evento",
+        "permiso evento",
+        "salon",
+        "bromatologia",
+      ],
+      resumen: "Pedí autorización online para realizar un evento público en la ciudad.",
+      detalleHtml:
+        "<p>Completá organizador, tipo de evento, lugar y horarios. Podés adjuntar contratos si los tenés.</p>" +
+        "<p>Después del envío, Policía Adicional y Bomberos intervienen aparte (no se reemplazan por el sitio).</p>",
+      enlaces: [
+        {
+          titulo: "Iniciar autorización de evento",
+          url: "tramites-bromatologia.html?tramite=evento-publico",
+        },
+        { titulo: "Ver todos los trámites", url: "tramites-bromatologia.html" },
+      ],
+    },
+    {
+      id: "bromatologia-transporte-alimentos",
+      categoria: "tramite",
+      areaSlug: "bromatologia",
+      titulo: "Transporte de sustancias alimenticias",
+      keywords: [
+        "transporte alimentos",
+        "sustancias alimenticias",
+        "vehiculo alimentos",
+        "camion alimentos",
+        "habilitacion transporte",
+        "bromatologia",
+      ],
+      resumen: "Habilitación online de un vehículo para transportar alimentos.",
+      detalleHtml:
+        "<p>Completá marca, dominio, tipo de vehículo y mercadería. Podés adjuntar la documentación; Bromatología inspecciona el vehículo después.</p>",
+      enlaces: [
+        {
+          titulo: "Iniciar trámite de transporte",
+          url: "tramites-bromatologia.html?tramite=transporte-alimentos",
+        },
+        { titulo: "Ver todos los trámites", url: "tramites-bromatologia.html" },
+      ],
+    },
+    {
+      id: "bromatologia-remis-taxi",
+      categoria: "tramite",
+      areaSlug: "bromatologia",
+      titulo: "Remis, radio, taxis y transporte escolar",
+      keywords: [
+        "remis",
+        "radio taxi",
+        "taxi",
+        "transporte escolar",
+        "habilitacion remis",
+        "habilitacion taxi",
+        "bromatologia",
+      ],
+      resumen: "Habilitación online de vehículo de remis, radio, taxi o transporte escolar.",
+      detalleHtml:
+        "<p>Completá rubro, datos del vehículo y de la empresa. Si falta algún papel con firma certificada, se entrega en la oficina.</p>",
+      enlaces: [
+        {
+          titulo: "Iniciar trámite de remis / taxi",
+          url: "tramites-bromatologia.html?tramite=remis-taxi",
+        },
+        { titulo: "Ver todos los trámites", url: "tramites-bromatologia.html" },
+      ],
+    },
+    {
+      id: "bromatologia-cambio-domicilio",
+      categoria: "tramite",
+      areaSlug: "bromatologia",
+      titulo: "Cambio de domicilio de comercio",
+      keywords: [
+        "cambio de domicilio",
+        "mudanza comercio",
+        "traslado local",
+        "nuevo domicilio",
+        "carton habilitacion",
+        "bromatologia",
+      ],
+      resumen: "Comunicá online el traslado de tu local comercial a una nueva dirección.",
+      detalleHtml:
+        "<p>Indicá el domicilio anterior y el nuevo. El cartón de habilitación original se entrega en la oficina de Bromatología.</p>",
+      enlaces: [
+        {
+          titulo: "Iniciar cambio de domicilio",
+          url: "tramites-bromatologia.html?tramite=cambio-domicilio",
+        },
+        { titulo: "Ver todos los trámites", url: "tramites-bromatologia.html" },
+      ],
+    },
   ];
 
   function stripHtml(html) {
@@ -599,6 +804,9 @@
               : ""),
           enlaces: [
             { titulo: "Ir al área " + a.nombre, url: "area.html?area=" + encodeURIComponent(a.slug) },
+            a.slug === "bromatologia"
+              ? { titulo: "Iniciar trámites online de Bromatología", url: "tramites-bromatologia.html" }
+              : null,
             wa ? { titulo: "WhatsApp " + a.nombre, url: wa, externo: true } : null,
             tel ? { titulo: "Llamar " + phone, url: "tel:+" + tel } : null,
             { titulo: "Ver todos los contactos", url: "contactos.html" },

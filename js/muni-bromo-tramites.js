@@ -104,7 +104,8 @@
       "<li><strong>Enviá</strong> y descargá/imprimí la nota PDF.</li>" +
       "<li><strong>Bromatología</strong> lo recibe en su panel y te contacta.</li>" +
       "</ol>" +
-      '<p class="bromo-note">WhatsApp Bromatología: <a href="https://wa.me/543743668062" target="_blank" rel="noopener">3743-668062</a></p>' +
+      '<p class="bromo-note">WhatsApp Bromatología: <a href="https://wa.me/543743668062" target="_blank" rel="noopener">3743-668062</a> · ' +
+      '<button type="button" class="bromo-linkish" data-open-consultas data-consultas-q="trámites de Bromatología" data-consultas-area="bromatologia">Preguntale a AmiBot</button></p>' +
       "</section>" +
       '<div class="bromo-grid">' +
       items +
