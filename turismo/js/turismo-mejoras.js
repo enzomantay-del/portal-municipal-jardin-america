@@ -114,6 +114,10 @@
       heroBadge: "✦ Misiones · Argentina",
       heroCta1: "Saltos del Tabay",
       heroCta2: "Cómo llegar",
+      mapNaturaleza: "Naturaleza",
+      mapCiudad: "Ciudad",
+      mapTerminal: "Terminal",
+      mapCompleto: "Mapa completo",
       "p-hero-desc":
         "En el corazón de la selva misionera, donde la naturaleza cobra vida en cada rincón. Cascadas, selva virgen y una biodiversidad única en el mundo te esperan.",
       "p-tabay-1":
@@ -162,6 +166,10 @@
       heroBadge: "✦ Missões · Argentina",
       heroCta1: "Saltos del Tabay",
       heroCta2: "Como chegar",
+      mapNaturaleza: "Natureza",
+      mapCiudad: "Cidade",
+      mapTerminal: "Rodoviária",
+      mapCompleto: "Mapa completo",
       "p-hero-desc":
         "No coração da selva missioneira, onde a natureza ganha vida em cada canto. Cachoeiras, selva virgem e uma biodiversidade única no mundo esperam por você.",
       "p-tabay-1":
@@ -210,6 +218,10 @@
       heroBadge: "✦ Misiones · Argentina",
       heroCta1: "Saltos del Tabay",
       heroCta2: "How to get here",
+      mapNaturaleza: "Nature",
+      mapCiudad: "City",
+      mapTerminal: "Bus station",
+      mapCompleto: "Full map",
       "p-hero-desc":
         "In the heart of the Misiones rainforest, where nature comes alive in every corner. Waterfalls, virgin jungle and unique biodiversity await you.",
       "p-tabay-1":
@@ -243,9 +255,17 @@
   function applyLanguage() {
     document.documentElement.lang = lang === "pt" ? "pt" : lang === "en" ? "en" : "es";
 
+    // Títulos y cuerpos del sitio (CONTENT + LABELS con data-tm)
+    if (window.TurismoI18n && typeof window.TurismoI18n.apply === "function") {
+      window.TurismoI18n.apply(lang);
+    }
+
+    // UI dinámica de este módulo (quick start, colectivos, Olalá, etc.)
     document.querySelectorAll("[data-tm]").forEach(function (el) {
       var key = el.getAttribute("data-tm");
-      if (key) setText(el, t(key));
+      if (!key) return;
+      if (dict()[key] == null && !(UI.es && UI.es[key] != null)) return;
+      setText(el, t(key));
     });
 
     var navMap = {
@@ -261,12 +281,13 @@
     });
 
     setText(document.querySelector(".hero-badge"), t("heroBadge"));
-    setText(document.getElementById("p-hero-desc"), t("p-hero-desc"));
-    setText(document.getElementById("p-tabay-1"), t("p-tabay-1"));
-    setText(document.getElementById("p-tabay-2"), t("p-tabay-2"));
-    setText(document.getElementById("p-auto"), t("p-auto"));
-    setText(document.getElementById("p-colectivo"), t("p-colectivo"));
-    setText(document.getElementById("p-avion"), t("p-avion"));
+    // Párrafos con id: preferir TurismoI18n; fallback al diccionario UI
+    ["p-hero-desc", "p-tabay-1", "p-tabay-2", "p-auto", "p-colectivo", "p-avion"].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      if (window.TurismoI18n && window.TurismoI18n.CONTENT && window.TurismoI18n.CONTENT[id]) return;
+      setText(el, t(id));
+    });
 
     var ctas = document.querySelectorAll(".hero-ctas .btn");
     if (ctas[0]) {
@@ -282,10 +303,17 @@
       ctas[1].appendChild(document.createTextNode(" " + t("heroCta2")));
     }
 
+    var langGroup = document.querySelector(".tm-lang");
+    if (langGroup) langGroup.setAttribute("aria-label", t("langAria"));
+
     document.querySelectorAll(".tm-lang-btn").forEach(function (btn) {
       btn.classList.toggle("is-active", btn.getAttribute("data-lang") === lang);
       btn.setAttribute("aria-pressed", btn.getAttribute("data-lang") === lang ? "true" : "false");
     });
+
+    try {
+      document.dispatchEvent(new CustomEvent("tm-lang-change", { detail: { lang: lang } }));
+    } catch (_e) {}
   }
 
   function injectQuickStart() {
@@ -498,10 +526,10 @@
     filters.setAttribute("role", "navigation");
     filters.setAttribute("aria-label", "Atajos del mapa");
     filters.innerHTML = [
-      ["Naturaleza", "Saltos+del+Tabay+Jardín+América"],
-      ["Ciudad", "Plaza+Colón+Jardín+América"],
-      ["Terminal", "Terminal+de+ómnibus+Jardín+América"],
-      ["Mapa completo", null],
+      ["mapNaturaleza", "Saltos+del+Tabay+Jardín+América"],
+      ["mapCiudad", "Plaza+Colón+Jardín+América"],
+      ["mapTerminal", "Terminal+de+ómnibus+Jardín+América"],
+      ["mapCompleto", null],
     ]
       .map(function (item) {
         var href =
@@ -511,9 +539,9 @@
         return (
           '<a href="' +
           href +
-          '" target="_blank" rel="noopener noreferrer">' +
+          '" target="_blank" rel="noopener noreferrer" data-tm="' +
           item[0] +
-          "</a>"
+          '"></a>'
         );
       })
       .join("");
@@ -584,7 +612,7 @@
     box.className = "tm-olala";
     box.innerHTML =
       '<div class="tm-olala-copy">' +
-      '<p class="tm-olala-kicker">Agencia local habilitada</p>' +
+      '<p class="tm-olala-kicker" data-tm="olalaKicker"></p>' +
       '<p class="tm-olala-title" data-tm="olalaTitle"></p>' +
       '<p class="tm-olala-text" data-tm="olalaText"></p>' +
       "</div>" +
