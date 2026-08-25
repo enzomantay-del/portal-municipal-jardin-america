@@ -84,6 +84,10 @@
       quickTitle: "¿Qué necesitás hoy?",
       q1t: "Saltos del Tabay",
       q1d: "Atractivo principal, tarifas y ubicación",
+      qLocalt: "Qué visitar aquí",
+      qLocald: "Atractivos en la ciudad y alrededores",
+      qProvt: "Qué visitar desde aquí",
+      qProvd: "Cataratas, ruinas y más en la provincia",
       q2t: "Cómo llegar",
       q2d: "Auto, colectivo y avión",
       q3t: "Colectivos",
@@ -136,6 +140,10 @@
       quickTitle: "O que você precisa hoje?",
       q1t: "Saltos del Tabay",
       q1d: "Atração principal, tarifas e localização",
+      qLocalt: "O que visitar aqui",
+      qLocald: "Atrativos na cidade e arredores",
+      qProvt: "O que visitar daqui",
+      qProvd: "Cataratas, ruínas e mais na província",
       q2t: "Como chegar",
       q2d: "Carro, ônibus e avião",
       q3t: "Ônibus",
@@ -188,6 +196,10 @@
       quickTitle: "What do you need today?",
       q1t: "Saltos del Tabay",
       q1d: "Main attraction, fees and location",
+      qLocalt: "Visit here",
+      qLocald: "Attractions in town and nearby",
+      qProvt: "Visit from here",
+      qProvd: "Falls, ruins and more in the province",
       q2t: "How to get here",
       q2d: "Car, bus and plane",
       q3t: "Buses",
@@ -340,7 +352,9 @@
       '<button type="button" class="tm-lang-btn" data-lang="en" aria-pressed="false">EN</button>' +
       "</div></div>" +
       '<div class="tm-quick-grid" role="list">' +
-      '<a class="tm-quick-link" role="listitem" href="#que-visitar-local"><strong data-tm="q1t"></strong><span data-tm="q1d"></span></a>' +
+      '<a class="tm-quick-link" role="listitem" href="#tabay-title"><strong data-tm="q1t"></strong><span data-tm="q1d"></span></a>' +
+      '<a class="tm-quick-link" role="listitem" href="#que-visitar-local"><strong data-tm="qLocalt"></strong><span data-tm="qLocald"></span></a>' +
+      '<a class="tm-quick-link" role="listitem" href="#que-visitar-provincia"><strong data-tm="qProvt"></strong><span data-tm="qProvd"></span></a>' +
       '<a class="tm-quick-link" role="listitem" href="#inicio"><strong data-tm="q2t"></strong><span data-tm="q2d"></span></a>' +
       '<a class="tm-quick-link" role="listitem" href="#informacion" data-tm-open-tab="colectivos"><strong data-tm="q3t"></strong><span data-tm="q3d"></span></a>' +
       '<a class="tm-quick-link" role="listitem" href="#informacion" data-tm-open-tab="alojamientos"><strong data-tm="q4t"></strong><span data-tm="q4d"></span></a>' +

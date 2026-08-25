@@ -590,6 +590,26 @@
       pt: "Hospedagens registradas",
       en: "Registered lodging"
     },
+    "qLocalt": {
+      es: "Qué visitar aquí",
+      pt: "O que visitar aqui",
+      en: "Visit here"
+    },
+    "qLocald": {
+      es: "Atractivos en la ciudad y alrededores",
+      pt: "Atrativos na cidade e arredores",
+      en: "Attractions in town and nearby"
+    },
+    "qProvt": {
+      es: "Qué visitar desde aquí",
+      pt: "O que visitar daqui",
+      en: "Visit from here"
+    },
+    "qProvd": {
+      es: "Cataratas, ruinas y más en la provincia",
+      pt: "Cataratas, ruínas e mais na província",
+      en: "Falls, ruins and more in the province"
+    },
     "portal": {
       es: "Portal municipal",
       pt: "Portal municipal",
