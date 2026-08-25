@@ -665,6 +665,211 @@
       pt: "Informação útil",
       en: "Useful info"
     },
+    "feat1": {
+      es: "A aproximadamente 4 km del centro de la ciudad",
+      pt: "A aproximadamente 4 km do centro da cidade",
+      en: "About 4 km from downtown"
+    },
+    "feat2": {
+      es: "Rodeados de selva subtropical nativa paranaense",
+      pt: "Cercados de selva subtropical nativa paranense",
+      en: "Surrounded by native subtropical Paranaense rainforest"
+    },
+    "feat3": {
+      es: "Ideales para trekking, senderismo y baños naturales",
+      pt: "Ideais para trekking, caminhadas e banhos naturais",
+      en: "Ideal for trekking, hiking and natural pools"
+    },
+    "feat4": {
+      es: "Aguas cristalinas de nacientes serranas",
+      pt: "Águas cristalinas de nascentes serranas",
+      en: "Crystal-clear water from mountain springs"
+    },
+    "feat5": {
+      es: "Entorno propicio para avistaje de aves y fauna autóctona",
+      pt: "Ambiente propício para observação de aves e fauna nativa",
+      en: "Great setting for birdwatching and native wildlife"
+    },
+    "feat6": {
+      es: "Apto para toda la familia",
+      pt: "Adequado para toda a família",
+      en: "Suitable for the whole family"
+    },
+    "btnUbicacion": {
+      es: "Ubicación",
+      pt: "Localização",
+      en: "Location"
+    },
+    "heroFromPosadas": {
+      es: "de Posadas",
+      pt: "de Posadas",
+      en: "from Posadas"
+    },
+    "heroFromIguazu": {
+      es: "de Puerto Iguazú",
+      pt: "de Puerto Iguazú",
+      en: "from Puerto Iguazú"
+    },
+    "heroRuta12": {
+      es: "acceso principal",
+      pt: "acesso principal",
+      en: "main access"
+    },
+    "tarVigencia": {
+      es: "Tarifas Verano 2026 · vigentes desde el 29 de noviembre de 2025",
+      pt: "Tarifas Verão 2026 · vigentes desde 29 de novembro de 2025",
+      en: "Summer 2026 rates · valid from November 29, 2025"
+    },
+    "tarIngresos": {
+      es: "🎟️ Ingresos",
+      pt: "🎟️ Ingressos",
+      en: "🎟️ Admission"
+    },
+    "tarLocales": {
+      es: "Locales",
+      pt: "Locais",
+      en: "Locals"
+    },
+    "tarProvinciales": {
+      es: "Provinciales",
+      pt: "Provinciais",
+      en: "Provincial residents"
+    },
+    "tarNacionales": {
+      es: "Nacionales",
+      pt: "Nacionais",
+      en: "Argentine nationals"
+    },
+    "tarExtranjeros": {
+      es: "Extranjeros",
+      pt: "Estrangeiros",
+      en: "Foreign visitors"
+    },
+    "tarDescuentos": {
+      es: "🏷️ Descuentos",
+      pt: "🏷️ Descontos",
+      en: "🏷️ Discounts"
+    },
+    "tarJubilados": {
+      es: "Jubilados *",
+      pt: "Aposentados *",
+      en: "Retirees *"
+    },
+    "tarGrupos": {
+      es: "Grupos de 20+ personas (4 hs) *",
+      pt: "Grupos de 20+ pessoas (4 h) *",
+      en: "Groups of 20+ people (4 hrs) *"
+    },
+    "tarGratis": {
+      es: "Gratis",
+      pt: "Grátis",
+      en: "Free"
+    },
+    "tarDiscapacidad": {
+      es: "Personas con discapacidad *",
+      pt: "Pessoas com deficiência *",
+      en: "People with disabilities *"
+    },
+    "tarMalvinas": {
+      es: "Excombatientes de Malvinas *",
+      pt: "Ex-combatentes de Malvinas *",
+      en: "Malvinas war veterans *"
+    },
+    "tarCarnet": {
+      es: "* Presentando carnet correspondiente",
+      pt: "* Mediante apresentação do documento correspondente",
+      en: "* With the corresponding ID card"
+    },
+    "tarCarpasTitle": {
+      es: "⛺ Carpas y Quinchos",
+      pt: "⛺ Barracas e Quinchos",
+      en: "⛺ Tents and covered grills"
+    },
+    "tarCarpaDia": {
+      es: "Carpa x día",
+      pt: "Barraca por dia",
+      en: "Tent per day"
+    },
+    "tarQuinchoSin": {
+      es: "Quincho sin mesa",
+      pt: "Quincho sem mesa",
+      en: "Covered grill without table"
+    },
+    "tarQuinchoCon": {
+      es: "Quincho con mesa",
+      pt: "Quincho com mesa",
+      en: "Covered grill with table"
+    },
+    "tarDormisTitle": {
+      es: "🛖 Dormis (precio por día)",
+      pt: "🛖 Dormitórios (preço por dia)",
+      en: "🛖 Cabins (price per day)"
+    },
+    "tarDormis1": {
+      es: '"Cañón del Tabay" — hasta 2 pers.',
+      pt: '"Cañón del Tabay" — até 2 pess.',
+      en: '"Cañón del Tabay" — up to 2 people'
+    },
+    "tarDormis2": {
+      es: '"Lagos" — hasta 8 pers.',
+      pt: '"Lagos" — até 8 pess.',
+      en: '"Lagos" — up to 8 people'
+    },
+    "tarDormis3": {
+      es: '"Los Pioneros" — hasta 6 pers.',
+      pt: '"Los Pioneros" — até 6 pess.',
+      en: '"Los Pioneros" — up to 6 people'
+    },
+    "tarDormis4": {
+      es: '"Los Pioneros" — hasta 8 pers.',
+      pt: '"Los Pioneros" — até 8 pess.',
+      en: '"Los Pioneros" — up to 8 people'
+    },
+    "tarDormis5": {
+      es: '"Los Senderos" — hasta 8 pers.',
+      pt: '"Los Senderos" — até 8 pess.',
+      en: '"Los Senderos" — up to 8 people'
+    },
+    "tarDormis6": {
+      es: '"Selva Misionera" — hasta 9 pers.',
+      pt: '"Selva Misionera" — até 9 pess.',
+      en: '"Selva Misionera" — up to 9 people'
+    },
+    "tarEstacionamiento": {
+      es: "🚗 Estacionamiento",
+      pt: "🚗 Estacionamento",
+      en: "🚗 Parking"
+    },
+    "tarVehiculos": {
+      es: "Vehículos",
+      pt: "Veículos",
+      en: "Vehicles"
+    },
+    "tarOmnibus2": {
+      es: "Ómnibus (hasta 2 hs) *",
+      pt: "Ônibus (até 2 h) *",
+      en: "Buses (up to 2 hrs) *"
+    },
+    "tarOmnibusExtra": {
+      es: "Ómnibus (por hora adicional) **",
+      pt: "Ônibus (por hora adicional) **",
+      en: "Buses (per extra hour) **"
+    },
+    "tarParkingNote": {
+      es: "* Hasta 2 horas · ** Por hora a partir de la segunda hora",
+      pt: "* Até 2 horas · ** Por hora a partir da segunda hora",
+      en: "* Up to 2 hours · ** Per hour after the second hour"
+    },
+    "tarUbicacionTitle": {
+      es: "📍 Ubicación",
+      pt: "📍 Localização",
+      en: "📍 Location"
+    },
+    "btnMaps": {
+      es: "Ver en Google Maps",
+      pt: "Ver no Google Maps",
+      en: "View on Google Maps"
+    },
   };
 
   var HERO_HTML = {

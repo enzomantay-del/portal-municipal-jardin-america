@@ -102,6 +102,22 @@
     return d[key] || UI.es[key] || key;
   }
 
+  function tr(value) {
+    if (value == null) return "";
+    if (typeof value === "string" || typeof value === "number") return String(value);
+    if (typeof value === "object") return value[lang()] || value.es || value.en || value.pt || "";
+    return String(value);
+  }
+
+  function trList(value) {
+    if (Array.isArray(value)) return value;
+    if (value && typeof value === "object") {
+      var list = value[lang()] || value.es || value.en || value.pt;
+      return Array.isArray(list) ? list : [];
+    }
+    return [];
+  }
+
   function $(id) {
     return document.getElementById(id);
   }
@@ -295,9 +311,9 @@
           })
           .join("");
         var metaItems = [];
-        if (c.modalidad) metaItems.push(c.modalidad);
-        if (c.dificultad) metaItems.push(t("difficulty") + " " + String(c.dificultad).toLowerCase());
-        if (c.duracion) metaItems.push(c.duracion);
+        if (c.modalidad) metaItems.push(tr(c.modalidad));
+        if (c.dificultad) metaItems.push(t("difficulty") + " " + tr(c.dificultad).toLowerCase());
+        if (c.duracion) metaItems.push(tr(c.duracion));
         if (c.paradas && c.paradas.length) metaItems.push(c.paradas.length + " " + t("stops"));
         var meta =
           '<p class="tm-circuito-meta">' +
@@ -307,7 +323,7 @@
             })
             .join('<span aria-hidden="true"> · </span>') +
           "</p>";
-        var recs = (c.recomendaciones || [])
+        var recs = trList(c.recomendaciones)
           .map(function (r) {
             return "<li>" + escapeHtml(r) + "</li>";
           })
@@ -320,7 +336,7 @@
           '<img src="' +
           escapeHtml(first) +
           '" alt="' +
-          escapeHtml(c.nombre) +
+          escapeHtml(tr(c.nombre)) +
           '" data-circuito-img="' +
           escapeHtml(c.id) +
           '" loading="lazy" decoding="async">' +
@@ -328,11 +344,11 @@
           "</div>" +
           '<div class="tm-circuito-body">' +
           "<h3>" +
-          escapeHtml(c.nombre) +
+          escapeHtml(tr(c.nombre)) +
           "</h3>" +
           meta +
           '<p class="tm-circuito-desc">' +
-          escapeHtml(c.descripcion) +
+          escapeHtml(tr(c.descripcion)) +
           "</p>" +
           (recs
             ? '<p class="tm-circuito-recs-label">' +
@@ -402,7 +418,7 @@
             '">' +
             p.orden +
             ". " +
-            escapeHtml(p.nombre) +
+            escapeHtml(tr(p.nombre)) +
             "</button>"
           );
         })
@@ -412,22 +428,22 @@
         ? '<figure class="tm-parada-fig"><img src="' +
           escapeHtml(stop.imagen) +
           '" alt="' +
-          escapeHtml(stop.nombre) +
+          escapeHtml(tr(stop.nombre)) +
           '" loading="lazy" decoding="async"></figure>'
         : "") +
       '<h3 class="tm-parada-title">' +
-      escapeHtml(stop.nombre) +
+      escapeHtml(tr(stop.nombre)) +
       "</h3>" +
       '<p class="tm-parada-meta">' +
       escapeHtml(t("stopLabel")) +
       " " +
       stop.orden +
       " · " +
-      escapeHtml(stop.tiempo || "") +
+      escapeHtml(tr(stop.tiempo || "")) +
       "</p>" +
-      (stop.tip ? '<p class="tm-parada-tip">' + escapeHtml(stop.tip) + "</p>" : "") +
+      (stop.tip ? '<p class="tm-parada-tip">' + escapeHtml(tr(stop.tip)) + "</p>" : "") +
       '<p class="tm-parada-texto">' +
-      escapeHtml(stop.texto) +
+      escapeHtml(tr(stop.texto)) +
       "</p>" +
       '<div class="tm-parada-actions">' +
       '<button type="button" class="tm-btn-listen" data-listen-stop="' +
@@ -651,7 +667,7 @@
         }
         var circuit2 = findCircuit(activeCircuitId);
         var stop2 = circuit2 && findStop(circuit2, listenBtn.getAttribute("data-listen-stop"));
-        if (stop2) speakText(stop2.texto, listenBtn);
+        if (stop2) speakText(tr(stop2.texto), listenBtn);
       }
     });
   }

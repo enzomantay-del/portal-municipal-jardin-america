@@ -56,8 +56,8 @@
   background: #1d3a2c;
   aspect-ratio: 16 / 9;
   max-height: 420px;
-  width: 100%;
-  max-width: min(100%, calc(420px * 16 / 9));
+  width: min(100%, calc(420px * 16 / 9));
+  display: block;
 }
 
 .tm-circuito-media img {
