@@ -51,11 +51,13 @@
 
 .tm-circuito-media {
   position: relative;
-  margin: 0 0 1.35rem;
+  margin: 0 auto 1.35rem;
   overflow: hidden;
   background: #1d3a2c;
   aspect-ratio: 16 / 9;
   max-height: 420px;
+  width: 100%;
+  max-width: min(100%, calc(420px * 16 / 9));
 }
 
 .tm-circuito-media img {
