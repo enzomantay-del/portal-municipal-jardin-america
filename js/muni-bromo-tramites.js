@@ -73,9 +73,9 @@
             : '<span class="bromo-badge bromo-badge--ok">Iniciar online</span>';
         return (
           '<article class="bromo-card">' +
-          '<div class="bromo-card-icon" aria-hidden="true">' +
-          escapeHtml(t.icono || "📋") +
-          "</div>" +
+          (window.MuniBromoTramitesData && window.MuniBromoTramitesData.renderIcon
+            ? window.MuniBromoTramitesData.renderIcon(t.icono)
+            : '<span class="bromo-card-icon" aria-hidden="true"></span>') +
           "<div>" +
           badge +
           "<h2>" +
@@ -190,15 +190,12 @@
           escapeHtml(d.key) +
           '">' +
           escapeHtml(d.label) +
-          (d.required ? " *" : " (opcional)") +
           "</label>" +
           '<input id="doc-' +
           escapeHtml(d.key) +
           '" name="doc_' +
           escapeHtml(d.key) +
-          '" type="file" accept="image/*,.pdf,application/pdf"' +
-          (d.required ? " required" : "") +
-          ">" +
+          '" type="file" accept="image/*,.pdf,application/pdf">' +
           "</div>"
         );
       })
@@ -236,7 +233,7 @@
       '<h2 class="muni-field--full bromo-form-section">2. Datos del trámite</h2>' +
       camposHtml +
       '<h2 class="muni-field--full bromo-form-section">3. Documentación</h2>' +
-      '<p class="muni-field--full muni-field-hint">Subí fotos nítidas o PDF. Si un archivo es opcional y no lo tenés, dejalo vacío.</p>' +
+      '<p class="muni-field--full muni-field-hint">Podés adjuntar fotos o PDF ahora. Lo que no subas figurará en la nota como pendiente de entrega; lo que subas, como entregado (en revisión).</p>' +
       docsHtml +
       '<div class="muni-field muni-field--full"><label class="muni-check-row">' +
       '<input type="checkbox" id="sol-decl" name="declaracion" value="1" required>' +
@@ -307,9 +304,6 @@
         var input = document.getElementById("doc-" + doc.key);
         var file = input && input.files && input.files[0];
         if (!file) {
-          if (doc.required) {
-            throw new Error("Falta adjuntar: " + doc.label);
-          }
           continue;
         }
         var prepared = await prepareFile(file);

@@ -51,12 +51,10 @@
     return (documentos || [])
       .map(function (doc) {
         var has = !!map[doc.key];
-        return (
-          "<li>" +
-          escapeHtml(doc.label) +
-          (has ? " — <strong>Adjuntado</strong>" : " — (sin archivo en esta solicitud)") +
-          "</li>"
-        );
+        var estado = has
+          ? " — <strong>Entregado (en revisión)</strong>"
+          : " — <strong>Documentación pendiente de entrega</strong>";
+        return "<li>" + escapeHtml(doc.label) + estado + "</li>";
       })
       .join("");
   }
@@ -134,7 +132,7 @@
         : "") +
       "</tbody></table>" +
       (tramite.documentos && tramite.documentos.length
-        ? "<p><strong>Documentación declarada / adjuntada:</strong></p><ul>" +
+        ? "<p><strong>Documentación del trámite:</strong></p><ul>" +
           docsList(tramite.documentos, opts.adjuntos) +
           "</ul>"
         : "") +
