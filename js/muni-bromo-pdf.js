@@ -115,11 +115,20 @@
 
   function firmasDefaultHtml(solicitante) {
     return (
-      '<div class="firma"><div class="box">Solicitante<br>' +
+      '<div class="firma">' +
+      '<div class="box">' +
+      '<div class="espacio-firma"></div>' +
+      '<div class="line"></div>' +
+      "<strong>Solicitante</strong><br>" +
       escapeHtml(solicitante.nombre) +
       "<br>DNI " +
       escapeHtml(solicitante.dni) +
-      '</div><div class="box">Inspección Bromatología<br>(uso interno)</div></div>'
+      "</div>" +
+      '<div class="box">' +
+      '<div class="espacio-firma"></div>' +
+      '<div class="line"></div>' +
+      "<strong>Inspección Bromatología</strong><br>(uso interno)" +
+      "</div></div>"
     );
   }
 
@@ -187,13 +196,14 @@
       "ul{margin:4px 0 10px;padding-left:1.2rem}li{margin:2px 0;font-size:10.5pt}" +
       ".decl{border:1px solid #bcd;background:#f7fbfd;padding:8px 10px;margin:10px 0;font-size:10pt}" +
       ".instruccion{border:1px solid #c9a227;background:#fff8e6;padding:8px 10px;margin:10px 0;font-size:10pt}" +
-      ".firma{margin-top:22px;display:flex;justify-content:space-between;gap:20px}" +
-      ".firma .box{flex:1;text-align:center;padding-top:32px;border-top:1px solid #333;font-size:10pt}" +
-      ".firma-sol{margin-top:20px;padding-top:14px;border-top:2px solid #0d7aa8}" +
-      ".firma-sol .firma-lineas{display:grid;gap:10px;margin-top:6px;font-size:10.5pt}" +
+      ".firma{margin-top:28px;display:flex;justify-content:space-between;gap:28px;page-break-inside:avoid;break-inside:avoid}" +
+      ".firma .box{flex:1;text-align:center;font-size:10pt;border-top:none;padding-top:0}" +
+      ".firma .line{border-top:1px solid #333;margin:0 10px 8px}" +
       ".espacio-firma{min-height:52px;height:52px}" +
       ".espacio-firma--pase{min-height:64px;height:64px}" +
       ".espacio-firma--bromo{min-height:56px;height:56px}" +
+      ".firma-sol{margin-top:20px;padding-top:14px;border-top:2px solid #0d7aa8}" +
+      ".firma-sol .firma-lineas{display:grid;gap:10px;margin-top:6px;font-size:10.5pt}" +
       ".pase{margin-top:22px;padding-top:14px;border-top:3px solid #0d7aa8}" +
       ".pase-titulo{text-align:center;font-weight:700;font-style:italic;text-decoration:underline;letter-spacing:.08em;margin:4px 0 12px}" +
       ".firma-pase{margin-top:8px;text-align:right;font-size:10pt}" +
@@ -203,7 +213,7 @@
       ".firma-bromo-grid>div{flex:1;text-align:center}" +
       ".firma-bromo-grid .line{border-top:1px solid #333;margin:0 8px 8px}" +
       ".foot{margin-top:20px;font-size:8.5pt;color:#666;border-top:1px solid #ddd;padding-top:8px}" +
-      "@media print{.no-print{display:none!important}body{background:#fff}.pase,.auth-bromo,.firma-sol{break-inside:avoid}}" +
+      "@media print{.no-print{display:none!important}body{background:#fff}.pase,.auth-bromo,.firma-sol,.firma{break-inside:avoid;page-break-inside:avoid}.firma{padding-top:8mm}}" +
       "</style></head><body><div class='sheet'>" +
       '<header class="membrete">' +
       '<img src="' +
