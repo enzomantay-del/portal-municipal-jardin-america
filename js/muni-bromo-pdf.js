@@ -63,6 +63,7 @@
     return (
       '<div class="firma-sol">' +
       "<p><strong>1. Firma del solicitante</strong></p>" +
+      '<div class="espacio-firma"></div>' +
       '<div class="firma-lineas">' +
       "<div>Firma y aclaración: _________________________________</div>" +
       "<div>D.N.I.: " +
@@ -92,6 +93,7 @@
       escapeHtml(solicitante.nombre || "........................................................") +
       "</strong>, " +
       "para su conocimiento y se realiza la devolución de la presente. Saludos a Ud., muy atte.</p>" +
+      '<div class="espacio-firma espacio-firma--pase"></div>' +
       '<div class="firma-pase">' +
       "<div>_________________________________</div>" +
       "<div>Firma y sello — División Policía Adicional UR IX</div>" +
@@ -105,8 +107,8 @@
       "<p><strong>3. Autorización de Bromatología</strong> (después de la firma policial)</p>" +
       "<p>Con la autorización de Policía Adicional, el área de Bromatología de la Municipalidad de Jardín América deja constancia de la intervención en el presente pedido de evento público.</p>" +
       '<div class="firma-bromo-grid">' +
-      "<div><div class='line'></div>Firma y sello — Bromatología</div>" +
-      "<div><div class='line'></div>Fecha / observaciones</div>" +
+      "<div><div class='espacio-firma espacio-firma--bromo'></div><div class='line'></div>Firma y sello — Bromatología</div>" +
+      "<div><div class='espacio-firma espacio-firma--bromo'></div><div class='line'></div>Fecha / observaciones</div>" +
       "</div></section>"
     );
   }
@@ -177,17 +179,20 @@
       ".instruccion{border:1px solid #c9a227;background:#fff8e6;padding:8px 10px;margin:10px 0;font-size:10pt}" +
       ".firma{margin-top:22px;display:flex;justify-content:space-between;gap:20px}" +
       ".firma .box{flex:1;text-align:center;padding-top:32px;border-top:1px solid #333;font-size:10pt}" +
-      ".firma-sol{margin-top:16px;padding-top:10px;border-top:2px solid #0d7aa8}" +
-      ".firma-sol .firma-lineas{display:grid;gap:6px;margin-top:8px;font-size:10.5pt}" +
-      ".pase{margin-top:16px;padding-top:10px;border-top:3px solid #0d7aa8}" +
-      ".pase-titulo{text-align:center;font-weight:700;font-style:italic;text-decoration:underline;letter-spacing:.08em;margin:4px 0 10px}" +
-      ".firma-pase{margin-top:28px;text-align:right;font-size:10pt}" +
-      ".firma-pase div:first-child{margin-bottom:4px}" +
-      ".auth-bromo{margin-top:16px;padding-top:10px;border-top:2px solid #0d7aa8}" +
-      ".firma-bromo-grid{display:flex;gap:24px;margin-top:28px;font-size:10pt}" +
+      ".firma-sol{margin-top:20px;padding-top:14px;border-top:2px solid #0d7aa8}" +
+      ".firma-sol .firma-lineas{display:grid;gap:10px;margin-top:6px;font-size:10.5pt}" +
+      ".espacio-firma{min-height:52px;height:52px}" +
+      ".espacio-firma--pase{min-height:64px;height:64px}" +
+      ".espacio-firma--bromo{min-height:56px;height:56px}" +
+      ".pase{margin-top:22px;padding-top:14px;border-top:3px solid #0d7aa8}" +
+      ".pase-titulo{text-align:center;font-weight:700;font-style:italic;text-decoration:underline;letter-spacing:.08em;margin:4px 0 12px}" +
+      ".firma-pase{margin-top:8px;text-align:right;font-size:10pt}" +
+      ".firma-pase div:first-child{margin-bottom:6px}" +
+      ".auth-bromo{margin-top:22px;padding-top:14px;border-top:2px solid #0d7aa8}" +
+      ".firma-bromo-grid{display:flex;gap:28px;margin-top:8px;font-size:10pt}" +
       ".firma-bromo-grid>div{flex:1;text-align:center}" +
-      ".firma-bromo-grid .line{border-top:1px solid #333;margin:0 8px 6px;height:0;padding-top:36px}" +
-      ".foot{margin-top:16px;font-size:8.5pt;color:#666;border-top:1px solid #ddd;padding-top:6px}" +
+      ".firma-bromo-grid .line{border-top:1px solid #333;margin:0 8px 8px}" +
+      ".foot{margin-top:20px;font-size:8.5pt;color:#666;border-top:1px solid #ddd;padding-top:8px}" +
       "@media print{.no-print{display:none!important}body{background:#fff}.pase,.auth-bromo,.firma-sol{break-inside:avoid}}" +
       "</style></head><body><div class='sheet'>" +
       '<header class="membrete">' +
