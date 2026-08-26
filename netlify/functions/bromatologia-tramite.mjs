@@ -181,6 +181,7 @@ export default async function handler(req) {
       });
     } catch (upErr) {
       console.error("bromo upload", upErr);
+      var detail = String((upErr && upErr.message) || upErr || "").slice(0, 160);
       return jsonResponse(
         502,
         {
@@ -188,7 +189,8 @@ export default async function handler(req) {
           error:
             "No se pudo guardar el archivo «" +
             nombre +
-            "». Probá de nuevo o con un archivo más liviano.",
+            "». " +
+            (detail ? "Detalle técnico: " + detail : "Probá de nuevo en unos minutos."),
         },
         corsHeaders(origin)
       );

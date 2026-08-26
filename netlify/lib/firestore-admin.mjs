@@ -76,66 +76,90 @@ export async function getAccessToken() {
 }
 
 export function getStorageBucket() {
-  return (
-    process.env.FIREBASE_STORAGE_BUCKET ||
-    process.env.STORAGE_BUCKET ||
-    PROJECT_ID + ".appspot.com"
-  );
+  if (process.env.FIREBASE_STORAGE_BUCKET || process.env.STORAGE_BUCKET) {
+    return process.env.FIREBASE_STORAGE_BUCKET || process.env.STORAGE_BUCKET;
+  }
+  // Proyectos Firebase nuevos usan *.firebasestorage.app (no *.appspot.com).
+  return PROJECT_ID + ".firebasestorage.app";
+}
+
+function candidateStorageBuckets() {
+  var primary = getStorageBucket();
+  var list = [primary];
+  var altAppspot = PROJECT_ID + ".appspot.com";
+  var altFs = PROJECT_ID + ".firebasestorage.app";
+  if (list.indexOf(altFs) === -1) list.push(altFs);
+  if (list.indexOf(altAppspot) === -1) list.push(altAppspot);
+  return list;
 }
 
 /** Sube bytes (Buffer) a Firebase Storage y devuelve URL de descarga con token. */
 export async function uploadBytesToStorage(objectPath, buffer, contentType) {
-  var bucket = getStorageBucket();
   var token = await getAccessTokenForScope(
     "https://www.googleapis.com/auth/devstorage.read_write https://www.googleapis.com/auth/cloud-platform"
   );
   var downloadToken = crypto.randomBytes(16).toString("hex");
-  var uploadUrl =
-    "https://storage.googleapis.com/upload/storage/v1/b/" +
-    encodeURIComponent(bucket) +
-    "/o?uploadType=media&name=" +
-    encodeURIComponent(objectPath);
+  var lastErr = null;
+  var buckets = candidateStorageBuckets();
 
-  var res = await fetch(uploadUrl, {
-    method: "POST",
-    headers: {
-      Authorization: "Bearer " + token,
-      "Content-Type": contentType || "application/octet-stream",
-    },
-    body: buffer,
-  });
+  for (var b = 0; b < buckets.length; b++) {
+    var bucket = buckets[b];
+    try {
+      var uploadUrl =
+        "https://storage.googleapis.com/upload/storage/v1/b/" +
+        encodeURIComponent(bucket) +
+        "/o?uploadType=media&name=" +
+        encodeURIComponent(objectPath);
 
-  if (!res.ok) {
-    var errText = await res.text();
-    throw new Error("Storage upload " + res.status + ": " + errText.slice(0, 220));
+      var res = await fetch(uploadUrl, {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + token,
+          "Content-Type": contentType || "application/octet-stream",
+        },
+        body: buffer,
+      });
+
+      if (!res.ok) {
+        var errText = await res.text();
+        lastErr = new Error("Storage upload " + res.status + " (" + bucket + "): " + errText.slice(0, 220));
+        // Bucket inexistente / mal nombre → probar el siguiente
+        if (res.status === 404 || res.status === 400) continue;
+        throw lastErr;
+      }
+
+      var patchUrl =
+        "https://storage.googleapis.com/storage/v1/b/" +
+        encodeURIComponent(bucket) +
+        "/o/" +
+        encodeURIComponent(objectPath) +
+        "?fields=name,metadata";
+
+      await fetch(patchUrl, {
+        method: "PATCH",
+        headers: {
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          metadata: { firebaseStorageDownloadTokens: downloadToken },
+        }),
+      });
+
+      return (
+        "https://firebasestorage.googleapis.com/v0/b/" +
+        encodeURIComponent(bucket) +
+        "/o/" +
+        encodeURIComponent(objectPath) +
+        "?alt=media&token=" +
+        encodeURIComponent(downloadToken)
+      );
+    } catch (err) {
+      lastErr = err;
+    }
   }
 
-  var patchUrl =
-    "https://storage.googleapis.com/storage/v1/b/" +
-    encodeURIComponent(bucket) +
-    "/o/" +
-    encodeURIComponent(objectPath) +
-    "?fields=name,metadata";
-
-  await fetch(patchUrl, {
-    method: "PATCH",
-    headers: {
-      Authorization: "Bearer " + token,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      metadata: { firebaseStorageDownloadTokens: downloadToken },
-    }),
-  });
-
-  return (
-    "https://firebasestorage.googleapis.com/v0/b/" +
-    encodeURIComponent(bucket) +
-    "/o/" +
-    encodeURIComponent(objectPath) +
-    "?alt=media&token=" +
-    encodeURIComponent(downloadToken)
-  );
+  throw lastErr || new Error("No se pudo subir el archivo a Storage.");
 }
 
 function docPath(collection, docId) {
