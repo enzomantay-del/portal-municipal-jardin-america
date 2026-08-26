@@ -59,6 +59,68 @@
       .join("");
   }
 
+  function firmaSolicitanteHtml(solicitante, valores) {
+    return (
+      '<div class="firma-sol">' +
+      "<p><strong>1. Firma del solicitante</strong></p>" +
+      '<div class="firma-lineas">' +
+      "<div>Firma y aclaración: _________________________________</div>" +
+      "<div>D.N.I.: " +
+      escapeHtml(solicitante.dni || "____________________") +
+      "</div>" +
+      "<div>TEL.: " +
+      escapeHtml(solicitante.telefono || "____________________") +
+      "</div>" +
+      "<div>Domicilio: " +
+      escapeHtml((valores && valores.domicilio) || solicitante.domicilio || "_________________________________") +
+      "</div>" +
+      "<div>Apellido y nombre: " +
+      escapeHtml(solicitante.nombre || "") +
+      "</div>" +
+      "</div></div>"
+    );
+  }
+
+  function pasePoliciaHtml(solicitante) {
+    return (
+      '<section class="pase">' +
+      '<p class="pase-titulo">*** PASE ***</p>' +
+      "<p><strong>2. Autorización policial</strong> (completar en Policía Adicional UR IX)</p>" +
+      "<p>Al Sr. Jefe de la División Policía Adicional UR IX de la Ciudad de Jardín América<br>S / D</p>" +
+      "<p>Tengo el agrado de dirigirme a Ud. enviando la solicitud de evento presentada por: " +
+      "<strong>" +
+      escapeHtml(solicitante.nombre || "........................................................") +
+      "</strong>, " +
+      "para su conocimiento y se realiza la devolución de la presente. Saludos a Ud., muy atte.</p>" +
+      '<div class="firma-pase">' +
+      "<div>_________________________________</div>" +
+      "<div>Firma y sello — División Policía Adicional UR IX</div>" +
+      "</div></section>"
+    );
+  }
+
+  function authBromatoHtml() {
+    return (
+      '<section class="auth-bromo">' +
+      "<p><strong>3. Autorización de Bromatología</strong> (después de la firma policial)</p>" +
+      "<p>Con la autorización de Policía Adicional, el área de Bromatología de la Municipalidad de Jardín América deja constancia de la intervención en el presente pedido de evento público.</p>" +
+      '<div class="firma-bromo-grid">' +
+      "<div><div class='line'></div>Firma y sello — Bromatología</div>" +
+      "<div><div class='line'></div>Fecha / observaciones</div>" +
+      "</div></section>"
+    );
+  }
+
+  function firmasDefaultHtml(solicitante) {
+    return (
+      '<div class="firma"><div class="box">Solicitante<br>' +
+      escapeHtml(solicitante.nombre) +
+      "<br>DNI " +
+      escapeHtml(solicitante.dni) +
+      '</div><div class="box">Inspección Bromatología<br>(uso interno)</div></div>'
+    );
+  }
+
   function buildLetterHtml(opts) {
     opts = opts || {};
     var tramite = opts.tramite || {};
@@ -66,10 +128,33 @@
     var valores = opts.valores || {};
     var numero = opts.numero || "";
     var createdAt = opts.createdAt || new Date().toISOString();
-    var intendente = (window.MuniBromoTramitesData && window.MuniBromoTramitesData.INTENDENTE) ||
+    var intendente =
+      (window.MuniBromoTramitesData && window.MuniBromoTramitesData.INTENDENTE) ||
       "MMO. César Daniel Araujo";
-
+    var isEvento = tramite.id === "evento-publico";
     var logoSrc = opts.logoSrc || "assets/logo-municipalidad.png";
+
+    var firmasBlock = isEvento
+      ? firmaSolicitanteHtml(solicitante, valores) +
+        pasePoliciaHtml(solicitante) +
+        authBromatoHtml()
+      : firmasDefaultHtml(solicitante);
+
+    var declText = isEvento
+      ? "Declaro bajo juramento que los datos y documentos presentados son verdaderos. " +
+        "Debo imprimir esta nota, firmarla y llevarla primero a Policía Adicional UR IX para su autorización; " +
+        "luego, con esa firma, presentarla en Bromatología para la autorización del área."
+      : "Declaro bajo juramento que los datos y documentos presentados son verdaderos. " +
+        "Esta solicitud digital inicia el trámite; la inspección, el pago y eventuales firmas o sellos se completan según indique Bromatología.";
+
+    var instruccionEvento = isEvento
+      ? '<div class="instruccion">' +
+        "<strong>Instrucciones para el solicitante:</strong> " +
+        "1) Imprimí y firmá esta solicitud. " +
+        "2) Llevala a Policía Adicional UR IX para firma y autorización (bloque PASE). " +
+        "3) Con la autorización policial, presentala en la oficina de Bromatología." +
+        "</div>"
+      : "";
 
     return (
       '<!doctype html><html lang="es"><head><meta charset="UTF-8">' +
@@ -77,22 +162,33 @@
       escapeHtml(numero) +
       "</title>" +
       "<style>" +
-      "@page{margin:18mm}body{font-family:Georgia,'Times New Roman',serif;color:#1a1a1a;margin:0;padding:0;font-size:12pt;line-height:1.45}" +
-      ".sheet{max-width:780px;margin:0 auto;padding:12px 8px 24px}" +
-      ".membrete{display:flex;gap:14px;align-items:center;border-bottom:2px solid #0d7aa8;padding-bottom:12px;margin-bottom:18px}" +
-      ".membrete img{width:72px;height:auto}" +
-      ".membrete h1{margin:0;font-size:15pt;color:#0d3d56}" +
-      ".membrete p{margin:2px 0 0;font-size:9.5pt;color:#445}" +
-      ".meta{font-size:10pt;color:#555;margin:0 0 14px}" +
-      "h2{font-size:13pt;margin:0 0 10px;text-align:center;text-transform:uppercase;letter-spacing:.04em}" +
-      ".dest{margin:0 0 12px}.dest strong{display:block}" +
-      "table{width:100%;border-collapse:collapse;margin:10px 0 14px}th,td{border:1px solid #ccd;padding:6px 8px;text-align:left;vertical-align:top}th{width:38%;background:#f3f7fa;font-weight:600}" +
-      "ul{margin:6px 0 14px;padding-left:1.2rem}li{margin:3px 0}" +
-      ".decl{border:1px solid #bcd;background:#f7fbfd;padding:10px 12px;margin:14px 0;font-size:10.5pt}" +
-      ".firma{margin-top:28px;display:flex;justify-content:space-between;gap:20px}" +
-      ".firma .box{flex:1;text-align:center;padding-top:36px;border-top:1px solid #333;font-size:10pt}" +
-      ".foot{margin-top:22px;font-size:9pt;color:#666;border-top:1px solid #ddd;padding-top:8px}" +
-      "@media print{.no-print{display:none!important}body{background:#fff}}" +
+      "@page{margin:14mm}body{font-family:Georgia,'Times New Roman',serif;color:#1a1a1a;margin:0;padding:0;font-size:11.5pt;line-height:1.4}" +
+      ".sheet{max-width:780px;margin:0 auto;padding:8px 6px 18px}" +
+      ".membrete{display:flex;gap:14px;align-items:center;border-bottom:2px solid #0d7aa8;padding-bottom:10px;margin-bottom:14px}" +
+      ".membrete img{width:68px;height:auto}" +
+      ".membrete h1{margin:0;font-size:14pt;color:#0d3d56}" +
+      ".membrete p{margin:2px 0 0;font-size:9pt;color:#445}" +
+      ".meta{font-size:9.5pt;color:#555;margin:0 0 10px}" +
+      "h2{font-size:12.5pt;margin:0 0 8px;text-align:center;text-transform:uppercase;letter-spacing:.04em}" +
+      ".dest{margin:0 0 10px}.dest strong{display:block}" +
+      "table{width:100%;border-collapse:collapse;margin:8px 0 10px}th,td{border:1px solid #ccd;padding:5px 7px;text-align:left;vertical-align:top;font-size:10.5pt}th{width:38%;background:#f3f7fa;font-weight:600}" +
+      "ul{margin:4px 0 10px;padding-left:1.2rem}li{margin:2px 0;font-size:10.5pt}" +
+      ".decl{border:1px solid #bcd;background:#f7fbfd;padding:8px 10px;margin:10px 0;font-size:10pt}" +
+      ".instruccion{border:1px solid #c9a227;background:#fff8e6;padding:8px 10px;margin:10px 0;font-size:10pt}" +
+      ".firma{margin-top:22px;display:flex;justify-content:space-between;gap:20px}" +
+      ".firma .box{flex:1;text-align:center;padding-top:32px;border-top:1px solid #333;font-size:10pt}" +
+      ".firma-sol{margin-top:16px;padding-top:10px;border-top:2px solid #0d7aa8}" +
+      ".firma-sol .firma-lineas{display:grid;gap:6px;margin-top:8px;font-size:10.5pt}" +
+      ".pase{margin-top:16px;padding-top:10px;border-top:3px solid #0d7aa8}" +
+      ".pase-titulo{text-align:center;font-weight:700;font-style:italic;text-decoration:underline;letter-spacing:.08em;margin:4px 0 10px}" +
+      ".firma-pase{margin-top:28px;text-align:right;font-size:10pt}" +
+      ".firma-pase div:first-child{margin-bottom:4px}" +
+      ".auth-bromo{margin-top:16px;padding-top:10px;border-top:2px solid #0d7aa8}" +
+      ".firma-bromo-grid{display:flex;gap:24px;margin-top:28px;font-size:10pt}" +
+      ".firma-bromo-grid>div{flex:1;text-align:center}" +
+      ".firma-bromo-grid .line{border-top:1px solid #333;margin:0 8px 6px;height:0;padding-top:36px}" +
+      ".foot{margin-top:16px;font-size:8.5pt;color:#666;border-top:1px solid #ddd;padding-top:6px}" +
+      "@media print{.no-print{display:none!important}body{background:#fff}.pase,.auth-bromo,.firma-sol{break-inside:avoid}}" +
       "</style></head><body><div class='sheet'>" +
       '<header class="membrete">' +
       '<img src="' +
@@ -101,6 +197,7 @@
       "<div><h1>Municipalidad de Jardín América</h1>" +
       "<p>Provincia de Misiones · República Argentina</p>" +
       "<p>Área de Bromatología · Portal municipal</p>" +
+      "<p>Av. Libertad N° 24 · Tel: (03743) 460101 · C.P. 3328</p>" +
       "</div></header>" +
       '<p class="meta">Solicitud N° <strong>' +
       escapeHtml(numero) +
@@ -136,14 +233,16 @@
           docsList(tramite.documentos, opts.adjuntos) +
           "</ul>"
         : "") +
-      '<div class="decl">Declaro bajo juramento que los datos y documentos presentados son verdaderos. ' +
-      "Esta solicitud digital inicia el trámite; la inspección, el pago y eventuales firmas o sellos se completan según indique Bromatología.</div>" +
-      '<div class="firma"><div class="box">Solicitante<br>' +
-      escapeHtml(solicitante.nombre) +
-      "<br>DNI " +
-      escapeHtml(solicitante.dni) +
-      '</div><div class="box">Inspección Bromatología<br>(uso interno)</div></div>' +
-      '<p class="foot">Generado desde jardinamerica.gob.ar · Conservar copia impresa para el expediente.</p>' +
+      '<div class="decl">' +
+      escapeHtml(declText) +
+      "</div>" +
+      instruccionEvento +
+      firmasBlock +
+      '<p class="foot">Generado desde jardinamerica.gob.ar · Conservar copia impresa para el expediente.' +
+      (isEvento
+        ? " Orden de firmas: 1) Solicitante · 2) Policía Adicional UR IX · 3) Bromatología."
+        : "") +
+      "</p>" +
       "</div>" +
       '<p class="no-print" style="text-align:center;margin:16px"><button onclick="window.print()" style="padding:10px 18px;font-size:14px">Imprimir / Guardar como PDF</button></p>' +
       "</body></html>"

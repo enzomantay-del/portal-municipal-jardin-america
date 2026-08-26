@@ -468,7 +468,7 @@
       resumen: "Pedí autorización online para realizar un evento público en la ciudad.",
       detalleHtml:
         "<p>Completá organizador, tipo de evento, lugar y horarios. Podés adjuntar contratos si los tenés.</p>" +
-        "<p>Después del envío, Policía Adicional y Bomberos intervienen aparte (no se reemplazan por el sitio).</p>",
+        "<p><strong>Después de imprimir la nota:</strong> llevála primero a Policía Adicional UR IX para firma y autorización. Con esa autorización, presentala en Bromatología para el sello final del área.</p>",
       enlaces: [
         {
           titulo: "Iniciar autorización de evento",

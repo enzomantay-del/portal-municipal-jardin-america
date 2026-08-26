@@ -389,6 +389,16 @@
   }
 
   function renderExito(result) {
+    var esEvento = result.tramite && result.tramite.id === "evento-publico";
+    var instrucciones = esEvento
+      ? "<p><strong>Importante — qué hacer ahora:</strong></p>" +
+        "<ol class='bromo-exito-pasos'>" +
+        "<li>Imprimí la nota PDF y firmala vos (solicitante).</li>" +
+        "<li>Llevala primero a <strong>Policía Adicional UR IX</strong> para que firme y autorice el bloque PASE.</li>" +
+        "<li>Con la autorización policial, presentala en la <strong>oficina de Bromatología</strong> para la autorización final.</li>" +
+        "</ol>"
+      : "<p>Guardá este número. Podés imprimir o guardar en PDF la nota con membrete municipal.</p>";
+
     root.innerHTML =
       '<section class="bromo-exito">' +
       "<h1>Solicitud enviada</h1>" +
@@ -396,7 +406,7 @@
       '<p class="bromo-numero">Número: <strong>' +
       escapeHtml(result.numero) +
       "</strong></p>" +
-      "<p>Guardá este número. Podés imprimir o guardar en PDF la nota con membrete municipal.</p>" +
+      instrucciones +
       '<div class="bromo-exito-actions">' +
       '<button type="button" class="muni-btn muni-btn--primary" id="bromo-print">Imprimir / Guardar PDF</button>' +
       '<button type="button" class="muni-btn muni-btn--ghost" data-bromo-back>Volver a trámites</button>' +

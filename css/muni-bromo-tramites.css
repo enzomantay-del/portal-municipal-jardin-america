@@ -318,6 +318,16 @@
   margin-top: 1rem;
 }
 
+.bromo-exito-pasos {
+  margin: 0.75rem 0 0;
+  padding-left: 1.25rem;
+  line-height: 1.55;
+}
+
+.bromo-exito-pasos li {
+  margin: 0.35rem 0;
+}
+
 @media (max-width: 640px) {
   .bromo-card {
     flex-direction: column;

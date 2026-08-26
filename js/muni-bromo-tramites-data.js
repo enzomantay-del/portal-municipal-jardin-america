@@ -101,7 +101,8 @@
         "Completá organizador, tipo de evento, lugar y horarios.",
         "Si tenés contratos u otra documentación, podés adjuntarla; si no, quedará pendiente de entrega.",
         "Enviá la solicitud e imprimí la nota.",
-        "Policía Adicional y Bomberos intervienen después (no se reemplazan por el sitio).",
+        "Llevá la nota impresa primero a Policía Adicional UR IX para que firme y autorice (bloque PASE).",
+        "Con la firma de Policía, presentala en Bromatología para la autorización final del área.",
       ],
       campos: [
         { name: "organizador", label: "Organizador", type: "text", required: true, maxlength: 160 },
@@ -118,9 +119,9 @@
         { key: "contratoAnimador", label: "Contrato con el grupo animador" },
       ],
       notaIntro:
-        "Solicito autorización para la realización de un evento público según el siguiente detalle. Se deja establecido que se deslinda de responsabilidad civil y/o penal a la Municipalidad de Jardín América por cualquier accidente o siniestro con ocasión del evento.",
+        "Tengo el agrado de dirigirme a Ud. a efectos de solicitar autorización para la realización de un evento público según el siguiente detalle. Se deja establecido que se deslinda de responsabilidad civil y/o penal a la Municipalidad de Jardín América por cualquier accidente o siniestro con ocasión del evento.",
       avisoExtra:
-        "Después del envío, el expediente debe pasar por Policía Adicional UR IX y Bomberos (protección contra incendios). El sitio inicia el pedido; esos sellos se gestionan aparte.",
+        "Importante: una vez generada e impresa la solicitud, debés llevarla primero a Policía Adicional UR IX para que firme y autorice. Recién con esa autorización policial te dirigís a la oficina de Bromatología para ser autorizado por dicho sector. El orden de firmas es: 1) Solicitante · 2) Policía · 3) Bromatología.",
     },
     {
       id: "transporte-alimentos",
