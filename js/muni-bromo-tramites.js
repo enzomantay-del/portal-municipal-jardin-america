@@ -2,6 +2,9 @@
   "use strict";
 
   var API_URL = "/.netlify/functions/bromatologia-tramite";
+  // Fotos de celular suelen pesar 3–12 MB; se comprimen antes de enviar.
+  var MAX_FILE_RAW_BYTES = 25 * 1024 * 1024; // 25 MB al elegir el archivo
+  var MAX_FILE_UPLOAD_BYTES = 4 * 1024 * 1024; // 4 MB ya procesado (foto o PDF)
   var root = document.getElementById("bromo-tramites-root");
   var state = {
     view: "lista",
@@ -40,24 +43,51 @@
 
   async function prepareFile(file) {
     if (!file) return null;
+
+    if (file.size > MAX_FILE_RAW_BYTES) {
+      throw new Error(
+        "«" + file.name + "» es demasiado grande (máximo 25 MB). Sacá otra foto o usá un PDF más liviano."
+      );
+    }
+
     var out = file;
-    if (window.MuniImageCompress && file.type && file.type.indexOf("image/") === 0) {
+    var isImage = file.type && file.type.indexOf("image/") === 0;
+
+    if (isImage && window.MuniImageCompress) {
       try {
         out = await window.MuniImageCompress.compressImageFile(file, {
-          maxWidth: 1400,
-          maxHeight: 1400,
-          maxBytes: 220000,
+          maxWidth: 1600,
+          maxHeight: 1600,
+          maxBytes: 480000,
+          minQuality: 0.45,
         });
       } catch (_e) {
         out = file;
       }
+      // Segunda pasada más agresiva si sigue pesado (DNI / fotos de celular)
+      if (out.size > 900000 && window.MuniImageCompress) {
+        try {
+          out = await window.MuniImageCompress.compressImageFile(out, {
+            maxWidth: 1200,
+            maxHeight: 1200,
+            maxBytes: 350000,
+            minQuality: 0.35,
+          });
+        } catch (_e2) {}
+      }
     }
-    if (out.size > 1500000) {
-      throw new Error("«" + file.name + "» es muy pesado. Usá una imagen más chica o un PDF liviano.");
+
+    if (out.size > MAX_FILE_UPLOAD_BYTES) {
+      throw new Error(
+        "«" +
+          file.name +
+          "» sigue siendo muy pesado después de comprimir (máximo 4 MB). Probá un PDF más chico o una foto con menos resolución."
+      );
     }
+
     var dataUrl = await fileToDataUrl(out);
     return {
-      nombre: file.name,
+      nombre: isImage && out.name ? out.name : file.name,
       contentType: out.type || file.type || "application/octet-stream",
       dataUrl: dataUrl,
       size: out.size,
@@ -234,7 +264,7 @@
       '<h2 class="muni-field--full bromo-form-section">2. Datos del trámite</h2>' +
       camposHtml +
       '<h2 class="muni-field--full bromo-form-section">3. Documentación</h2>' +
-      '<p class="muni-field--full muni-field-hint">Podés adjuntar fotos o PDF ahora. Lo que no subas figurará en la nota como pendiente de entrega; lo que subas, como entregado (en revisión).</p>' +
+      '<p class="muni-field--full muni-field-hint">Podés adjuntar fotos o PDF (hasta 25 MB por archivo). Las fotos se comprimen solas al enviar. Lo que no subas figurará como pendiente de entrega; lo que subas, como entregado (en revisión).</p>' +
       docsHtml +
       '<div class="muni-field muni-field--full"><label class="muni-check-row">' +
       '<input type="checkbox" id="sol-decl" name="declaracion" value="1" required>' +

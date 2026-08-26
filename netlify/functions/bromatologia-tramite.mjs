@@ -138,7 +138,7 @@ export default async function handler(req) {
     var nombre = sanitizeText(item.nombre, 160) || key || "archivo";
     var parsed = parseDataUrl(item.dataUrl);
     if (!key || !parsed) continue;
-    if (parsed.base64.length > 2_200_000) {
+    if (parsed.base64.length > 5_500_000) {
       return jsonResponse(
         400,
         {
@@ -146,17 +146,20 @@ export default async function handler(req) {
           error:
             "El archivo «" +
             nombre +
-            "» es demasiado pesado. Subí una foto más liviana o un PDF más chico.",
+            "» es demasiado pesado. Subí una foto más liviana o un PDF más chico (máximo 4 MB).",
         },
         corsHeaders(origin)
       );
     }
     try {
       var buffer = Buffer.from(parsed.base64, "base64");
-      if (buffer.length > 1_600_000) {
+      if (buffer.length > 4_000_000) {
         return jsonResponse(
           400,
-          { ok: false, error: "El archivo «" + nombre + "» supera el tamaño permitido." },
+          {
+            ok: false,
+            error: "El archivo «" + nombre + "» supera el tamaño permitido (máximo 4 MB).",
+          },
           corsHeaders(origin)
         );
       }
