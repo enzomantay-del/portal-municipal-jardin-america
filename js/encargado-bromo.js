@@ -209,17 +209,68 @@
       })
       .join("");
 
-    var adjuntosHtml = (d.adjuntos || [])
-      .map(function (a) {
-        return (
-          "<li><a href=\"" +
-          escapeHtml(a.url || "#") +
-          '" target="_blank" rel="noopener">' +
-          escapeHtml(a.nombre || a.key) +
-          "</a></li>"
+    var docsMeta = (meta && meta.documentos) || [];
+    var adjuntosByKey = {};
+    (d.adjuntos || []).forEach(function (a) {
+      if (a && a.key) adjuntosByKey[a.key] = a;
+    });
+
+    function docLabelForKey(key) {
+      for (var i = 0; i < docsMeta.length; i++) {
+        if (docsMeta[i].key === key) return docsMeta[i].label;
+      }
+      return key || "Documento";
+    }
+
+    var adjuntosParts = [];
+    var seenKeys = {};
+
+    docsMeta.forEach(function (doc) {
+      seenKeys[doc.key] = true;
+      var a = adjuntosByKey[doc.key];
+      if (a && a.url) {
+        adjuntosParts.push(
+          '<li class="bromo-enc-doc">' +
+            '<span class="bromo-enc-doc-tipo">' +
+            escapeHtml(doc.label) +
+            "</span>" +
+            '<a href="' +
+            escapeHtml(a.url) +
+            '" target="_blank" rel="noopener">' +
+            escapeHtml(a.nombre || "Ver archivo") +
+            "</a></li>"
         );
-      })
-      .join("");
+      } else {
+        adjuntosParts.push(
+          '<li class="bromo-enc-doc bromo-enc-doc--pendiente">' +
+            '<span class="bromo-enc-doc-tipo">' +
+            escapeHtml(doc.label) +
+            "</span>" +
+            '<span class="bromo-enc-doc-estado">Pendiente de entrega</span></li>'
+        );
+      }
+    });
+
+    (d.adjuntos || []).forEach(function (a) {
+      if (!a || !a.key || seenKeys[a.key]) return;
+      seenKeys[a.key] = true;
+      adjuntosParts.push(
+        '<li class="bromo-enc-doc">' +
+          '<span class="bromo-enc-doc-tipo">' +
+          escapeHtml(docLabelForKey(a.key)) +
+          "</span>" +
+          (a.url
+            ? '<a href="' +
+              escapeHtml(a.url) +
+              '" target="_blank" rel="noopener">' +
+              escapeHtml(a.nombre || "Ver archivo") +
+              "</a>"
+            : "<span>" + escapeHtml(a.nombre || a.key) + "</span>") +
+          "</li>"
+      );
+    });
+
+    var adjuntosHtml = adjuntosParts.join("");
 
     var estadoOptions = ESTADOS.map(function (e) {
       return (
@@ -270,7 +321,7 @@
       "</section>" +
       "<section><h4>Documentos adjuntos</h4>" +
       (adjuntosHtml
-        ? "<ul>" + adjuntosHtml + "</ul>"
+        ? '<ul class="bromo-enc-docs">' + adjuntosHtml + "</ul>"
         : "<p class=\"muni-field-hint\">No adjuntaron archivos.</p>") +
       "</section>" +
       "</div>" +
