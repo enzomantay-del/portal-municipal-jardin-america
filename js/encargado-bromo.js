@@ -326,7 +326,7 @@
       adjuntos: d.adjuntos || [],
       numero: d.numero,
       createdAt: d.createdAt,
-      logoSrc: new URL("assets/logo-municipalidad.png", window.location.href).href,
+      logoSrc: new URL("assets/membrete-municipalidad.png", window.location.href).href,
     });
     window.MuniBromoPdf.openPrintWindow(html);
   }
