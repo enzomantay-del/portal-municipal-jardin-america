@@ -123,6 +123,15 @@
     );
   }
 
+  function resolveMembreteSrc(opts) {
+    if (opts && opts.logoSrc) return opts.logoSrc;
+    try {
+      return new URL("assets/membrete-municipalidad.png", window.location.href).href;
+    } catch (_e) {
+      return "assets/membrete-municipalidad.png";
+    }
+  }
+
   function buildLetterHtml(opts) {
     opts = opts || {};
     var tramite = opts.tramite || {};
@@ -134,7 +143,8 @@
       (window.MuniBromoTramitesData && window.MuniBromoTramitesData.INTENDENTE) ||
       "MMO. César Daniel Araujo";
     var isEvento = tramite.id === "evento-publico";
-    var logoSrc = opts.logoSrc || "assets/membrete-municipalidad.png";
+    // Mismo membrete oficial para TODOS los trámites (habilitación, evento, transporte, etc.)
+    var logoSrc = resolveMembreteSrc(opts);
 
     var firmasBlock = isEvento
       ? firmaSolicitanteHtml(solicitante, valores) +
@@ -261,12 +271,43 @@
     w.document.open();
     w.document.write(html);
     w.document.close();
-    setTimeout(function () {
+
+    function doPrint() {
       try {
         w.focus();
         w.print();
       } catch (_e) {}
-    }, 400);
+    }
+
+    // Esperar a que cargue el membrete antes de imprimir
+    var imgs = w.document.images;
+    if (!imgs || !imgs.length) {
+      setTimeout(doPrint, 400);
+      return w;
+    }
+    var pending = imgs.length;
+    var done = false;
+    function finish() {
+      if (done) return;
+      done = true;
+      setTimeout(doPrint, 200);
+    }
+    for (var i = 0; i < imgs.length; i++) {
+      if (imgs[i].complete) {
+        pending -= 1;
+      } else {
+        imgs[i].addEventListener("load", function () {
+          pending -= 1;
+          if (pending <= 0) finish();
+        });
+        imgs[i].addEventListener("error", function () {
+          pending -= 1;
+          if (pending <= 0) finish();
+        });
+      }
+    }
+    if (pending <= 0) finish();
+    else setTimeout(finish, 2500);
     return w;
   }
 

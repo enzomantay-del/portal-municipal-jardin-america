@@ -371,13 +371,12 @@
       notaIntro: "Solicitud de trámite de Bromatología.",
     };
     var html = window.MuniBromoPdf.buildLetterHtml({
-      tramite: meta,
+      tramite: Object.assign({}, meta, { id: d.tipoId || meta.id }),
       solicitante: d.solicitante || {},
       valores: d.valores || {},
       adjuntos: d.adjuntos || [],
       numero: d.numero,
       createdAt: d.createdAt,
-      logoSrc: new URL("assets/membrete-municipalidad.png", window.location.href).href,
     });
     window.MuniBromoPdf.openPrintWindow(html);
   }
