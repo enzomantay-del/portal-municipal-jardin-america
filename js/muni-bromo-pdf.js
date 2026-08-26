@@ -134,7 +134,7 @@
       (window.MuniBromoTramitesData && window.MuniBromoTramitesData.INTENDENTE) ||
       "MMO. César Daniel Araujo";
     var isEvento = tramite.id === "evento-publico";
-    var logoSrc = opts.logoSrc || "assets/logo-municipalidad.png";
+    var logoSrc = opts.logoSrc || "assets/membrete-municipalidad.png";
 
     var firmasBlock = isEvento
       ? firmaSolicitanteHtml(solicitante, valores) +
@@ -165,11 +165,11 @@
       "</title>" +
       "<style>" +
       "@page{margin:14mm}body{font-family:Georgia,'Times New Roman',serif;color:#1a1a1a;margin:0;padding:0;font-size:11.5pt;line-height:1.4}" +
-      ".sheet{max-width:780px;margin:0 auto;padding:8px 6px 18px}" +
-      ".membrete{display:flex;gap:14px;align-items:center;border-bottom:2px solid #0d7aa8;padding-bottom:10px;margin-bottom:14px}" +
-      ".membrete img{width:68px;height:auto}" +
-      ".membrete h1{margin:0;font-size:14pt;color:#0d3d56}" +
-      ".membrete p{margin:2px 0 0;font-size:9pt;color:#445}" +
+      ".sheet{max-width:780px;margin:0 auto;padding:6px 4px 18px}" +
+      ".membrete{margin:0 0 10px;padding:0 0 8px;border-bottom:none;text-align:center}" +
+      ".membrete img{display:block;width:100%;max-width:720px;height:auto;margin:0 auto}" +
+      ".membrete-sub{margin:6px 0 0;font-size:9.5pt;color:#0d3d56;font-family:Georgia,'Times New Roman',serif}" +
+      ".membrete-sub strong{display:block;font-size:10.5pt;margin-bottom:2px}" +
       ".meta{font-size:9.5pt;color:#555;margin:0 0 10px}" +
       "h2{font-size:12.5pt;margin:0 0 8px;text-align:center;text-transform:uppercase;letter-spacing:.04em}" +
       ".dest{margin:0 0 10px}.dest strong{display:block}" +
@@ -198,12 +198,10 @@
       '<header class="membrete">' +
       '<img src="' +
       escapeHtml(logoSrc) +
-      '" alt="Municipalidad de Jardín América">' +
-      "<div><h1>Municipalidad de Jardín América</h1>" +
-      "<p>Provincia de Misiones · República Argentina</p>" +
-      "<p>Área de Bromatología · Portal municipal</p>" +
-      "<p>Av. Libertad N° 24 · Tel: (03743) 460101 · C.P. 3328</p>" +
-      "</div></header>" +
+      '" alt="Municipalidad de Jardín América — membrete oficial">' +
+      '<p class="membrete-sub"><strong>Área de Bromatología</strong>' +
+      "Av. Libertad N° 24 · Tel: (03743) 460101 · C.P. 3328 · Jardín América, Misiones</p>" +
+      "</header>" +
       '<p class="meta">Solicitud N° <strong>' +
       escapeHtml(numero) +
       "</strong> · Jardín América, " +
