@@ -722,7 +722,6 @@
         areaLink.setAttribute("aria-current", "page");
         var dropdown = areaLink.closest(".muni-nav-details");
         if (dropdown) {
-          dropdown.open = true;
           var trigger = dropdown.querySelector(".muni-nav-dropdown-trigger");
           if (trigger) trigger.classList.add("is-active");
         }
