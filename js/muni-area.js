@@ -459,15 +459,19 @@
 
     var hero = document.getElementById("muni-area-hero");
     if (hero) {
+      var panelsHtml =
+        renderEncargadoBlock(M, area) +
+        renderEmergenciaCta(M, area) +
+        renderBromoTramitesCta(M, area);
       hero.innerHTML =
         '<div class="muni-container muni-area-hero-inner">' +
         '<div class="muni-area-hero-icon">' + M.renderAreaIcon(area.slug, "muni-icon muni-icon--lg") + "</div>" +
-        "<div>" +
+        '<div class="muni-area-hero-copy">' +
         "<h1>" + M.escapeHtml(area.nombre) + "</h1>" +
         '<p class="muni-area-hero-desc">' + M.escapeHtml(area.descripcion) + "</p>" +
-        renderEncargadoBlock(M, area) +
-        renderEmergenciaCta(M, area) +
-        renderBromoTramitesCta(M, area) +
+        (panelsHtml
+          ? '<div class="muni-area-hero-panels">' + panelsHtml + "</div>"
+          : "") +
         "</div>" +
         "</div>";
     }
