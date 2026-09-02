@@ -8286,3 +8286,208 @@ body.muni-anuncio-open {
     text-align: center;
   }
 }
+
+/* -- Historias de prensa (videos verticales) -- */
+.muni-historias-slot {
+  margin: 1.5rem 0 0.5rem;
+}
+
+.muni-historias {
+  padding: 1.15rem 0 0.35rem;
+  border-top: 1px solid var(--muni-border);
+  border-bottom: 1px solid var(--muni-border);
+  background: linear-gradient(180deg, #f3fafc 0%, #fff 70%);
+}
+
+.muni-historias-head {
+  margin: 0 0 0.85rem;
+}
+
+.muni-historias-kicker {
+  margin: 0 0 0.2rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #006064;
+}
+
+.muni-historias-head h3 {
+  margin: 0 0 0.25rem;
+  font-family: var(--muni-font-display);
+  font-size: 1.35rem;
+  letter-spacing: -0.02em;
+}
+
+.muni-historias-head p {
+  margin: 0;
+  color: var(--muni-text-muted);
+  font-size: 0.92rem;
+  max-width: 36rem;
+}
+
+.muni-historias-scroller {
+  display: flex;
+  gap: 0.85rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 0.25rem 0.15rem 0.85rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+.muni-historia-card {
+  flex: 0 0 auto;
+  width: min(42vw, 168px);
+  scroll-snap-align: start;
+}
+
+.muni-historia-play {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.muni-historia-card.is-playing .muni-historia-play {
+  display: none;
+}
+
+.muni-historia-frame {
+  position: relative;
+  display: block;
+  aspect-ratio: 9 / 16;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #0f2430;
+  border: 1px solid var(--muni-border);
+  box-shadow: var(--muni-shadow-soft);
+}
+
+.muni-historia-poster,
+.muni-historia-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.muni-historia-video {
+  opacity: 0;
+  background: #000;
+}
+
+.muni-historia-card.is-playing .muni-historia-video {
+  opacity: 1;
+  z-index: 2;
+}
+
+.muni-historia-card.is-playing .muni-historia-poster,
+.muni-historia-card.is-playing .muni-historia-play-icon {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.muni-historia-poster-fallback {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(160deg, #134e5e, #0d7aa8 55%, #1ba3d4);
+}
+
+.muni-historia-play-icon {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 44px;
+  height: 44px;
+  margin: -22px 0 0 -22px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.45);
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  z-index: 3;
+}
+
+.muni-historia-play-icon::before {
+  content: "";
+  position: absolute;
+  left: 17px;
+  top: 13px;
+  border-style: solid;
+  border-width: 9px 0 9px 14px;
+  border-color: transparent transparent transparent #fff;
+}
+
+.muni-historia-caption {
+  display: block;
+  margin-top: 0.45rem;
+  font-size: 0.82rem;
+  line-height: 1.3;
+  color: var(--muni-text);
+  font-weight: 600;
+}
+
+.muni-historias-admin-list {
+  display: grid;
+  gap: 0.85rem;
+  margin-top: 1rem;
+}
+
+.muni-historias-admin-card {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  gap: 0.85rem;
+  align-items: center;
+  padding: 0.75rem;
+}
+
+.muni-historias-admin-thumb {
+  width: 72px;
+  aspect-ratio: 9 / 16;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--muni-blue-soft);
+  border: 1px solid var(--muni-border);
+}
+
+.muni-historias-admin-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.muni-historias-admin-thumb-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-size: 0.75rem;
+  color: var(--muni-text-muted);
+}
+
+.muni-historias-admin-body h4 {
+  margin: 0 0 0.25rem;
+  font-size: 1rem;
+}
+
+.muni-historias-admin-body p {
+  margin: 0.15rem 0;
+  font-size: 0.875rem;
+  color: var(--muni-text-muted);
+}
+
+.muni-historias-admin-actions {
+  margin-top: 0.55rem;
+}
+
+@media (max-width: 640px) {
+  .muni-historia-card {
+    width: min(48vw, 150px);
+  }
+}

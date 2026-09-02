@@ -17,6 +17,18 @@ service firebase.storage {
       allow write: if request.auth != null && request.auth.uid == userId;
     }
 
+    // Videos cortos de prensa (historias verticales, máx. ~40 MB).
+    match /municipal-historias/{userId}/{fileName} {
+      allow read: if true;
+      allow write: if request.auth != null
+        && request.auth.uid == userId
+        && request.resource.size < 40 * 1024 * 1024
+        && (
+          request.resource.contentType.matches('video/.*')
+          || request.resource.contentType.matches('image/.*')
+        );
+    }
+
     // Adjuntos de trámites Bromatología (escritura vía Admin SDK / Netlify).
     match /bromatologia-tramites/{tramiteId}/{fileName} {
       allow read: if true;

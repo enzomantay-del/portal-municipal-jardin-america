@@ -1120,6 +1120,92 @@
     return areas.length;
   }
 
+  async function loadPrensaHistoriasPublic() {
+    if (!isConfigured()) return [];
+
+    function mapRow(id, data) {
+      data = data || {};
+      return {
+        id: id,
+        titulo: data.titulo || "",
+        videoUrl: data.videoUrl || "",
+        posterUrl: data.posterUrl || "",
+        createdAt: normalizeFirestoreInstant(data.createdAt),
+        expiresAt: normalizeFirestoreInstant(data.expiresAt),
+        durationSeconds: data.durationSeconds != null ? Number(data.durationSeconds) || 0 : 0,
+      };
+    }
+
+    function isAlive(item) {
+      if (!item || !item.videoUrl) return false;
+      if (!item.expiresAt) return false;
+      return Date.parse(item.expiresAt) > Date.now();
+    }
+
+    try {
+      var cfg = window.FIREBASE_CONFIG;
+      if (cfg && cfg.projectId && cfg.apiKey) {
+        var url =
+          "https://firestore.googleapis.com/v1/projects/" +
+          encodeURIComponent(cfg.projectId) +
+          "/databases/(default)/documents:runQuery";
+        var res = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Goog-Api-Key": cfg.apiKey,
+          },
+          body: JSON.stringify({
+            structuredQuery: {
+              from: [{ collectionId: "prensa_historias" }],
+              where: {
+                fieldFilter: {
+                  field: { fieldPath: "estadoPublicacion" },
+                  op: "EQUAL",
+                  value: { stringValue: "publicado" },
+                },
+              },
+              orderBy: [{ field: { fieldPath: "createdAt" }, direction: "DESCENDING" }],
+              limit: 24,
+            },
+          }),
+        });
+        if (res.ok) {
+          var rows = await res.json();
+          var list = [];
+          (rows || []).forEach(function (row) {
+            if (!row || !row.document) return;
+            var parsed = parseFirestoreDocumentFields(row.document);
+            list.push(mapRow(parsed.id, parsed.data));
+          });
+          return list.filter(isAlive);
+        }
+      }
+    } catch (err) {
+      console.warn("loadPrensaHistoriasPublic REST", err);
+    }
+
+    try {
+      window.MuniFirebase && window.MuniFirebase.init();
+      var db = window.MuniFirebase && window.MuniFirebase.db();
+      if (!db) return [];
+      var snap = await db
+        .collection("prensa_historias")
+        .where("estadoPublicacion", "==", "publicado")
+        .orderBy("createdAt", "desc")
+        .limit(24)
+        .get();
+      var sdkList = [];
+      snap.forEach(function (doc) {
+        sdkList.push(mapRow(doc.id, doc.data()));
+      });
+      return sdkList.filter(isAlive);
+    } catch (sdkErr) {
+      console.warn("loadPrensaHistoriasPublic SDK", sdkErr);
+      return [];
+    }
+  }
+
   window.MuniApi = {
     mapArea: mapArea,
     mapTrabajo: mapTrabajo,
@@ -1142,6 +1228,7 @@
     loadAnuncioEntradaPublic: loadAnuncioEntradaPublic,
     loadTrabajosPublic: loadTrabajosPublic,
     loadTrabajoById: loadTrabajoById,
+    loadPrensaHistoriasPublic: loadPrensaHistoriasPublic,
     getUserProfile: getUserProfile,
     seedAreas: seedAreas,
   };

@@ -1436,6 +1436,16 @@
 
     if (token !== sessionToken) return;
 
+    if (window.AdminHistorias) {
+      try {
+        await window.AdminHistorias.load();
+      } catch (historiasErr) {
+        console.warn("AdminHistorias.load", historiasErr);
+      }
+    }
+
+    if (token !== sessionToken) return;
+
     if (window.AdminEncuesta) {
       try {
         if (window.AdminEncuesta.loadSummary) {
@@ -1772,6 +1782,23 @@
         return areasSorted;
       },
       areasBySlug: areasBySlug,
+    });
+  }
+
+  if (window.AdminHistorias) {
+    window.AdminHistorias.bind({
+      showAlert: showAlert,
+      escapeHtml: escapeHtml,
+      formatError: formatFirestoreError,
+      getCurrentUser: function () {
+        return currentUser;
+      },
+      getDb: function () {
+        return db;
+      },
+      getStorage: function () {
+        return storage;
+      },
     });
   }
 

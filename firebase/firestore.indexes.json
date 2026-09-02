@@ -26,6 +26,14 @@
       ]
     },
     {
+      "collectionGroup": "prensa_historias",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "estadoPublicacion", "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "DESCENDING" }
+      ]
+    },
+    {
       "collectionGroup": "areas",
       "queryScope": "COLLECTION",
       "fields": [

@@ -468,7 +468,12 @@
 
     function paint() {
       if (!destacada && !side.length && !below.length) {
-        container.innerHTML = '<p class="muni-empty">' + escapeHtml(emptyText) + "</p>";
+        container.innerHTML =
+          '<div id="muni-historias-home" class="muni-historias-slot" hidden></div>' +
+          '<p class="muni-empty">' +
+          escapeHtml(emptyText) +
+          "</p>";
+        if (typeof options.onPaint === "function") options.onPaint();
         return;
       }
 
@@ -493,14 +498,31 @@
       }
 
       if (split.recent.length) {
+        // Tapa = 1.ª línea; cada 3 cards = una línea. Carrusel tras la 3.ª línea (= 6 cards).
+        var afterThirdLine = 6;
+        var firstBlock = split.recent.slice(0, afterThirdLine);
+        var restBlock = split.recent.slice(afterThirdLine);
         html +=
           '<div class="muni-news-grid muni-news-grid--row">' +
-          split.recent
+          firstBlock
             .map(function (n) {
               return renderCard(n, { compact: true });
             })
             .join("") +
           "</div>";
+        html += '<div id="muni-historias-home" class="muni-historias-slot" hidden></div>';
+        if (restBlock.length) {
+          html +=
+            '<div class="muni-news-grid muni-news-grid--row">' +
+            restBlock
+              .map(function (n) {
+                return renderCard(n, { compact: true });
+              })
+              .join("") +
+            "</div>";
+        }
+      } else {
+        html += '<div id="muni-historias-home" class="muni-historias-slot" hidden></div>';
       }
 
       if (split.older.length) {
@@ -534,6 +556,7 @@
       }
 
       container.innerHTML = html;
+      if (typeof options.onPaint === "function") options.onPaint();
     }
 
     if (!container._muniHomeOlderBound) {

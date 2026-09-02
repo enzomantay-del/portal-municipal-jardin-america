@@ -299,6 +299,58 @@ export async function deleteDocument(collection, docId) {
   ]);
 }
 
+/** Consulta sencilla de colección (REST runQuery). */
+export async function runCollectionQuery(structuredQuery) {
+  var token = await getAccessToken();
+  var res = await fetch(
+    "https://firestore.googleapis.com/v1/projects/" +
+      PROJECT_ID +
+      "/databases/(default)/documents:runQuery",
+    {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + token,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ structuredQuery: structuredQuery }),
+    }
+  );
+  if (!res.ok) {
+    var errText = await res.text();
+    throw new Error("Firestore runQuery " + res.status + ": " + errText.slice(0, 300));
+  }
+  return res.json();
+}
+
+/** Borra un objeto de Storage por path relativo (ej. municipal-historias/uid/file.mp4). */
+export async function deleteStorageObject(objectPath) {
+  if (!objectPath) return false;
+  var token = await getAccessTokenForScope(
+    "https://www.googleapis.com/auth/devstorage.read_write https://www.googleapis.com/auth/cloud-platform"
+  );
+  var buckets = candidateStorageBuckets();
+  var lastErr = null;
+  for (var i = 0; i < buckets.length; i++) {
+    var bucket = buckets[i];
+    var url =
+      "https://storage.googleapis.com/storage/v1/b/" +
+      encodeURIComponent(bucket) +
+      "/o/" +
+      encodeURIComponent(objectPath);
+    var res = await fetch(url, {
+      method: "DELETE",
+      headers: { Authorization: "Bearer " + token },
+    });
+    if (res.ok || res.status === 204 || res.status === 404) return true;
+    var errText = await res.text();
+    lastErr = new Error("Storage delete " + res.status + " (" + bucket + "): " + errText.slice(0, 200));
+    if (res.status === 404 || res.status === 400) continue;
+    throw lastErr;
+  }
+  if (lastErr) throw lastErr;
+  return false;
+}
+
 export async function incrementTrabajoField(trabajoId, fieldPath) {
   return commitWrites([
     {

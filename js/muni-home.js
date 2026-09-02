@@ -57,6 +57,11 @@
         emptyText: "Todavía no hay novedades publicadas.",
         recentDays: 15,
         sideCount: 4,
+        onPaint: function () {
+          if (window.MuniHistorias && window.MuniHistorias.mount) {
+            window.MuniHistorias.mount();
+          }
+        },
       });
     }
 
@@ -92,6 +97,7 @@
     }
 
     mountEventosYAnuncio();
+    // Si muni-eventos / muni-anuncio aún cargan por lazy, reintentar breve
     var tries = 0;
     var retry = setInterval(function () {
       tries += 1;

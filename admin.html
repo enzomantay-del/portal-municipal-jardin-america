@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
-  <link rel="stylesheet" href="css/muni-portal.css?v=20260727obras">
+  <link rel="stylesheet" href="css/muni-portal.css?v=20260901historias">
 </head>
 <body class="muni-panel-page muni-enc-page">
   <a class="muni-skip" href="#contenido-panel">Saltar al contenido</a>
@@ -82,6 +82,7 @@
       <nav class="muni-panel-nav" data-panel-nav aria-label="Secciones del panel">
         <a href="#seccion-agenda" class="muni-panel-nav-link muni-panel-nav-link--agenda is-active" aria-current="true">📅 Agenda</a>
         <a href="#seccion-novedades" class="muni-panel-nav-link muni-panel-nav-link--novedades">📰 Novedades</a>
+        <a href="#seccion-historias" class="muni-panel-nav-link muni-panel-nav-link--historias">🎬 Historias</a>
         <a href="#seccion-mapa" class="muni-panel-nav-link muni-panel-nav-link--mapa">🗺️ Mapa</a>
         <a href="#seccion-encuesta" class="muni-panel-nav-link muni-panel-nav-link--encuesta">📊 Encuesta</a>
         <a href="#seccion-avisos" class="muni-panel-nav-link">📲 Recibir avisos</a>
@@ -406,6 +407,38 @@
         </div>
       </section>
 
+      <section id="seccion-historias" class="muni-panel-zone muni-panel-zone--historias">
+        <header class="muni-panel-zone-head">
+          <span class="muni-panel-zone-icon" aria-hidden="true">🎬</span>
+          <div>
+            <h2>Historias de prensa</h2>
+            <p>Videos verticales cortos (WhatsApp / Instagram). Se muestran 7 días en el inicio y después se borran solos.</p>
+          </div>
+        </header>
+        <div class="muni-panel-zone-body">
+          <div class="muni-panel-zone-block" id="admin-historias-panel">
+            <form id="admin-historia-form" class="muni-form-grid muni-panel-card--nested" novalidate>
+              <h3 class="muni-panel-zone-block-title">Nueva historia</h3>
+              <div class="muni-field muni-field--full">
+                <label for="admin-historia-titulo">Título (opcional)</label>
+                <input id="admin-historia-titulo" name="titulo" maxlength="120" placeholder="Ej: Recorrida por el barrio Centro">
+              </div>
+              <div class="muni-field muni-field--full">
+                <label for="admin-historia-archivo">Video vertical (MP4)</label>
+                <input id="admin-historia-archivo" name="historia_archivo" type="file" accept="video/mp4,video/webm,video/quicktime,video/*" required>
+                <p class="muni-field-hint">Formato vertical, hasta 90 segundos y 35 MB. Evitá videos muy pesados para no ralentizar el sitio.</p>
+              </div>
+              <div class="muni-form-actions muni-field--full">
+                <button type="submit" class="muni-btn muni-btn--primary" id="admin-historia-submit">Publicar historia</button>
+                <button type="button" class="muni-btn muni-btn--ghost" id="admin-historias-refresh">Actualizar lista</button>
+              </div>
+            </form>
+            <p id="admin-historias-empty" class="muni-empty">Todavía no hay historias vigentes.</p>
+            <div id="admin-historias-list" class="muni-historias-admin-list"></div>
+          </div>
+        </div>
+      </section>
+
       <section id="seccion-mapa" class="muni-panel-zone muni-panel-zone--mapa">
         <header class="muni-panel-zone-head">
           <span class="muni-panel-zone-icon" aria-hidden="true">🗺️</span>
@@ -684,6 +717,7 @@
   <script src="vendor/leaflet/leaflet.js"></script>
   <script src="js/admin-anuncio.js?v=20260521"></script>
   <script src="js/admin-flyers.js?v=20260722flyers"></script>
+  <script src="js/admin-historias.js?v=20260901historias"></script>
   <script src="js/muni-mapa-core.js?v=20260727obras"></script>
   <script src="js/admin-mapa.js?v=20260617"></script>
   <script src="js/admin-encuesta.js?v=20260523"></script>
@@ -692,6 +726,6 @@
   <script src="js/muni-staff-notify.js?v=20260623b"></script>
   <script src="js/agenda-interna.js?v=20260521f"></script>
   <script src="js/muni-panel-nav.js?v=20260611"></script>
-  <script src="js/admin.js?v=20260727obras"></script>
+  <script src="js/admin.js?v=20260901historias"></script>
 </body>
 </html>
