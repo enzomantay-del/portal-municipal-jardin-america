@@ -47,12 +47,17 @@
 
   function render(items) {
     if (!items || !items.length) return "";
+    var hint =
+      items.length > 1
+        ? '<p class="muni-historias-hint" aria-hidden="true">Deslizá →</p>'
+        : "";
     return (
       '<section class="muni-historias" aria-labelledby="muni-historias-title">' +
       '<div class="muni-historias-head">' +
       '<h3 id="muni-historias-title">La semana en videos</h3>' +
+      hint +
       "</div>" +
-      '<div class="muni-historias-scroller" tabindex="0" role="list">' +
+      '<div class="muni-historias-scroller" tabindex="0" role="list" aria-label="Videos de la semana">' +
       items
         .map(function (item) {
           return (

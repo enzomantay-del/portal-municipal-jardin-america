@@ -8287,9 +8287,11 @@ body.muni-anuncio-open {
   }
 }
 
-/* -- Historias de prensa (videos verticales) -- */
+/* ── Historias / La semana en videos ── */
 .muni-historias-slot {
   margin: 1.5rem 0 0.5rem;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .muni-historias {
@@ -8297,10 +8299,17 @@ body.muni-anuncio-open {
   border-top: 1px solid var(--muni-border);
   border-bottom: 1px solid var(--muni-border);
   background: linear-gradient(180deg, #f3fafc 0%, #fff 70%);
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .muni-historias-head {
-  margin: 0 0 0.85rem;
+  margin: 0 0 0.55rem;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
 }
 
 .muni-historias-kicker {
@@ -8313,13 +8322,21 @@ body.muni-anuncio-open {
 }
 
 .muni-historias-head h3 {
-  margin: 0 0 0.25rem;
+  margin: 0;
   font-family: var(--muni-font-display);
-  font-size: 1.35rem;
+  font-size: clamp(1.2rem, 4vw, 1.35rem);
   letter-spacing: -0.02em;
 }
 
-.muni-historias-head p {
+.muni-historias-hint {
+  margin: 0;
+  flex-shrink: 0;
+  font-size: 0.78rem;
+  color: var(--muni-text-muted);
+  white-space: nowrap;
+}
+
+.muni-historias-head p:not(.muni-historias-hint) {
   margin: 0;
   color: var(--muni-text-muted);
   font-size: 0.92rem;
@@ -8329,15 +8346,34 @@ body.muni-anuncio-open {
 .muni-historias-scroller {
   display: flex;
   gap: 0.85rem;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   overflow-x: auto;
+  overflow-y: hidden;
   scroll-snap-type: x mandatory;
-  padding: 0.25rem 0.15rem 0.85rem;
+  scroll-padding-inline: 0.15rem;
+  padding: 0.25rem 0.15rem 1rem;
   -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  touch-action: pan-x;
+  scrollbar-width: thin;
+}
+
+.muni-historias-scroller::-webkit-scrollbar {
+  height: 4px;
+}
+
+.muni-historias-scroller::-webkit-scrollbar-thumb {
+  background: rgba(13, 122, 168, 0.35);
+  border-radius: 999px;
 }
 
 .muni-historia-card {
   flex: 0 0 auto;
-  width: min(42vw, 168px);
+  width: 168px;
+  max-width: 72vw;
+  min-width: 0;
   scroll-snap-align: start;
 }
 
@@ -8424,12 +8460,17 @@ body.muni-anuncio-open {
 }
 
 .muni-historia-caption {
-  display: block;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
   margin-top: 0.45rem;
   font-size: 0.82rem;
   line-height: 1.3;
   color: var(--muni-text);
   font-weight: 600;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .muni-historia-backdrop {
@@ -8469,10 +8510,69 @@ body.muni-anuncio-open {
   color: #fff;
   text-align: center;
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.55);
+  -webkit-line-clamp: 3;
 }
 
 body.muni-historia-lightbox-open {
   overflow: hidden;
+}
+
+@media (max-width: 640px) {
+  .muni-historias-slot {
+    margin: 1.15rem 0 0.35rem;
+  }
+
+  .muni-historias {
+    /* Carrusel a ancho completo del viewport (sin cortar el scroll) */
+    width: 100vw;
+    max-width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    padding: 1rem 0 0.2rem;
+    box-sizing: border-box;
+  }
+
+  .muni-historias-head {
+    padding: 0 var(--muni-gutter);
+    margin-bottom: 0.65rem;
+  }
+
+  .muni-historias-hint {
+    font-size: 0.72rem;
+  }
+
+  .muni-historias-scroller {
+    gap: 0.7rem;
+    padding: 0.15rem var(--muni-gutter) 1.05rem;
+    scroll-padding-inline: var(--muni-gutter);
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .muni-historias-scroller::-webkit-scrollbar {
+    display: none;
+  }
+
+  .muni-historia-card {
+    /* Una card grande + peek de la siguiente = se entiende que se desliza */
+    width: min(68vw, 240px);
+    scroll-snap-align: center;
+  }
+
+  .muni-historia-card.is-expanded {
+    width: min(94vw, 380px);
+  }
+
+  .muni-historia-card.is-expanded .muni-historia-frame {
+    max-height: min(78vh, 680px);
+  }
+
+  .muni-tapa-side-title,
+  .muni-tapa-lead-title,
+  .muni-card-title {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
 }
 
 .muni-historias-admin-list {
@@ -8527,10 +8627,4 @@ body.muni-historia-lightbox-open {
 
 .muni-historias-admin-actions {
   margin-top: 0.55rem;
-}
-
-@media (max-width: 640px) {
-  .muni-historia-card {
-    width: min(48vw, 150px);
-  }
 }
