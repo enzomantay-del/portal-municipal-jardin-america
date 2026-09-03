@@ -5,6 +5,7 @@
   var cache = null;
   var cacheAt = 0;
   var CACHE_MS = 60 * 1000;
+  var expandedCard = null;
 
   function escapeHtml(value) {
     if (window.MuniPortal && window.MuniPortal.escapeHtml) {
@@ -49,9 +50,7 @@
     return (
       '<section class="muni-historias" aria-labelledby="muni-historias-title">' +
       '<div class="muni-historias-head">' +
-      '<p class="muni-historias-kicker">Prensa municipal</p>' +
-      '<h3 id="muni-historias-title">Historias de la gestión</h3>' +
-      "<p>Videos cortos de acciones del día. Se publican por 7 días.</p>" +
+      '<h3 id="muni-historias-title">La semana en videos</h3>' +
       "</div>" +
       '<div class="muni-historias-scroller" tabindex="0" role="list">' +
       items
@@ -66,7 +65,7 @@
                 escapeHtml(item.posterUrl) +
                 '" alt="" loading="lazy" decoding="async">'
               : '<span class="muni-historia-poster-fallback" aria-hidden="true"></span>') +
-            '<video class="muni-historia-video" playsinline preload="none" controls' +
+            '<video class="muni-historia-video" playsinline preload="none"' +
             ' data-src="' +
             escapeHtml(item.videoUrl) +
             '"' +
@@ -85,7 +84,9 @@
           );
         })
         .join("") +
-      "</div></section>"
+      "</div>" +
+      '<div class="muni-historia-backdrop" hidden aria-hidden="true"></div>' +
+      "</section>"
     );
   }
 
@@ -101,16 +102,55 @@
     });
   }
 
+  function collapseVideo(card) {
+    if (!card) return;
+    var root = document.getElementById(SLOT_ID);
+    var video = card.querySelector(".muni-historia-video");
+    card.classList.remove("is-playing", "is-expanded");
+    if (video) {
+      try {
+        video.pause();
+        video.currentTime = 0;
+      } catch (_e) {}
+    }
+    if (root) {
+      var backdrop = root.querySelector(".muni-historia-backdrop");
+      if (backdrop) {
+        backdrop.hidden = true;
+        backdrop.setAttribute("aria-hidden", "true");
+      }
+    }
+    document.body.classList.remove("muni-historia-lightbox-open");
+    if (expandedCard === card) expandedCard = null;
+  }
+
   function activateVideo(card) {
     if (!card) return;
+    var root = document.getElementById(SLOT_ID);
     var video = card.querySelector(".muni-historia-video");
     if (!video) return;
+
+    if (expandedCard && expandedCard !== card) {
+      collapseVideo(expandedCard);
+    }
+
     var src = video.getAttribute("data-src");
     if (src && !video.getAttribute("src")) {
       video.setAttribute("src", src);
       video.load();
     }
-    card.classList.add("is-playing");
+
+    card.classList.add("is-playing", "is-expanded");
+    expandedCard = card;
+    document.body.classList.add("muni-historia-lightbox-open");
+    if (root) {
+      var backdrop = root.querySelector(".muni-historia-backdrop");
+      if (backdrop) {
+        backdrop.hidden = false;
+        backdrop.setAttribute("aria-hidden", "false");
+      }
+    }
+
     pauseOthers(video);
     var playPromise = video.play();
     if (playPromise && playPromise.catch) {
@@ -123,6 +163,10 @@
     root.dataset.bound = "1";
 
     root.addEventListener("click", function (e) {
+      if (e.target.closest(".muni-historia-backdrop")) {
+        if (expandedCard) collapseVideo(expandedCard);
+        return;
+      }
       var btn = e.target.closest(".muni-historia-play");
       if (!btn || !root.contains(btn)) return;
       var card = btn.closest(".muni-historia-card");
@@ -131,11 +175,29 @@
       activateVideo(card);
     });
 
+    root.addEventListener(
+      "ended",
+      function (e) {
+        var video = e.target;
+        if (!video || !video.classList.contains("muni-historia-video")) return;
+        var card = video.closest(".muni-historia-card");
+        if (card) collapseVideo(card);
+      },
+      true
+    );
+
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && expandedCard) {
+        collapseVideo(expandedCard);
+      }
+    });
+
     if ("IntersectionObserver" in window) {
       var io = new IntersectionObserver(
         function (entries) {
           entries.forEach(function (entry) {
             if (entry.isIntersecting) return;
+            if (entry.target.classList.contains("is-expanded")) return;
             var video = entry.target.querySelector(".muni-historia-video");
             if (video && !video.paused) {
               try {
@@ -155,7 +217,6 @@
   async function mountIntoSlot() {
     var slot = document.getElementById(SLOT_ID);
     if (!slot) {
-      // Si el grid aún no pintó el hueco, reintentar breve.
       if (!mountIntoSlot._tries) mountIntoSlot._tries = 0;
       if (mountIntoSlot._tries < 8) {
         mountIntoSlot._tries += 1;
@@ -166,14 +227,13 @@
     mountIntoSlot._tries = 0;
 
     try {
-      if (window.MuniHistorias && window.MuniHistorias.invalidate) {
-        /* keep cache unless forced */
-      }
       var items = await fetchHistorias();
       if (!items.length) {
         slot.hidden = true;
         slot.innerHTML = "";
         delete slot.dataset.bound;
+        document.body.classList.remove("muni-historia-lightbox-open");
+        expandedCard = null;
         return;
       }
       slot.hidden = false;

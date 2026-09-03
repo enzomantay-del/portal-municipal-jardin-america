@@ -8432,6 +8432,49 @@ body.muni-anuncio-open {
   font-weight: 600;
 }
 
+.muni-historia-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 5600;
+  background: rgba(8, 18, 28, 0.72);
+  backdrop-filter: blur(2px);
+}
+
+.muni-historia-card.is-expanded {
+  position: fixed;
+  z-index: 5610;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(92vw, 360px);
+  margin: 0;
+  scroll-snap-align: unset;
+}
+
+.muni-historia-card.is-expanded .muni-historia-frame {
+  width: 100%;
+  max-height: min(86vh, 720px);
+  aspect-ratio: 9 / 16;
+  border-radius: 18px;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.45);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.muni-historia-card.is-expanded .muni-historia-video {
+  object-fit: contain;
+  background: #000;
+}
+
+.muni-historia-card.is-expanded .muni-historia-caption {
+  color: #fff;
+  text-align: center;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.55);
+}
+
+body.muni-historia-lightbox-open {
+  overflow: hidden;
+}
+
 .muni-historias-admin-list {
   display: grid;
   gap: 0.85rem;
