@@ -1138,9 +1138,37 @@
 
     function isAlive(item) {
       if (!item || !item.videoUrl) return false;
-      if (!item.expiresAt) return false;
-      return Date.parse(item.expiresAt) > Date.now();
+      var expMs = item.expiresAt ? Date.parse(item.expiresAt) : NaN;
+      if (Number.isFinite(expMs)) return expMs > Date.now();
+      // Respaldo si falta expiresAt: 7 días desde createdAt
+      var createdMs = item.createdAt ? Date.parse(item.createdAt) : NaN;
+      if (Number.isFinite(createdMs)) {
+        return createdMs + 7 * 24 * 60 * 60 * 1000 > Date.now();
+      }
+      return true;
     }
+
+    function sortAndFilter(list) {
+      return (list || [])
+        .filter(isAlive)
+        .sort(function (a, b) {
+          return Date.parse(b.createdAt || 0) - Date.parse(a.createdAt || 0);
+        })
+        .slice(0, 24);
+    }
+
+    // Sin orderBy: evita índice compuesto; ordenamos en el cliente.
+    var structuredQuery = {
+      from: [{ collectionId: "prensa_historias" }],
+      where: {
+        fieldFilter: {
+          field: { fieldPath: "estadoPublicacion" },
+          op: "EQUAL",
+          value: { stringValue: "publicado" },
+        },
+      },
+      limit: 40,
+    };
 
     try {
       var cfg = window.FIREBASE_CONFIG;
@@ -1155,30 +1183,21 @@
             "Content-Type": "application/json",
             "X-Goog-Api-Key": cfg.apiKey,
           },
-          body: JSON.stringify({
-            structuredQuery: {
-              from: [{ collectionId: "prensa_historias" }],
-              where: {
-                fieldFilter: {
-                  field: { fieldPath: "estadoPublicacion" },
-                  op: "EQUAL",
-                  value: { stringValue: "publicado" },
-                },
-              },
-              orderBy: [{ field: { fieldPath: "createdAt" }, direction: "DESCENDING" }],
-              limit: 24,
-            },
-          }),
+          body: JSON.stringify({ structuredQuery: structuredQuery }),
         });
-        if (res.ok) {
-          var rows = await res.json();
+        var payload = await res.json().catch(function () {
+          return null;
+        });
+        if (!res.ok) {
+          console.warn("loadPrensaHistoriasPublic REST", res.status, payload);
+        } else {
           var list = [];
-          (rows || []).forEach(function (row) {
+          (payload || []).forEach(function (row) {
             if (!row || !row.document) return;
             var parsed = parseFirestoreDocumentFields(row.document);
             list.push(mapRow(parsed.id, parsed.data));
           });
-          return list.filter(isAlive);
+          return sortAndFilter(list);
         }
       }
     } catch (err) {
@@ -1192,14 +1211,13 @@
       var snap = await db
         .collection("prensa_historias")
         .where("estadoPublicacion", "==", "publicado")
-        .orderBy("createdAt", "desc")
-        .limit(24)
+        .limit(40)
         .get();
       var sdkList = [];
       snap.forEach(function (doc) {
         sdkList.push(mapRow(doc.id, doc.data()));
       });
-      return sdkList.filter(isAlive);
+      return sortAndFilter(sdkList);
     } catch (sdkErr) {
       console.warn("loadPrensaHistoriasPublic SDK", sdkErr);
       return [];

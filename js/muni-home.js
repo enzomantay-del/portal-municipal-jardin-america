@@ -59,11 +59,18 @@
         sideCount: 4,
         onPaint: function () {
           if (window.MuniHistorias && window.MuniHistorias.mount) {
-            window.MuniHistorias.mount();
+            window.MuniHistorias.mount({ force: true });
           }
         },
       });
     }
+
+    // Segunda pasada por si el primer mount corrió antes de que existiera el hueco.
+    setTimeout(function () {
+      if (window.MuniHistorias && window.MuniHistorias.mount) {
+        window.MuniHistorias.mount({ force: true });
+      }
+    }, 800);
 
     var sidebarEl = document.getElementById("muni-sidebar-mas-leidas");
     if (sidebarEl) {

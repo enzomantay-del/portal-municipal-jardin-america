@@ -144,7 +144,8 @@ service cloud.firestore {
 
     // Videos cortos de prensa (vigencia 7 días). Lectura pública solo si publicados.
     match /prensa_historias/{historiaId} {
-      allow read: if resource.data.estadoPublicacion == 'publicado' || isAdmin();
+      // Lectura pública de publicadas (get + list/query). Admin ve todas.
+      allow get, list: if resource.data.estadoPublicacion == 'publicado' || isAdmin();
       allow create, update, delete: if isAdmin();
     }
 

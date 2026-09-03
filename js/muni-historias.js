@@ -154,9 +154,21 @@
 
   async function mountIntoSlot() {
     var slot = document.getElementById(SLOT_ID);
-    if (!slot) return;
+    if (!slot) {
+      // Si el grid aún no pintó el hueco, reintentar breve.
+      if (!mountIntoSlot._tries) mountIntoSlot._tries = 0;
+      if (mountIntoSlot._tries < 8) {
+        mountIntoSlot._tries += 1;
+        setTimeout(mountIntoSlot, 250);
+      }
+      return;
+    }
+    mountIntoSlot._tries = 0;
 
     try {
+      if (window.MuniHistorias && window.MuniHistorias.invalidate) {
+        /* keep cache unless forced */
+      }
       var items = await fetchHistorias();
       if (!items.length) {
         slot.hidden = true;
@@ -165,6 +177,7 @@
         return;
       }
       slot.hidden = false;
+      slot.removeAttribute("hidden");
       slot.innerHTML = render(items);
       bindInteractions(slot);
     } catch (err) {
@@ -174,7 +187,13 @@
   }
 
   window.MuniHistorias = {
-    mount: mountIntoSlot,
+    mount: function (opts) {
+      if (opts && opts.force) {
+        cache = null;
+        cacheAt = 0;
+      }
+      return mountIntoSlot();
+    },
     invalidate: function () {
       cache = null;
       cacheAt = 0;
